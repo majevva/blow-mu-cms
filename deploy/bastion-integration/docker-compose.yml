@@ -14,22 +14,38 @@ services:
       ADMIN_PANEL_PORT: 8080
       ADMIN_PANEL_USERNAME: admin
       ADMIN_PANEL_PASSWORD: openmu
-    ports:
-      - "8081:8080"
     restart: unless-stopped
     networks:
       - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.cms-api.entrypoints=websecure"
+      - "traefik.http.routers.cms-api.rule=Host(`majewa.space`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.cms-api.tls=true"
+      - "traefik.http.routers.cms-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cms-api.middlewares=cms-api-strip"
+      - "traefik.http.middlewares.cms-api-strip.stripprefix.prefixes=/api"
+      - "traefik.http.services.cms-api.loadbalancer.server.port=8080"
 
   cms-web:
     container_name: bastion-cms-web
     build:
       context: ../../client
       dockerfile: Dockerfile
-    ports:
-      - "3001:80"
     restart: unless-stopped
     depends_on:
       - cms-api
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.cms-web.entrypoints=websecure"
+      - "traefik.http.routers.cms-web.rule=Host(`majewa.space`)"
+      - "traefik.http.routers.cms-web.tls=true"
+      - "traefik.http.routers.cms-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.cms-web.loadbalancer.server.port=80"
 
 networks:
   proxy:

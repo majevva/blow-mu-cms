@@ -62,7 +62,7 @@
     }
   },
   "footer": {
-    "copyright1": "MU Online © 2024. All rights reserved.",
+    "copyright1": "Blow MU © 2026. All rights reserved.",
     "copyright2": "Mu is a registered trademark of WEBZEN, Inc.",
     "developedBy": "Developed by"
   },
@@ -81,7 +81,7 @@
   },
   "registration": {
     "title": "Registration",
-    "subtitle": "Create your account to start your adventures at Mu Online!",
+    "subtitle": "Create your account and begin your adventure on Blow MU!",
     "registrationForm": {
       "loginName": "Username",
       "email": "Email",
