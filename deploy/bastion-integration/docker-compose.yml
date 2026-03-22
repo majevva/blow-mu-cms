@@ -1,0 +1,36 @@
+services:
+  cms-api:
+    container_name: bastion-cms-api
+    build:
+      context: ../../server
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: bastionmu-database
+      DB_PORT: 5432
+      DB_NAME: openmu
+      DB_USERNAME: postgres
+      DB_PASSWORD: admin
+      ADMIN_PANEL_HOST: bastionmu-server
+      ADMIN_PANEL_PORT: 8080
+      ADMIN_PANEL_USERNAME: admin
+      ADMIN_PANEL_PASSWORD: openmu
+    ports:
+      - "8081:8080"
+    restart: unless-stopped
+    networks:
+      - proxy
+
+  cms-web:
+    container_name: bastion-cms-web
+    build:
+      context: ../../client
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    restart: unless-stopped
+    depends_on:
+      - cms-api
+
+networks:
+  proxy:
+    external: true
