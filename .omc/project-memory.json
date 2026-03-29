@@ -1,0 +1,395 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1774784318006,
+  "projectRoot": "/home/openclawops/services/blow-mu-cms",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 16,
+      "lastAccessed": 1774784317999,
+      "keyFiles": [
+        "blue-dark-desktop.png",
+        "blue-dark-mobile.png",
+        "blue-light-desktop.png",
+        "blue-light-mobile.png",
+        "green-dark-desktop.png"
+      ]
+    },
+    "client": {
+      "path": "client",
+      "purpose": null,
+      "fileCount": 18,
+      "lastAccessed": 1774784318002,
+      "keyFiles": [
+        "Dockerfile",
+        "Dockerfile.dev",
+        "index.html",
+        "nginx.conf",
+        "package-lock.json"
+      ]
+    },
+    "deploy": {
+      "path": "deploy",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1774784318002,
+      "keyFiles": [
+        "deploy-production.sh"
+      ]
+    },
+    "server": {
+      "path": "server",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1774784318003,
+      "keyFiles": [
+        "Dockerfile",
+        "mvnw",
+        "mvnw.cmd",
+        "pom.xml"
+      ]
+    },
+    "server/src": {
+      "path": "server/src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1774784318004,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "",
+      "accessCount": 9,
+      "lastAccessed": 1774785620590,
+      "type": "directory"
+    },
+    {
+      "path": "client/src",
+      "accessCount": 7,
+      "lastAccessed": 1774785617489,
+      "type": "directory"
+    },
+    {
+      "path": "client/src/public/colors.ts",
+      "accessCount": 6,
+      "lastAccessed": 1774785883438,
+      "type": "file"
+    },
+    {
+      "path": "client/tailwind.config.js",
+      "accessCount": 5,
+      "lastAccessed": 1774785868559,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Button/Button.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1774785869478,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Typography/Typography.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774785565579,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Navbar/Navbar.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774785566924,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Footer/Footer.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774785567541,
+      "type": "file"
+    },
+    {
+      "path": "client/src/RootLayout.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774785567617,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Sidebar.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1774785620066,
+      "type": "file"
+    },
+    {
+      "path": "client/index.html",
+      "accessCount": 4,
+      "lastAccessed": 1774785885783,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/TitleWithDivider/TitleWithDivider.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1774785572922,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/FormInput/FormInput.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1774785573366,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Table/Table.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1774785575259,
+      "type": "file"
+    },
+    {
+      "path": "client/src/index.css",
+      "accessCount": 3,
+      "lastAccessed": 1774785604227,
+      "type": "file"
+    },
+    {
+      "path": "client/src/pages/Home/Home.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785307219,
+      "type": "file"
+    },
+    {
+      "path": "client/package.json",
+      "accessCount": 2,
+      "lastAccessed": 1774785327317,
+      "type": "file"
+    },
+    {
+      "path": "client",
+      "accessCount": 2,
+      "lastAccessed": 1774785336090,
+      "type": "directory"
+    },
+    {
+      "path": "client/src/components/Select/Select.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785573785,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Tabs/Tabs.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785574382,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Pagination/Pagination.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785574816,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/List/List.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785575705,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/ImageSlider/ImageSlider.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785575976,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/LoginCard.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785581619,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/ServerCard/ServerCard.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785582255,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Navbar/SelectTheme.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1774785591528,
+      "type": "file"
+    },
+    {
+      "path": "client/src/App.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785214884,
+      "type": "file"
+    },
+    {
+      "path": "client/vite.config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774785223761,
+      "type": "file"
+    },
+    {
+      "path": "client/tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1774785224220,
+      "type": "file"
+    },
+    {
+      "path": "assets/green-light-mobile.png",
+      "accessCount": 1,
+      "lastAccessed": 1774785228144,
+      "type": "file"
+    },
+    {
+      "path": "assets/green-dark-desktop.png",
+      "accessCount": 1,
+      "lastAccessed": 1774785229939,
+      "type": "file"
+    },
+    {
+      "path": "client/src/main.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785235464,
+      "type": "file"
+    },
+    {
+      "path": "client/src/i18n/i18n.ts",
+      "accessCount": 1,
+      "lastAccessed": 1774785237863,
+      "type": "file"
+    },
+    {
+      "path": "client/src/pages/Rankings/Rankings.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785318943,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Alert/Alert.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785321570,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/ServerCard/ServerCardSkeleton.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785582521,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/RankingsCard/RankingsCard.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785583448,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/RankingsCard/PlayersRankTable.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785583881,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/RankingsCard/GuildsRankTable.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785584912,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/LoginForm/LoginForm.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785585408,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/AccountCard/AccountCard.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785585659,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Link/Link.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785590707,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/NewsForm/ckeditor.css",
+      "accessCount": 1,
+      "lastAccessed": 1774785592053,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Navbar/SelectLanguage.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785597117,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Navbar/MobileNavigation/MobileNavMenu.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785603007,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Navbar/MobileNavigation/MobileAccountMenu.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785603470,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/Navbar/MobileNavigation/MobileLoginDialog.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785604032,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components/TitleWithDivider/DiamondIcon.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785612094,
+      "type": "file"
+    },
+    {
+      "path": "client/src/components",
+      "accessCount": 1,
+      "lastAccessed": 1774785625198,
+      "type": "directory"
+    },
+    {
+      "path": "client/src/components/Sidebar/Cards/RankingsCard/RankingsCardSkeleton.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1774785625486,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
