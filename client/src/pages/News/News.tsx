@@ -9,7 +9,7 @@ import { LoaderData } from '@/types/react-router-dom';
 
 import { useGetAllNews } from '@/api/news';
 import { type News, SortDirection } from '@/api/types';
-import { useTranslation } from 'react-i18next';
+import useBaseTranslation from '@/hooks/use-base-translation';
 
 import TitleWithDivider from '@/components/TitleWithDivider/TitleWithDivider';
 import NewsItem from './NewsItem';
@@ -39,7 +39,7 @@ export const loader = (async ({ request }: LoaderFunctionArgs) => {
 
 const NewsPage: React.FC<NewsPageProps> = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t } = useBaseTranslation('news');
   const { page } = useLoaderData() as LoaderData<typeof loader>;
   const pageSize = 10;
 
@@ -67,7 +67,7 @@ const NewsPage: React.FC<NewsPageProps> = () => {
 
   return (
     <>
-      <TitleWithDivider>{t('news.title')}</TitleWithDivider>
+      <TitleWithDivider>{t('title')}</TitleWithDivider>
 
       {isLoading ? (
         <div className="flex h-80 items-center justify-center">
@@ -78,7 +78,7 @@ const NewsPage: React.FC<NewsPageProps> = () => {
           variant="h3-inter"
           styles="text-primary-950 dark:text-primary-50"
         >
-          {t('news.newsEmptyMessage')}
+          {t('newsEmptyMessage')}
         </Typography>
       ) : (
         <div className="flex flex-col gap-2">

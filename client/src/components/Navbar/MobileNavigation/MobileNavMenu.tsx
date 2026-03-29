@@ -1,11 +1,8 @@
-import React, { createRef, useEffect } from 'react';
+import React, { createRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import Typography from '../../Typography/Typography';
-
-import brazilFlag from '@/assets/images/flags/brazil.ico';
-import unitedStatesFlag from '@/assets/images/flags/united_states.ico';
 import SelectTheme from '../SelectTheme';
 
 type MobileNavMenuProps = {
@@ -23,10 +20,20 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const {
-    i18n: { changeLanguage, language },
-  } = useTranslation();
+    changeLanguage,
+    language,
+  } = i18n;
   const mobileMenuRef = createRef<HTMLDivElement>();
+  const languageOptions = useMemo(
+    () => [
+      { code: 'pl', label: t('common.languageNames.pl'), flag: '🇵🇱' },
+      { code: 'en', label: t('common.languageNames.en'), flag: '🇬🇧' },
+      { code: 'pt', label: t('common.languageNames.pt'), flag: '🇧🇷' },
+    ],
+    [t],
+  );
 
   const handleClickOutside = (event: MouseEvent) => {
     const modalElement = document.getElementById('mobile-nav-popup-menu');
@@ -39,7 +46,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
     }
   };
 
-  const onChangeLangague = (newLanguage: string) => {
+  const onChangeLanguage = (newLanguage: string) => {
     if (language !== newLanguage) {
       localStorage.setItem('language', newLanguage);
       changeLanguage(newLanguage);
@@ -58,9 +65,9 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
       {show ? (
         <div
           id="mobile-nav-popup-menu"
-          className={`absolute top-10 z-[1] flex w-36 origin-left transform flex-col gap-2
-                    rounded-r-lg bg-white py-2 text-center transition-all dark:bg-primary-950
-                    ${show ? 'animate-scale-x' : 'animate-scale-x-out'}`}
+          className={`absolute top-10 z-[1] flex w-44 origin-left transform flex-col gap-2 rounded-r-lg bg-white py-2 text-center transition-all dark:bg-primary-950 ${
+            show ? 'animate-scale-x' : 'animate-scale-x-out'
+          }`}
           ref={mobileMenuRef}
         >
           <ul className="flex flex-col gap-1">
@@ -80,16 +87,22 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
             ))}
           </ul>
           <hr className="mx-2 h-[1px] bg-primary-200 dark:bg-primary-800" />
-          <div className="flex justify-center gap-2">
-            <button
-              className="size-6 hover:brightness-90 hover:filter dark:hover:brightness-110"
-              onClick={() => onChangeLangague('pt')}
-            >
-              <img src={brazilFlag} />
-            </button>
-            <button className="size-6" onClick={() => onChangeLangague('en')}>
-              <img src={unitedStatesFlag} />
-            </button>
+          <div className="flex flex-col gap-1 px-3">
+            {languageOptions.map((option) => (
+              <button
+                key={option.code}
+                type="button"
+                className={`flex items-center gap-2 rounded px-2 py-1 text-left text-sm ${
+                  language === option.code
+                    ? 'bg-primary-100 font-semibold text-primary-700 dark:bg-primary-800 dark:text-primary-100'
+                    : 'text-primary-500 dark:text-primary-300'
+                }`}
+                onClick={() => onChangeLanguage(option.code)}
+              >
+                <span aria-hidden="true">{option.flag}</span>
+                <span>{option.label}</span>
+              </button>
+            ))}
           </div>
           <SelectTheme onChangeTheme={onClose} />
         </div>

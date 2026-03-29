@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Control, useController } from 'react-hook-form';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { useTranslation } from 'react-i18next';
 
 import type { NewsForm } from '@/api/types';
 
@@ -53,6 +54,7 @@ const RichTextCKEditor: React.FC<RichTextCKEditorProps> = ({
   control,
   initialValue = '',
 }) => {
+  const { t } = useTranslation();
   const {
     field: { onChange },
   } = useController({
@@ -126,43 +128,43 @@ const RichTextCKEditor: React.FC<RichTextCKEditorProps> = ({
       options: [
         {
           model: 'paragraph',
-          title: 'Paragraph',
+          title: t('newsForm.editor.paragraph'),
           class: 'ck-heading_paragraph',
         },
         {
           model: 'heading1',
           view: 'h1',
-          title: 'Heading 1',
+          title: t('newsForm.editor.heading1'),
           class: 'ck-heading_heading1',
         },
         {
           model: 'heading2',
           view: 'h2',
-          title: 'Heading 2',
+          title: t('newsForm.editor.heading2'),
           class: 'ck-heading_heading2',
         },
         {
           model: 'heading3',
           view: 'h3',
-          title: 'Heading 3',
+          title: t('newsForm.editor.heading3'),
           class: 'ck-heading_heading3',
         },
         {
           model: 'heading4',
           view: 'h4',
-          title: 'Heading 4',
+          title: t('newsForm.editor.heading4'),
           class: 'ck-heading_heading4',
         },
         {
           model: 'heading5',
           view: 'h5',
-          title: 'Heading 5',
+          title: t('newsForm.editor.heading5'),
           class: 'ck-heading_heading5',
         },
         {
           model: 'heading6',
           view: 'h6',
-          title: 'Heading 6',
+          title: t('newsForm.editor.heading6'),
           class: 'ck-heading_heading6',
         },
       ],
@@ -199,7 +201,7 @@ const RichTextCKEditor: React.FC<RichTextCKEditorProps> = ({
       decorators: {
         toggleDownloadable: {
           mode: 'manual',
-          label: 'Downloadable',
+          label: t('newsForm.editor.downloadable'),
           attributes: {
             download: 'file',
           },
@@ -219,8 +221,6 @@ const RichTextCKEditor: React.FC<RichTextCKEditorProps> = ({
   const handleChange = (_: EventInfo, editor: ClassicEditor) => {
     onChange(editor.getData());
   };
-
-  useEffect(() => {}, [initialValue]);
 
   return (
     <NewsHtmlContainer>

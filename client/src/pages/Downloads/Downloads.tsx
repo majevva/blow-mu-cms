@@ -107,25 +107,25 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
           </Typography>
           <div className="flex flex-wrap gap-8">
             <ImageButton
-              link="https://www.microsoft.com/pt-br/download/details.aspx?id=35"
+              link="https://www.microsoft.com/en-us/download/details.aspx?id=35"
               size="medium"
             >
               <DirectXLogo className="h-20 w-36" />
             </ImageButton>
             <ImageButton
-              link="https://learn.microsoft.com/pt-br/cpp/windows/latest-supported-vc-redist?view=msvc-170"
+              link="https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170"
               size="medium"
             >
               <VisualCppLogo className="w-24 rounded-full" />
             </ImageButton>
             <ImageButton
-              link="https://www.microsoft.com/pt-br/download/details.aspx?id=30653"
+              link="https://www.microsoft.com/en-us/download/details.aspx?id=30653"
               size="medium"
             >
               <DotNetLogo className="max-h-20 w-20" />
             </ImageButton>
             <ImageButton
-              link="https://www.microsoft.com/en-US/Download/confirmation.aspx?id=10019"
+              link="https://www.microsoft.com/en-us/download/confirmation.aspx?id=10019"
               size="medium"
             >
               <VbLogo className="w-20" />
@@ -143,8 +143,7 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
           <ol className="ml-[16px] text-primary-950 dark:text-primary-50">
             {[1, 2, 3, 4, 5].map((_, i) => (
               <Typography key={i} component="li" variant="body2-r" type="1">
-                Faucibus lectus suspendisse ornare amet venenatis cursus
-                habitant cursus aliquet.
+                {t(`installationSteps.${i + 1}`)}
               </Typography>
             ))}
           </ol>
@@ -192,25 +191,25 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
 
           <div className="flex flex-wrap gap-8">
             <ImageButton
-              link="https://www.nvidia.com.br/Download/index.aspx?lang=br"
+              link="https://www.nvidia.com/download/index.aspx"
               size="medium"
             >
               <NvidiaLogo className="max-h-20 w-[104px]" />
             </ImageButton>
             <ImageButton
-              link="https://www.amd.com/pt/support/download/drivers.html"
+              link="https://www.amd.com/en/support/download/drivers.html"
               size="medium"
             >
               <AMDLogo className="max-h-20 w-[105px]" />
             </ImageButton>
             <ImageButton
-              link="https://www.intel.com.br/content/www/br/pt/download/18369/intel-graphics-driver-for-windows-15-40.html"
+              link="https://www.intel.com/content/www/us/en/download-center/home.html"
               size="medium"
             >
               <IntelGraphicsLogo className="max-h-20 w-[63px]" />
             </ImageButton>
             <ImageButton
-              link="https://www.intel.com.br/content/www/br/pt/products/docs/discrete-gpus/arc/software/drivers.html"
+              link="https://www.intel.com/content/www/us/en/products/docs/discrete-gpus/arc/software/drivers.html"
               size="medium"
             >
               <IntelArcLogo className="h-[86px] w-[85px]" />

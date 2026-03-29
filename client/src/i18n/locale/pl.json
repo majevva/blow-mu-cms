@@ -1,0 +1,481 @@
+{
+  "common": {
+    "loading": "Ładowanie...",
+    "languageNames": {
+      "pl": "Polski",
+      "en": "English",
+      "pt": "Português"
+    },
+    "shortLanguageNames": {
+      "pl": "PL",
+      "en": "EN",
+      "pt": "PT"
+    },
+    "dates": {
+      "locale": "pl-PL"
+    }
+  },
+  "navigation": {
+    "home": "Strona główna",
+    "registration": "Rejestracja",
+    "downloads": "Pliki",
+    "news": "Aktualności",
+    "rankings": "Rankingi",
+    "about": "O serwerze",
+    "loginDialogTitle": "Logowanie"
+  },
+  "sidebar": {
+    "loginCard": {
+      "title": "Logowanie",
+      "form": {
+        "loginName": "Login",
+        "password": "Hasło",
+        "lostMyPassword": "Nie pamiętam hasła",
+        "submitButton": "Zaloguj się",
+        "errorMessages": {
+          "required": "To pole jest wymagane.",
+          "minimumLength": "Minimalna długość to {{minLength}} znaki.",
+          "maximumLength": "Maksymalna długość to {{maxLength}} znaków.",
+          "loginOrPasswordIncorrectly": "Nieprawidłowy login lub hasło."
+        }
+      }
+    },
+    "accountCard": {
+      "title": "Konto",
+      "menuOptions": {
+        "myAccount": "Moje konto",
+        "addNews": "Dodaj aktualność",
+        "banners": "Banery",
+        "logout": "Wyloguj się"
+      }
+    },
+    "serverCard": {
+      "title": "Serwer",
+      "version": "Wersja",
+      "versionValue": "Season 6 Ep. 3",
+      "experience": "EXP",
+      "experienceValue": "1000x",
+      "masterExperience": "Master EXP",
+      "masterExperienceValue": "50x",
+      "drops": "Drop",
+      "dropValue": "50%",
+      "accounts": "Konta",
+      "guilds": "Gildie",
+      "playersOn": "Gracze online"
+    },
+    "rankingsCard": {
+      "title": "Rankingi",
+      "playersTab": "Gracze",
+      "guildsTab": "Gildie",
+      "button": "Zobacz więcej",
+      "playersTableColumns": {
+        "characterName": "Postać",
+        "level": "Poziom",
+        "resets": "Resety",
+        "emptyMessage": "Brak graczy"
+      },
+      "guildsTableColumns": {
+        "name": "Nazwa",
+        "score": "Punkty",
+        "logo": "Logo",
+        "emptyMessage": "Brak gildii"
+      }
+    }
+  },
+  "footer": {
+    "copyright1": "Blow MU © 2026. Wszelkie prawa zastrzeżone.",
+    "copyright2": "MU jest zastrzeżonym znakiem towarowym WEBZEN, Inc.",
+    "developedBy": "Projekt i wykonanie"
+  },
+  "home": {
+    "newsTitle": "Najnowsze aktualności",
+    "eventsTitle": "Wydarzenia",
+    "soonTitleCard": "Wkrótce...",
+    "newsEmptyMessage": "Brak opublikowanych aktualności",
+    "newsReadMoreButton": "Czytaj więcej",
+    "eventCard": {
+      "bloodCastle": "Blood Castle",
+      "devilSquare": "Devil Square",
+      "chaosCastle": "Chaos Castle",
+      "goldenInvasion": "Golden Invasion",
+      "redInvasion": "Red Dragon Invasion",
+      "happyHour": "Happy Hour",
+      "soon": "Wkrótce...",
+      "countdown": {
+        "now": "Teraz"
+      }
+    }
+  },
+  "registration": {
+    "title": "Rejestracja",
+    "subtitle": "Załóż konto i rozpocznij swoją przygodę na Blow MU.",
+    "registrationForm": {
+      "loginName": "Login",
+      "email": "E-mail",
+      "password": "Hasło",
+      "confirmPassword": "Powtórz hasło",
+      "agreeWithTerms": "Zapoznałem się z zasadami i akceptuję regulamin.",
+      "submitButton": "Załóż konto",
+      "errorMessages": {
+        "accountAlreadyExists": "Taki login już istnieje.",
+        "emailAlreadyExists": "Ten adres e-mail jest już zajęty.",
+        "invalidEmail": "Podaj poprawny adres e-mail.",
+        "required": "To pole jest wymagane.",
+        "minimumLength": "Minimalna długość to {{minLength}} znaki.",
+        "maximumLength": "Maksymalna długość to {{maxLength}} znaków.",
+        "passwordShouldMatch": "Hasło i jego powtórzenie muszą być identyczne."
+      },
+      "successMessages": {
+        "accountCreated": "Konto zostało utworzone."
+      }
+    }
+  },
+  "downloads": {
+    "title": "Pliki",
+    "subtitle": {
+      "clientDownload": "Pobierz klienta gry",
+      "additionalDownloads": "Dodatkowe komponenty",
+      "installationGuide": "Instrukcja instalacji",
+      "systemRequirements": "Wymagania systemowe",
+      "drivers": "Sterowniki graficzne"
+    },
+    "clientSize": "Rozmiar: około 500 MB.",
+    "fileFormat": "Format: ZIP.",
+    "installationSteps": {
+      "1": "Pobierz paczkę klienta z jednego z mirrorów.",
+      "2": "Rozpakuj archiwum do osobnego folderu na dysku.",
+      "3": "Jeśli to konieczne, doinstaluj wymagane komponenty systemowe z sekcji poniżej.",
+      "4": "Uruchom launcher lub klienta gry jako zwykły użytkownik systemu Windows.",
+      "5": "W razie problemów z grafiką zaktualizuj sterowniki karty graficznej."
+    },
+    "systemRequirementsTable": {
+      "settings": "Parametr",
+      "minimum": "Minimum",
+      "recommended": "Zalecane",
+      "processor": "Procesor",
+      "memory": "Pamięć RAM",
+      "operatingSystem": "System operacyjny",
+      "graphicsCard": "Karta graficzna",
+      "storage": "Miejsce na dysku",
+      "internet": "Łącze internetowe"
+    }
+  },
+  "news": {
+    "title": "Aktualności",
+    "newsEmptyMessage": "Brak opublikowanych aktualności",
+    "newsItem": {
+      "creationDate": "Dodano",
+      "lastUpdatedDate": "Ostatnia aktualizacja",
+      "postedBy": "Autor"
+    },
+    "newsDeleteModal": {
+      "title": "Usuń aktualność",
+      "message": "Czy na pewno chcesz usunąć aktualność",
+      "excludeButton": "Usuń",
+      "cancelButton": "Anuluj",
+      "successMessage": "Aktualność została usunięta."
+    }
+  },
+  "rankings": {
+    "title": "Rankingi",
+    "playersTab": "Gracze",
+    "guildsTab": "Gildie",
+    "playersTable": {
+      "filterClass": "Klasa",
+      "all": "Wszystkie",
+      "name": "Nazwa",
+      "class": "Klasa",
+      "level": "Poziom",
+      "resets": "Resety",
+      "online": "Online",
+      "emptyMessage": "Brak graczy",
+      "groups": {
+        "bm": "DK / BK / BM",
+        "sm": "DW / SM / GM",
+        "elf": "FE / ME / HE",
+        "mg": "MG / DM",
+        "dl": "DL / LE",
+        "rf": "RF / FM",
+        "sum": "SUM / BS / DiM"
+      }
+    },
+    "guildsTableColumns": {
+      "name": "Nazwa",
+      "logo": "Logo",
+      "score": "Punkty",
+      "guildMaster": "Mistrz gildii",
+      "members": "Członkowie",
+      "emptyMessage": "Brak gildii"
+    }
+  },
+  "about": {
+    "title": "O serwerze",
+    "serverSettings": {
+      "title": "Ustawienia serwera",
+      "version": "Wersja",
+      "versionValue": "Season 6 Ep. 3",
+      "experience": "EXP",
+      "experienceValue": "1000x",
+      "masterExperience": "Master EXP",
+      "masterExperienceValue": "50x",
+      "drops": "Drop",
+      "dropsValue": "50%",
+      "pointsPerLevel": "Punkty za poziom",
+      "pointsPerLevelValue": "5/7",
+      "maxPoints": "Maks. statystyka",
+      "maxPointsValue": "65535"
+    },
+    "resetSystem": {
+      "title": "System resetów",
+      "resetTypeLabel": "Typ resetu",
+      "resetTypeValue": "Reset punktowy",
+      "command": "Komenda",
+      "commandValue": "/reset",
+      "pointsPerReset": "Punkty za reset",
+      "pointsPerResetValue": "200",
+      "level": "Wymagany poziom",
+      "levelValue": "400",
+      "postResetLevel": "Poziom po resecie",
+      "postResetLevelValue": "10",
+      "zen": "Zen",
+      "zenValue": "1"
+    },
+    "commands": {
+      "title": "Komendy",
+      "str": {
+        "label": "/add str <punkty>",
+        "value": "dodaje punkty do siły"
+      },
+      "agi": {
+        "label": "/add agi <punkty>",
+        "value": "dodaje punkty do zręczności"
+      },
+      "vit": {
+        "label": "/add vit <punkty>",
+        "value": "dodaje punkty do witalności"
+      },
+      "ene": {
+        "label": "/add ene <punkty>",
+        "value": "dodaje punkty do energii"
+      },
+      "cmd": {
+        "label": "/add cmd <punkty>",
+        "value": "dodaje punkty do dowodzenia"
+      },
+      "moveMap": {
+        "label": "/move <mapa>",
+        "value": "teleportuje na wskazaną mapę"
+      }
+    },
+    "serverStatistics": {
+      "title": "Statystyki",
+      "characters": "Postacie",
+      "accounts": "Konta",
+      "guilds": "Gildie",
+      "playersOn": "Gracze online"
+    }
+  },
+  "onlines": {
+    "title": "Gracze online",
+    "playersOn": "graczy online",
+    "staff": "Administracja",
+    "emptyMessage": "Brak graczy online",
+    "table": {
+      "name": "Nazwa",
+      "class": "Klasa",
+      "level": "Poziom",
+      "resets": "Resety"
+    }
+  },
+  "guild": {
+    "title": "Gildia",
+    "backButton": "Wróć",
+    "guildMaster": "Mistrz gildii",
+    "score": "Punkty",
+    "members": "członków",
+    "table": {
+      "name": "Nazwa",
+      "class": "Klasa",
+      "position": {
+        "title": "Ranga",
+        "guildMaster": "Mistrz gildii",
+        "member": "Członek",
+        "undefine": "Nieokreślona",
+        "battleMaster": "Mistrz bitwy"
+      },
+      "level": "Poziom",
+      "resets": "Resety",
+      "online": "Online"
+    }
+  },
+  "account": {
+    "title": "Moje konto",
+    "welcome": "Witaj",
+    "data": "Dane konta",
+    "loginName": "Login",
+    "email": "E-mail",
+    "changePasswordButton": "Zmień hasło",
+    "characters": "Postacie",
+    "charactersTable": {
+      "name": "Nazwa",
+      "class": "Klasa",
+      "level": "Poziom",
+      "resets": "Resety",
+      "emptyMessage": "Brak postaci"
+    },
+    "changePasswordModal": {
+      "title": "Zmiana hasła",
+      "form": {
+        "currentPassword": "Aktualne hasło",
+        "nextPassword": "Nowe hasło",
+        "confirmNextPassword": "Powtórz nowe hasło",
+        "successMessage": "Hasło zostało zmienione.",
+        "button": "Zapisz hasło",
+        "errorMessages": {
+          "required": "To pole jest wymagane.",
+          "currentPasswordWrong": "Aktualne hasło jest nieprawidłowe.",
+          "minimumLength": "Minimalna długość to {{minLength}} znaki.",
+          "maximumLength": "Maksymalna długość to {{maxLength}} znaków.",
+          "passwordShouldMatch": "Nowe hasło i jego powtórzenie muszą być identyczne."
+        }
+      }
+    }
+  },
+  "character": {
+    "title": "Moje konto",
+    "backButton": "Wróć",
+    "experience": {
+      "title": "Postęp",
+      "level": "Poziom",
+      "resets": "Resety",
+      "reset": {
+        "button": "Wykonaj reset",
+        "successMessage": "Reset postaci zakończył się powodzeniem.",
+        "errorMessages": {
+          "notEnoughZen": "Nie masz wystarczającej ilości Zen. Wymagane: {{requiredZen}}.",
+          "maximumResetsReached": "Osiągnięto limit resetów: {{resetsLimit}}.",
+          "connectedAccount": "Wyloguj się z gry przed wykonaniem resetu."
+        }
+      }
+    },
+    "location": {
+      "title": "Położenie",
+      "map": "Mapa",
+      "coordinates": "Współrzędne"
+    },
+    "attributes": {
+      "title": "Atrybuty",
+      "pointsToAdd": "Punkty do rozdania",
+      "str": "siła",
+      "agi": "zręczność",
+      "vit": "witalność",
+      "ene": "energia",
+      "cmd": "dowodzenie",
+      "form": {
+        "errorMessages": {
+          "noPointsAdded": "Nie dodano żadnych punktów.",
+          "connectedAccount": "Wyloguj się z gry przed rozdaniem punktów.",
+          "strAboveLimit": "Siła przekracza limit {{limit}}.",
+          "agiAboveLimit": "Zręczność przekracza limit {{limit}}.",
+          "vitAboveLimit": "Witalność przekracza limit {{limit}}.",
+          "eneAboveLimit": "Energia przekracza limit {{limit}}.",
+          "cmdAboveLimit": "Dowodzenie przekracza limit {{limit}}.",
+          "pointsAboveLimit": "Możesz rozdać maksymalnie {{limit}} punktów.",
+          "notEnoughPoints": "Za mało punktów. Dostępna liczba: {{pointsAvailable}}."
+        },
+        "successMessage": "Punkty zostały rozdane.",
+        "addPointsButton": "Rozdaj punkty",
+        "saveButton": "Zapisz",
+        "cancelButton": "Anuluj"
+      }
+    },
+    "guild": {
+      "title": "Gildia",
+      "emptyMessage": "Brak"
+    },
+    "class": "Klasa"
+  },
+  "newsForm": {
+    "title": "Aktualność",
+    "add": {
+      "title": "Dodaj aktualność",
+      "successMessage": "Aktualność została utworzona.",
+      "saveButton": "Utwórz"
+    },
+    "edit": {
+      "title": "Edytuj aktualność",
+      "successMessage": "Aktualność została zapisana.",
+      "saveButton": "Zapisz"
+    },
+    "titleField": "Tytuł",
+    "content": "Treść",
+    "author": "Autor",
+    "showPreview": "Pokaż podgląd",
+    "hidePreview": "Ukryj podgląd",
+    "cancelButton": "Anuluj",
+    "editor": {
+      "paragraph": "Akapit",
+      "heading1": "Nagłówek 1",
+      "heading2": "Nagłówek 2",
+      "heading3": "Nagłówek 3",
+      "heading4": "Nagłówek 4",
+      "heading5": "Nagłówek 5",
+      "heading6": "Nagłówek 6",
+      "downloadable": "Plik do pobrania"
+    },
+    "form": {
+      "errorMessages": {
+        "required": "To pole jest wymagane.",
+        "minimumLength": "Minimalna długość to {{minLength}} znaki.",
+        "maximumLength": "Maksymalna długość to {{maxLength}} znaków."
+      }
+    }
+  },
+  "editBanners": {
+    "title": "Banery",
+    "emptyMessage": "Brak banerów",
+    "subtitle": "Banner",
+    "imageUrl": "Adres URL obrazka",
+    "hasLink": "Czy ma link?",
+    "link": "Link",
+    "isExternalLink": "Link zewnętrzny?",
+    "orderIndex": "Kolejność",
+    "addBannerButton": "Dodaj baner",
+    "showPreview": "Pokaż podgląd",
+    "hidePreview": "Ukryj podgląd",
+    "cancelButton": "Anuluj",
+    "saveButton": "Zapisz",
+    "successMessage": "Banery zostały zapisane.",
+    "errorMessages": {
+      "required": "To pole jest wymagane.",
+      "minimum": "Minimalna wartość to {{min}}.",
+      "maximum": "Maksymalna wartość to {{max}}."
+    }
+  },
+  "apiErrors": {
+    "accountNotFound": "Konto {{loginName}} nie zostało znalezione.",
+    "authorNameInvalid": "Wybrany autor jest nieprawidłowy.",
+    "serverIdInvalid": "Nieprawidłowy identyfikator serwera.",
+    "characterClassInvalid": "Klasa postaci {{characterClass}} jest nieprawidłowa.",
+    "uniqueLoginName": "Taki login już istnieje.",
+    "uniqueEmail": "Ten adres e-mail jest już zajęty.",
+    "invalidEmail": "Podaj poprawny adres e-mail.",
+    "disconnectFromGame": "Wyloguj się z gry przed wykonaniem tej operacji.",
+    "notEnoughPointsAvailable": "Za mało punktów. Dostępna liczba: {{pointsAvailable}}.",
+    "notEnoughMoneyForReset": "Nie masz wystarczającej ilości Zen na reset. Wymagane: {{requiredZen}}.",
+    "maximumResetsReached": "Osiągnięto maksymalny limit resetów: {{resetsLimit}}.",
+    "currentPasswordWrong": "Aktualne hasło jest nieprawidłowe."
+  },
+  "error": {
+    "title": "Błąd",
+    "homeButton": "Strona główna"
+  },
+  "error404": {
+    "title": "Nie znaleziono strony",
+    "subtitle": "Nie udało się odnaleźć żądanej strony."
+  },
+  "error500": {
+    "title": "Błąd serwera",
+    "subtitle": "Spróbuj ponownie później."
+  }
+}

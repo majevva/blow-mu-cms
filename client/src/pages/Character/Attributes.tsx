@@ -4,6 +4,7 @@ import { AxiosError } from 'axios';
 
 import type { CharacterAttributes, CharacterDetails } from '@/api/types';
 import useBaseTranslation from '@/hooks/use-base-translation';
+import { getApiErrorMessage } from '@/i18n/get-api-error-message';
 import { useToast } from '@/contexts/ToastContext';
 import { useAddAttributes } from '@/api/characters';
 
@@ -115,18 +116,9 @@ const Attributes: React.FC<AttributesProps> = ({ character }) => {
         },
         onError: (error: Error) => {
           const errorAxios = error as AxiosError;
-          const errorMessage = errorAxios.response?.data as string;
+          const errorMessage = String(errorAxios.response?.data || '');
 
-          if (errorMessage === 'Disconnect from the game before do this') {
-            openToast.error(t('form.errorMessages.connectedAccount'));
-          } else if (errorMessage.includes('Not enough points available')) {
-            openToast.error(
-              t('form.errorMessages.notEnoughPoints', {
-                pointsAvailable: errorMessage.split(' ').pop(),
-              }),
-            );
-          }
-
+          openToast.error(getApiErrorMessage(errorMessage));
           reset(data);
         },
       },
@@ -134,7 +126,6 @@ const Attributes: React.FC<AttributesProps> = ({ character }) => {
   };
 
   useEffect(() => {
-    console.log('effect');
     reset();
     setAttributes(character.attributes);
     setLevelUpPoints(character.levelUpPoints);

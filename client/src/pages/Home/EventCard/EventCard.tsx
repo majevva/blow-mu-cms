@@ -13,30 +13,30 @@ const EventCard: React.FC<EventCardProps> = () => {
     <>
       <div className="grid w-full items-center rounded-lg border border-primary-200 bg-primary-50 px-12 py-14 dark:border-primary-900 dark:bg-primary-800/20">
         <List>
-          <List.Item label="Blood Castle" value={t('home.eventCard.soon')} />
-          <List.Item label="Devil Square" value={t('home.eventCard.soon')} />
+          <List.Item label={t('home.eventCard.bloodCastle')} value={t('home.eventCard.soon')} />
+          <List.Item label={t('home.eventCard.devilSquare')} value={t('home.eventCard.soon')} />
           <EventCountdown
-            label="Chaos Castle"
+            label={t('home.eventCard.chaosCastle')}
             intervalHours={1}
             openDurationMinutes={5}
           />
           <EventCountdown
-            label="Golden Invasion"
+            label={t('home.eventCard.goldenInvasion')}
             openDurationMinutes={5}
             startHour="00:00"
-            intervalHours={4} // times={['00:00', '04:00', '08:00', '12:00', '16:00', '20:00']}
+            intervalHours={4}
           />
           <EventCountdown
-            label="Red Invasion"
+            label={t('home.eventCard.redInvasion')}
             openDurationMinutes={5}
             startHour="02:00"
-            intervalHours={6} // times={['02:00', '08:00', '14:00', '20:00']}
+            intervalHours={6}
           />
           <EventCountdown
-            label="Happy Hour"
+            label={t('home.eventCard.happyHour')}
             openDurationMinutes={60}
             startHour="00:00"
-            intervalHours={6} // times={['00:00', '06:00', '12:00', '18:00']}
+            intervalHours={6}
           />
         </List>
       </div>

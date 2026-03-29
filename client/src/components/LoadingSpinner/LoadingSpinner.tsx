@@ -1,8 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type LoadingSpinnerProps = Record<string, never>;
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = () => {
+  const { t } = useTranslation();
+
   return (
     <>
       <div role="status">
@@ -22,7 +25,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = () => {
             fill="currentFill"
           />
         </svg>
-        <span className="sr-only">Loading...</span>
+        <span className="sr-only">{t('common.loading')}</span>
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import type { ChangePasswordForm } from '@/api/types';
 import { useChangePassword } from '@/api/account';
 import { useToast } from '@/contexts/ToastContext';
 import useBaseTranslation from '@/hooks/use-base-translation';
+import { getApiErrorMessage } from '@/i18n/get-api-error-message';
 
 import FormInput from '@/components/FormInput/FormInput';
 import Button from '@/components/Button/Button';
@@ -76,7 +77,9 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onClose }) => {
         if ((error as AxiosError).response?.status === 400) {
           setError({
             showError: true,
-            message: t('errorMessages.currentPasswordWrong'),
+            message: getApiErrorMessage(
+              JSON.stringify((error as AxiosError).response?.data),
+            ),
           });
         }
       },

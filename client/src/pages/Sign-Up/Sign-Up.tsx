@@ -10,6 +10,7 @@ import type { SignUpForm } from '@/api/types';
 import { useCreateAccount } from '@/api/account';
 import { useToast } from '@/contexts/ToastContext';
 import useBaseTranslation from '@/hooks/use-base-translation';
+import { getApiErrorMessage } from '@/i18n/get-api-error-message';
 
 import TitleWithDivider from '@/components/TitleWithDivider/TitleWithDivider';
 import Typography from '@/components/Typography/Typography';
@@ -79,18 +80,9 @@ const SignUpPage: React.FC<SignUpPageProps> = () => {
             (error as AxiosError).response?.data,
           );
 
-          let errorMessage = responseMessage.includes(
-            'Login name already exists',
-          )
-            ? t('registrationForm.errorMessages.accountAlreadyExists')
-            : '';
-          errorMessage += responseMessage.includes('Email already exists')
-            ? ' ' + t('registrationForm.errorMessages.emailAlreadyExists')
-            : '';
-
           setError({
             showError: true,
-            message: errorMessage,
+            message: getApiErrorMessage(responseMessage),
           });
         }
       },

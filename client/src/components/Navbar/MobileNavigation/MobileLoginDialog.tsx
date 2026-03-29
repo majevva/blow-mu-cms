@@ -1,7 +1,7 @@
 import React, { createRef, useCallback, useEffect } from 'react';
 
 import { MdClose } from 'react-icons/md';
-import { useTranslation } from 'react-i18next';
+import useBaseTranslation from '@/hooks/use-base-translation';
 
 import LoginForm from '../../LoginForm/LoginForm';
 import Typography from '../../Typography/Typography';
@@ -13,7 +13,7 @@ type MobileLoginDialogProps = {
 
 const MobileLoginDialog: React.FC<MobileLoginDialogProps> = ({ onClose }) => {
   const dialogRef = createRef<HTMLDialogElement>();
-  const { t } = useTranslation();
+  const { t } = useBaseTranslation('navbar');
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       event.stopImmediatePropagation();
@@ -45,7 +45,7 @@ const MobileLoginDialog: React.FC<MobileLoginDialogProps> = ({ onClose }) => {
               variant="h3-inter"
               styles="text-primary-950 dark:text-primary-50"
             >
-              {t('sidebar.loginCard.title')}
+              {t('loginDialogTitle')}
             </Typography>
             <Button
               variant="ghost1"

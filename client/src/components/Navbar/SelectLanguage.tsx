@@ -1,19 +1,52 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import brazilFlag from '@/assets/images/flags/brazil.ico';
-import unitedStatesFlag from '@/assets/images/flags/united_states.ico';
-
 type SelectLanguageProps = Record<string, never>;
 
+type LanguageOption = {
+  code: 'pl' | 'en' | 'pt';
+  label: string;
+  shortLabel: string;
+  flag: string;
+};
+
 const SelectLanguage: React.FC<SelectLanguageProps> = () => {
+  const { t, i18n } = useTranslation();
   const {
-    i18n: { changeLanguage, language },
-  } = useTranslation();
+    changeLanguage,
+    language,
+  } = i18n;
   const [openMenu, setOpenMenu] = useState(false);
 
-  const onChangeLangague = (newLanguage: string) => {
+  const languageOptions: LanguageOption[] = useMemo(
+    () => [
+      {
+        code: 'pl',
+        label: t('common.languageNames.pl'),
+        shortLabel: t('common.shortLanguageNames.pl'),
+        flag: '🇵🇱',
+      },
+      {
+        code: 'en',
+        label: t('common.languageNames.en'),
+        shortLabel: t('common.shortLanguageNames.en'),
+        flag: '🇬🇧',
+      },
+      {
+        code: 'pt',
+        label: t('common.languageNames.pt'),
+        shortLabel: t('common.shortLanguageNames.pt'),
+        flag: '🇧🇷',
+      },
+    ],
+    [t],
+  );
+
+  const currentLanguage =
+    languageOptions.find((option) => option.code === language) || languageOptions[0];
+
+  const onChangeLanguage = (newLanguage: LanguageOption['code']) => {
     if (language !== newLanguage) {
       localStorage.setItem('language', newLanguage);
       changeLanguage(newLanguage);
@@ -24,32 +57,33 @@ const SelectLanguage: React.FC<SelectLanguageProps> = () => {
 
   return (
     <>
-      <div className="relative hidden size-8 cursor-pointer self-center md:block">
-        <img
-          className="hover:brightness-90 hover:filter dark:hover:brightness-110"
-          src={language === 'pt' ? brazilFlag : unitedStatesFlag}
+      <div className="relative hidden self-center md:block">
+        <button
+          type="button"
+          className="flex h-8 min-w-12 items-center justify-center gap-1 rounded-md border border-primary-300 px-2 text-xs font-semibold text-primary-700 hover:bg-primary-100 dark:border-primary-700 dark:text-primary-100 dark:hover:bg-primary-800"
           onClick={() => setOpenMenu(!openMenu)}
-        />
+          aria-label={currentLanguage.label}
+        >
+          <span aria-hidden="true">{currentLanguage.flag}</span>
+          <span>{currentLanguage.shortLabel}</span>
+        </button>
         {openMenu && (
           <menu
-            className={`absolute right-0 z-[1] flex origin-top transform flex-col gap-1
-                      rounded-b-lg py-2 text-center transition-all
-                      ${openMenu ? 'animate-scale-y' : 'animate-scale-y-out'}`}
+            className={`absolute right-0 z-[1] mt-1 flex min-w-24 origin-top transform flex-col gap-1 rounded-md border border-primary-200 bg-white p-2 text-center shadow-lg transition-all dark:border-primary-800 dark:bg-primary-950 ${
+              openMenu ? 'animate-scale-y' : 'animate-scale-y-out'
+            }`}
           >
-            <button className="size-8">
-              <img
-                className="hover:brightness-90 hover:filter dark:hover:brightness-110"
-                src={brazilFlag}
-                onClick={() => onChangeLangague('pt')}
-              />
-            </button>
-            <button className="size-8">
-              <img
-                className="hover:brightness-90 hover:filter dark:hover:brightness-110"
-                src={unitedStatesFlag}
-                onClick={() => onChangeLangague('en')}
-              />
-            </button>
+            {languageOptions.map((option) => (
+              <button
+                key={option.code}
+                type="button"
+                className="flex items-center gap-2 rounded px-2 py-1 text-left text-sm text-primary-700 hover:bg-primary-100 dark:text-primary-100 dark:hover:bg-primary-800"
+                onClick={() => onChangeLanguage(option.code)}
+              >
+                <span aria-hidden="true">{option.flag}</span>
+                <span>{option.label}</span>
+              </button>
+            ))}
           </menu>
         )}
       </div>

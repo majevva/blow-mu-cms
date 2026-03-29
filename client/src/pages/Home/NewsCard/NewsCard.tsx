@@ -13,7 +13,7 @@ type NewsCardProps = { news: News };
 
 const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const onClick = () => {
     navigate(`/news/#${news.id}`);
@@ -84,7 +84,9 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
           {news.title}
         </Typography>
         <Typography component="span" variant="h5" styles="text-primary-400">
-          {new Date(news.creationDate).toLocaleDateString('pt-BR')}
+          {new Date(news.creationDate).toLocaleDateString(
+            t('common.dates.locale', { defaultValue: i18n.language }),
+          )}
         </Typography>
       </div>
       <NewsHtmlContainer>

@@ -66,13 +66,13 @@ const PlayersRankingTable: React.FC<PlayersRankingTableProps> = ({
 
   const selectOptions: Option[] = [
     { value: '', label: t('all') },
-    { value: 'bm', label: 'DK/BK/BM' },
-    { value: 'sm', label: 'DW/SM/GM' },
-    { value: 'elf', label: 'FE/ME/HE' },
-    { value: 'mg', label: 'MG/DM' },
-    { value: 'dl', label: 'DL/LE' },
-    { value: 'rf', label: 'RF/FM' },
-    { value: 'sum', label: 'SUM/BS/DM' },
+    { value: 'bm', label: t('groups.bm') },
+    { value: 'sm', label: t('groups.sm') },
+    { value: 'elf', label: t('groups.elf') },
+    { value: 'mg', label: t('groups.mg') },
+    { value: 'dl', label: t('groups.dl') },
+    { value: 'rf', label: t('groups.rf') },
+    { value: 'sum', label: t('groups.sum') },
   ];
 
   const rankMap: { [key: number]: any } = {

@@ -12,6 +12,7 @@ import { FaChevronLeft } from 'react-icons/fa6';
 import { useGetCharacter, useResetCharacter } from '@/api/characters';
 import { CharacterDetails } from '@/api/types';
 import useBaseTranslation from '@/hooks/use-base-translation';
+import { getApiErrorMessage } from '@/i18n/get-api-error-message';
 import { useToast } from '@/contexts/ToastContext';
 
 import TitleWithDivider from '@/components/TitleWithDivider/TitleWithDivider';
@@ -60,25 +61,9 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
       },
       onError: (error: Error) => {
         const errorAxios = error as AxiosError;
-        const errorMessage = errorAxios.response?.data as string;
+        const errorMessage = String(errorAxios.response?.data || '');
 
-        if (errorMessage === 'Disconnect from the game before do this') {
-          openToast.error(t('experience.reset.errorMessages.connectedAccount'));
-        } else if (
-          errorMessage.includes("You don't have enough money for reset")
-        ) {
-          openToast.error(
-            t('experience.reset.errorMessages.notEnoughZen', {
-              requiredZen: errorMessage.split(' ').pop(),
-            }),
-          );
-        } else if (errorMessage.includes('Maximum resets of')) {
-          openToast.error(
-            t('experience.reset.errorMessages.maximumResetsReached', {
-              resetsLimit: errorMessage.split(' ').slice(-2)[0],
-            }),
-          );
-        }
+        openToast.error(getApiErrorMessage(errorMessage));
       },
     });
   };
