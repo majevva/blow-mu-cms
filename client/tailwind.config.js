@@ -10,9 +10,14 @@ export default {
         desktop: '1280px',
       },
       fontFamily: {
-        inter: ['Inter'],
-        cinzel: ['Cinzel'],
-        'cinzel-decorative': ['Cinzel Decorative'],
+        inter: ['Inter', 'system-ui', 'sans-serif'],
+        cinzel: ['Cinzel', 'serif'],
+        display: ['Cormorant Garamond', 'Cinzel', 'serif'],
+      },
+      boxShadow: {
+        'glow-sm': '0 0 8px rgba(212, 160, 23, 0.15)',
+        glow: '0 0 16px rgba(212, 160, 23, 0.2)',
+        'glow-lg': '0 0 32px rgba(212, 160, 23, 0.25)',
       },
       keyframes: {
         scale: {
@@ -43,6 +48,18 @@ export default {
           from: { opacity: '0' },
           to: { opacity: '1' },
         },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { boxShadow: '0 0 0 rgba(212, 160, 23, 0)' },
+          '50%': { boxShadow: '0 0 24px rgba(212, 160, 23, 0.28)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '100% 50%' },
+        },
         'pulse-online': {
           '50%': { opacity: '70%' },
         },
@@ -55,6 +72,9 @@ export default {
         'slide-up': 'slide-up 0.3s ease-out forwards',
         'slide-down': 'slide-down 0.3s ease-out forwards',
         'fade-in': 'fade-in 0.3s ease-in-out',
+        'fade-up': 'fade-up 0.4s ease-out forwards',
+        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+        shimmer: 'shimmer 2.5s linear infinite',
         'pulse-online': 'pulse-online 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       typography: ({ theme }) => ({

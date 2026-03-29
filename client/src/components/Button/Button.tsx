@@ -63,8 +63,8 @@ const Button: React.FC<ButtonProps> = ({
     <button
       className={twMerge(
         fullWidth ? 'flex-grow' : 'w-fit',
-        'ap-1 flex items-center rounded-md px-4',
-        size === 'large' ? 'h-9' : 'h-11',
+        'gap-1 flex items-center rounded-md px-4',
+        size === 'large' ? 'h-11' : 'h-9',
         buttonStyles[variant],
         disabledStyles[variant],
         textStyles[variant],
