@@ -42,7 +42,7 @@ const Pagination: React.FC<PaginationProps> = ({
             {currentPage > 2 && (
               <Typography
                 component="span"
-                variant="label2-s"
+                variant="label"
                 styles="text-primary-400"
               >
                 ...
@@ -76,7 +76,7 @@ const Pagination: React.FC<PaginationProps> = ({
             {currentPage < totalPages - 1 && (
               <Typography
                 component="span"
-                variant="label2-s"
+                variant="label"
                 styles="text-primary-400"
               >
                 ...
@@ -117,7 +117,7 @@ const PaginationButton: React.FC<PaginationButtonProps> = ({
   return (
     <>
       <button
-        className={`size-8 rounded-[4px] border border-primary-500 font-inter text-[14px] font-semibold leading-[125%] ${
+        className={`size-8 rounded-[4px] border border-primary-500 font-inter text-[14px] font-semibold leading-[125%] transition-colors duration-200 ${
           active
             ? 'bg-primary-500 text-white'
             : 'bg-inherit text-primary-500 hover:bg-primary-200'

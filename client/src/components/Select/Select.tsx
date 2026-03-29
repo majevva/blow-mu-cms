@@ -41,7 +41,7 @@ const Select: React.FC<SelectProps> = ({
     <>
       <div className="flex flex-col gap-1">
         <Typography
-          variant="label3-m"
+          variant="label-sm"
           component="label"
           styles="text-primary-950 dark:text-primary-50"
         >
@@ -50,7 +50,7 @@ const Select: React.FC<SelectProps> = ({
         <div className="relative inline-block w-fit">
           <button
             className="h-10 w-32 rounded-[4px] border border-neutral-300 bg-white p-2 text-left font-inter text-[14px] text-primary-950
-                        focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 dark:bg-neutral-900 dark:text-primary-50"
+                        focus:border-primary-500/50 focus:outline-none focus:ring-1 focus:ring-primary-500/50 dark:bg-white/[0.04] dark:text-primary-50"
             name={name}
             onClick={handleToggle}
             onBlur={handleCloseWithTime}
@@ -65,14 +65,14 @@ const Select: React.FC<SelectProps> = ({
           </button>
 
           {isOpen && (
-            <ul className="absolute z-10 mt-1 w-full origin-top animate-scale-y rounded-md border border-neutral-300 bg-white dark:bg-neutral-900">
+            <ul className="absolute z-10 mt-1 w-full origin-top animate-scale-y rounded-md border border-neutral-300 bg-white dark:bg-neutral-800 dark:border-neutral-700">
               {options.map((option) => (
                 <Typography
                   key={option.value}
                   component="li"
-                  styles="cursor-pointer p-2 hover:bg-primary-100 dark:hover:bg-primary-900 dark:text-primary-50"
+                  styles="cursor-pointer p-2 hover:bg-primary-100 dark:hover:bg-white/[0.07] dark:text-primary-50"
                   onClick={() => handleSelect(option.value)}
-                  variant="body2-r"
+                  variant="body"
                 >
                   {option.label}
                 </Typography>

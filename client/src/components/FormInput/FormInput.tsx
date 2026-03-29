@@ -53,7 +53,7 @@ function FormInput<T extends FieldValues>({
     <>
       <label className={`flex flex-grow flex-col gap-1`}>
         <Typography
-          variant="label3-m"
+          variant="label-sm"
           styles="text-primary-950 dark:text-primary-50"
           component="span"
         >
@@ -70,9 +70,9 @@ function FormInput<T extends FieldValues>({
             className={twMerge(
               `h-10 w-80 ${
                 fullWidth && 'w-full'
-              } rounded-[4px] border border-neutral-300 p-2 font-inter text-primary-950 focus:border-primary-500 focus:outline-none
-                    focus:ring-1 focus:ring-primary-500 focus:invalid:border-red-500 focus:invalid:ring-red-500
-                    dark:border-neutral-700 dark:bg-neutral-900 dark:text-primary-50
+              } rounded-[4px] border border-neutral-300 p-2 font-inter text-primary-950 focus:border-primary-500/50 focus:outline-none
+                    focus:ring-1 focus:ring-primary-500/50 focus:invalid:border-red-500 focus:invalid:ring-red-500
+                    dark:border-neutral-700 dark:bg-white/[0.04] dark:text-primary-50
                     ${
                       invalid
                         ? 'text-red-500 focus:border-red-500 focus:ring-red-500'
@@ -99,7 +99,7 @@ function FormInput<T extends FieldValues>({
         <div className="flex gap-1">
           {invalid ? <BiError className="text-red-500" /> : null}
           <Typography
-            variant="label4-r"
+            variant="caption"
             styles={'text-red-500'}
             component="span"
           >
