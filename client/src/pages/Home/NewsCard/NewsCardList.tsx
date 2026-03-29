@@ -26,7 +26,7 @@ const NewsCardList: React.FC<NewsCardListProps> = () => {
           </>
         ) : newsList.length === 0 ? (
           <Typography
-            variant="h3-inter"
+            variant="h1"
             styles="text-primary-950 dark:text-primary-50"
           >
             {t('home.newsEmptyMessage')}

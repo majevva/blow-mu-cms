@@ -31,14 +31,14 @@ const Item: React.FC<ListItemProps> = ({ label, value, styles }) => {
           styles,
         )}
       >
-        <Typography component="span" variant="label2-s">
+        <Typography component="span" variant="label">
           {label}
         </Typography>
-        <Typography component="span" variant="label2-r">
+        <Typography component="span" variant="label">
           {value}
         </Typography>
       </li>
-      <div className="h-px w-full bg-neutral-300" />
+      <div className="h-px w-full bg-neutral-200 dark:bg-neutral-800" />
     </>
   );
 };

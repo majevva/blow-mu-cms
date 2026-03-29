@@ -74,16 +74,16 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
   });
 
   return (
-    <section className="flex w-full snap-center flex-col justify-between gap-4 scroll-smooth rounded-lg border border-primary-200 bg-primary-50 p-4 dark:border-primary-900 dark:bg-primary-800/20 md:w-1/2">
+    <section className="flex w-full snap-center flex-col justify-between gap-4 scroll-smooth rounded-lg border border-neutral-200 bg-white/80 p-4 dark:border-white/[0.08] dark:bg-white/[0.04] backdrop-blur-xl md:w-1/2">
       <div className="flex justify-between">
         <Typography
           component="h3"
-          variant="h4"
+          variant="h3"
           styles="text-primary-900 dark:text-primary-100 flex-grow"
         >
           {news.title}
         </Typography>
-        <Typography component="span" variant="h5" styles="text-primary-400">
+        <Typography component="span" variant="caption" styles="text-primary-400">
           {new Date(news.creationDate).toLocaleDateString(
             t('common.dates.locale', { defaultValue: i18n.language }),
           )}

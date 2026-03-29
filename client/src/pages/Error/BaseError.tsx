@@ -25,19 +25,19 @@ const BaseErrorPage: React.FC<BaseErrorProps> = ({
   return (
     <>
       <TitleWithDivider>{t('title')}</TitleWithDivider>
-      <div className="flex w-full flex-col-reverse gap-2 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:flex-row md:gap-8 md:p-12">
+      <div className="flex w-full flex-col-reverse gap-2 rounded-lg border border-neutral-200 bg-white/80 p-6 dark:border-white/[0.08] dark:bg-white/[0.04] backdrop-blur-xl md:flex-row md:gap-8 md:p-12">
         <div className="flex flex-grow flex-col gap-4 text-center">
-          <h2 className="font-cinzel-decorative text-[64px] font-bold leading-[125%] text-primary-500">
+          <h2 className="font-display text-[64px] font-bold leading-[125%] text-primary-500">
             {errorCode}
           </h2>
           <Typography
             component="h3"
-            variant="h2-inter"
+            variant="h1"
             styles="text-primary-950 dark:text-primary-50"
           >
             {title}
           </Typography>
-          <Typography variant="body1-r" styles="dark:text-primary-50">
+          <Typography variant="body-lg" styles="dark:text-primary-50">
             {subtitle}
           </Typography>
           {showHomeLink && (
