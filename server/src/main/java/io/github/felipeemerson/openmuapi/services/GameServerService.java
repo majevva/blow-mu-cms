@@ -5,6 +5,7 @@ import io.github.felipeemerson.openmuapi.configuration.SystemConstants;
 import io.github.felipeemerson.openmuapi.dto.CharacterRankDTO;
 import io.github.felipeemerson.openmuapi.dto.GameServerInfoDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.LogFileEntryDTO;
 import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.OnlinePlayersDTO;
 import io.github.felipeemerson.openmuapi.dto.ServerStatisticsDTO;
@@ -150,6 +151,22 @@ public class GameServerService {
                 HttpMethod.GET,
                 adminApiClient,
                 ManageableServerDTO[].class
+        );
+
+        if (response.getStatusCode().isError() || response.getBody() == null) {
+            throw new BadGatewayException();
+        }
+
+        return Arrays.stream(response.getBody()).toList();
+    }
+
+    public List<LogFileEntryDTO> getLogFiles() throws BadGatewayException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<LogFileEntryDTO[]> response = restTemplate.exchange(
+                SystemConstants.ADMIN_PANEL_URL + SystemConstants.LOG_FILES_ENDPOINT,
+                HttpMethod.GET,
+                adminApiClient,
+                LogFileEntryDTO[].class
         );
 
         if (response.getStatusCode().isError() || response.getBody() == null) {

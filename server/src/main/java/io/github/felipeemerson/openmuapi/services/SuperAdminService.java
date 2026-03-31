@@ -2,6 +2,7 @@ package io.github.felipeemerson.openmuapi.services;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.LogFileEntryDTO;
 import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountUpdateDTO;
@@ -55,6 +56,10 @@ public class SuperAdminService {
 
     public List<ManageableServerDTO> getManageableServers() {
         return this.gameServerService.getManageableServers();
+    }
+
+    public List<LogFileEntryDTO> getLogFiles() {
+        return this.gameServerService.getLogFiles();
     }
 
     public void startManageableServer(int serverId) {

@@ -398,6 +398,7 @@
     "tabs": {
       "sessions": "Sessões",
       "servers": "Servidores",
+      "logs": "Logs",
       "accounts": "Contas",
       "online": "Online",
       "tools": "Ferramentas"
@@ -577,6 +578,16 @@
       "Started": "Iniciado",
       "Stopping": "Parando",
       "Timeout": "Timeout"
+    },
+    "logFileTitle": "Logs de runtime",
+    "logFileDescription": "Veja o inventário de logs do BastionMU diretamente da central do superadmin e abra o arquivo bruto quando necessário.",
+    "logFileEmptyMessage": "Nenhum log encontrado",
+    "logFileOpenButton": "Abrir log",
+    "logFileTable": {
+      "name": "Arquivo",
+      "updatedAt": "Última atualização",
+      "size": "Tamanho",
+      "actions": "Ações"
     },
     "states": {
       "NORMAL": "Normal",

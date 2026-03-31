@@ -18,6 +18,14 @@ export type ManageableServer = {
   maximumConnections: number;
 };
 
+export type LogFileEntry = {
+  name: string;
+  lastUpdatedAt: string;
+  sizeBytes: number;
+  sizeLabel: string;
+  downloadPath: string;
+};
+
 export type ManagedAccountCreateInput = {
   loginName: string;
   email: string;
@@ -83,6 +91,11 @@ const restartAllManageableServers = async (): Promise<void> => {
   await api.post('/super-admin/runtime/servers/restart-all');
 };
 
+const getLogFiles = async (): Promise<LogFileEntry[]> => {
+  const response = await api.get('/super-admin/runtime/logfiles');
+  return response.data;
+};
+
 const createManagedAccount = async (
   payload: ManagedAccountCreateInput,
 ): Promise<Account> => {
@@ -137,6 +150,14 @@ export const useGetManageableServers = (enabled = true) => {
   return useQuery<ManageableServer[], Error>({
     queryKey: ['super-admin', 'runtime', 'servers'],
     queryFn: () => getManageableServers(),
+    enabled,
+  });
+};
+
+export const useGetLogFiles = (enabled = true) => {
+  return useQuery<LogFileEntry[], Error>({
+    queryKey: ['super-admin', 'runtime', 'logfiles'],
+    queryFn: () => getLogFiles(),
     enabled,
   });
 };

@@ -398,6 +398,7 @@
     "tabs": {
       "sessions": "Sessions",
       "servers": "Servers",
+      "logs": "Logs",
       "accounts": "Accounts",
       "online": "Online",
       "tools": "Tools"
@@ -577,6 +578,16 @@
       "Started": "Started",
       "Stopping": "Stopping",
       "Timeout": "Timeout"
+    },
+    "logFileTitle": "Runtime Logs",
+    "logFileDescription": "Inspect the BastionMU log inventory directly from the superadmin control center and jump to the raw file when needed.",
+    "logFileEmptyMessage": "No log files found",
+    "logFileOpenButton": "Open log",
+    "logFileTable": {
+      "name": "File",
+      "updatedAt": "Last updated",
+      "size": "Size",
+      "actions": "Actions"
     },
     "states": {
       "NORMAL": "Normal",

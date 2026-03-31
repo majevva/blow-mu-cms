@@ -2,6 +2,7 @@ package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.LogFileEntryDTO;
 import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountUpdateDTO;
@@ -40,6 +41,13 @@ public class SuperAdminController {
             @AuthenticationPrincipal Jwt principal) throws ForbiddenException {
         this.superAdminService.checkSuperAdminPrivileges(principal);
         return ResponseEntity.ok(this.superAdminService.getManageableServers());
+    }
+
+    @GetMapping("/runtime/logfiles")
+    public ResponseEntity<List<LogFileEntryDTO>> getLogFiles(
+            @AuthenticationPrincipal Jwt principal) throws ForbiddenException {
+        this.superAdminService.checkSuperAdminPrivileges(principal);
+        return ResponseEntity.ok(this.superAdminService.getLogFiles());
     }
 
     @GetMapping("/accounts/{loginName}")

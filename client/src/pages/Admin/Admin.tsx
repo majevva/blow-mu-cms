@@ -22,6 +22,7 @@ import {
   useDisconnectLoggedInAccount,
   useGetManagedAccount,
   useGetLoggedInAccounts,
+  useGetLogFiles,
   useGetManageableServers,
   useRemoveManageableServer,
   useRestartAllManageableServers,
@@ -84,6 +85,7 @@ const STATE_COLORS: Record<AccountState, string> = {
 enum AdminTab {
   SESSIONS,
   SERVERS,
+  LOGS,
   ACCOUNTS,
   ONLINE,
   TOOLS,
@@ -159,6 +161,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     useGetLoggedInAccounts(isSuperAdmin && activeTab === AdminTab.SESSIONS);
   const { data: manageableServers = [], isLoading: isManageableServersLoading } =
     useGetManageableServers(isSuperAdmin && activeTab === AdminTab.SERVERS);
+  const { data: logFiles = [], isLoading: isLogFilesLoading } = useGetLogFiles(
+    isSuperAdmin && activeTab === AdminTab.LOGS,
+  );
   const {
     data: managedAccountDetails,
     isLoading: isManagedAccountLoading,
@@ -210,7 +215,12 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   useEffect(() => {
     if (
       !canManageAccounts &&
-      (activeTab === AdminTab.ACCOUNTS || activeTab === AdminTab.SESSIONS)
+      (
+        activeTab === AdminTab.ACCOUNTS ||
+        activeTab === AdminTab.SESSIONS ||
+        activeTab === AdminTab.SERVERS ||
+        activeTab === AdminTab.LOGS
+      )
     ) {
       setActiveTab(AdminTab.ONLINE);
     }
@@ -574,6 +584,29 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     {
       name: 'actions',
       label: t('manageableServerTable.actions'),
+      style: 'text-center px-2',
+    },
+  ];
+
+  const logFileColumns = [
+    {
+      name: 'name',
+      label: t('logFileTable.name'),
+      style: 'text-left px-2',
+    },
+    {
+      name: 'lastUpdatedAt',
+      label: t('logFileTable.updatedAt'),
+      style: 'text-center px-2',
+    },
+    {
+      name: 'sizeLabel',
+      label: t('logFileTable.size'),
+      style: 'text-center px-2',
+    },
+    {
+      name: 'actions',
+      label: t('logFileTable.actions'),
       style: 'text-center px-2',
     },
   ];
@@ -972,6 +1005,95 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     </div>
   );
 
+  const renderLogsTab = () => (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <Typography
+          component="h2"
+          variant="h3-inter"
+          styles="text-neutral-900 dark:text-neutral-100"
+        >
+          {t('logFileTitle')}
+        </Typography>
+        <Typography
+          component="p"
+          variant="body2-r"
+          styles="text-neutral-600 dark:text-neutral-300"
+        >
+          {t('logFileDescription')}
+        </Typography>
+      </div>
+
+      <div className="flex flex-col gap-2 overflow-x-auto">
+        <Table columns={logFileColumns}>
+          {isLogFilesLoading ? (
+            <LoadingTableBody />
+          ) : logFiles.length === 0 ? (
+            <TableEmptyMessage message={t('logFileEmptyMessage')} type="page" />
+          ) : (
+            logFiles.map((logFile, index) => {
+              const isLast = index === logFiles.length - 1;
+
+              return (
+                <tr
+                  key={logFile.name}
+                  className={`border-b ${
+                    isLast
+                      ? 'border-neutral-700 dark:border-neutral-600'
+                      : 'border-neutral-300 dark:border-primary-400/30'
+                  }`}
+                >
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-neutral-900 dark:text-neutral-100"
+                  >
+                    {logFile.name}
+                  </Typography>
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                  >
+                    {new Date(logFile.lastUpdatedAt).toLocaleString()}
+                  </Typography>
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                  >
+                    {logFile.sizeLabel}
+                  </Typography>
+                  <td className="px-2 py-2">
+                    <div className="flex items-center justify-center">
+                      <Button
+                        variant="outline"
+                        disabled={!LEGACY_PANEL_URL}
+                        onClick={() => {
+                          if (!LEGACY_PANEL_URL) {
+                            return;
+                          }
+
+                          const targetUrl = new URL(
+                            logFile.downloadPath,
+                            LEGACY_PANEL_URL,
+                          );
+                          window.location.assign(targetUrl.toString());
+                        }}
+                      >
+                        {t('logFileOpenButton')}
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </Table>
+      </div>
+    </div>
+  );
+
   const renderOnlineTab = () => (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -1243,6 +1365,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     ...(isSuperAdmin
       ? [{ id: AdminTab.SERVERS, label: t('tabs.servers') }]
       : []),
+    ...(isSuperAdmin ? [{ id: AdminTab.LOGS, label: t('tabs.logs') }] : []),
     ...(canManageAccounts
       ? [{ id: AdminTab.ACCOUNTS, label: t('tabs.accounts') }]
       : []),
@@ -1452,6 +1575,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         {activeTab === AdminTab.SERVERS && isSuperAdmin
           ? renderServersTab()
           : null}
+        {activeTab === AdminTab.LOGS && isSuperAdmin ? renderLogsTab() : null}
         {activeTab === AdminTab.ONLINE ? renderOnlineTab() : null}
         {activeTab === AdminTab.TOOLS ? renderToolsTab() : null}
       </div>
