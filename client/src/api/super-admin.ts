@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import api from './api';
-import type { Account, AccountState } from './types';
+import type { Account, AccountState, BetaSocialLinks } from './types';
 
 export type LoggedInAccount = {
   loginName: string;
@@ -43,6 +43,13 @@ export type ManagedAccountUpdateInput = {
   nextPassword: string;
 };
 
+export type BetaSocialLinksUpdateInput = {
+  instagramUrl: string;
+  discordUrl: string;
+  facebookUrl: string;
+  youtubeUrl: string;
+};
+
 const getLoggedInAccounts = async (): Promise<LoggedInAccount[]> => {
   const response = await api.get('/super-admin/runtime/logged-in');
   return response.data;
@@ -52,13 +59,21 @@ const disconnectLoggedInAccount = async ({
   loginName,
   serverId,
 }: LoggedInAccount): Promise<void> => {
-  await api.post(`/super-admin/runtime/logged-in/${encodeURIComponent(loginName)}/disconnect`, null, {
-    params: { serverId },
-  });
+  await api.post(
+    `/super-admin/runtime/logged-in/${encodeURIComponent(
+      loginName,
+    )}/disconnect`,
+    null,
+    {
+      params: { serverId },
+    },
+  );
 };
 
 const getManagedAccount = async (loginName: string): Promise<Account> => {
-  const response = await api.get(`/super-admin/accounts/${encodeURIComponent(loginName)}`);
+  const response = await api.get(
+    `/super-admin/accounts/${encodeURIComponent(loginName)}`,
+  );
   return response.data;
 };
 
@@ -93,6 +108,18 @@ const restartAllManageableServers = async (): Promise<void> => {
 
 const getLogFiles = async (): Promise<LogFileEntry[]> => {
   const response = await api.get('/super-admin/runtime/logfiles');
+  return response.data;
+};
+
+const getBetaSocialLinks = async (): Promise<BetaSocialLinks> => {
+  const response = await api.get('/super-admin/settings/social-links');
+  return response.data;
+};
+
+const updateBetaSocialLinks = async (
+  payload: BetaSocialLinksUpdateInput,
+): Promise<BetaSocialLinks> => {
+  const response = await api.put('/super-admin/settings/social-links', payload);
   return response.data;
 };
 
@@ -162,6 +189,14 @@ export const useGetLogFiles = (enabled = true) => {
   });
 };
 
+export const useGetBetaSocialLinks = (enabled = true) => {
+  return useQuery<BetaSocialLinks, Error>({
+    queryKey: ['super-admin', 'settings', 'social-links'],
+    queryFn: () => getBetaSocialLinks(),
+    enabled,
+  });
+};
+
 export const useCreateManagedAccount = () => {
   const queryClient = useQueryClient();
 
@@ -182,6 +217,22 @@ export const useUpdateManagedAccount = () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'accounts'] });
       queryClient.invalidateQueries({
         queryKey: ['super-admin', 'accounts', variables.loginName],
+      });
+    },
+  });
+};
+
+export const useUpdateBetaSocialLinks = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: updateBetaSocialLinks,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['super-admin', 'settings', 'social-links'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['game', 'social-links'],
       });
     },
   });

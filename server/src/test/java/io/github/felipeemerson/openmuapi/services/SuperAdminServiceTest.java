@@ -1,6 +1,7 @@
 package io.github.felipeemerson.openmuapi.services;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
+import io.github.felipeemerson.openmuapi.dto.BetaSocialLinksDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
 import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
@@ -45,6 +46,9 @@ class SuperAdminServiceTest {
 
     @Mock
     private GameServerService gameServerService;
+
+    @Mock
+    private SocialMediaLinkService socialMediaLinkService;
 
     @InjectMocks
     private SuperAdminService superAdminService;
@@ -185,5 +189,36 @@ class SuperAdminServiceTest {
         superAdminService.restartAllManageableServers();
 
         verify(gameServerService).restartAllManageableServers();
+    }
+
+    @Test
+    void getBetaSocialLinksDelegatesToSocialMediaLinkService() {
+        BetaSocialLinksDTO expected = new BetaSocialLinksDTO(
+                "https://instagram.com/blowmu",
+                "https://discord.gg/blowmu",
+                null,
+                "https://youtube.com/@blowmu"
+        );
+        when(socialMediaLinkService.getBetaSocialLinks()).thenReturn(expected);
+
+        var result = superAdminService.getBetaSocialLinks();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void updateBetaSocialLinksDelegatesToSocialMediaLinkService() {
+        BetaSocialLinksDTO payload = new BetaSocialLinksDTO(
+                "https://instagram.com/blowmu",
+                "",
+                "https://facebook.com/blowmu",
+                ""
+        );
+        when(socialMediaLinkService.updateBetaSocialLinks(payload)).thenReturn(payload);
+
+        var result = superAdminService.updateBetaSocialLinks(payload);
+
+        assertEquals(payload, result);
+        verify(socialMediaLinkService).updateBetaSocialLinks(payload);
     }
 }

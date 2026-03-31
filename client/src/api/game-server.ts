@@ -1,7 +1,11 @@
 import api from './api';
 import { useQuery } from '@tanstack/react-query';
 
-import type { AccountCharacter, ServerStatistics } from './types';
+import type {
+  AccountCharacter,
+  BetaSocialLinks,
+  ServerStatistics,
+} from './types';
 
 export type GameServerInfo = {
   serverId: number;
@@ -23,6 +27,11 @@ const getGameServers = async (): Promise<GameServerInfo[]> => {
 
 const getOnlinePlayers = async (): Promise<AccountCharacter[]> => {
   const response = await api.get('/game/onlines');
+  return response.data;
+};
+
+const getBetaSocialLinks = async (): Promise<BetaSocialLinks> => {
+  const response = await api.get('/game/social-links');
   return response.data;
 };
 
@@ -50,5 +59,12 @@ export const useGetOnlinePlayers = (
     queryFn: () => getOnlinePlayers(),
     enabled,
     refetchInterval,
+  });
+};
+
+export const useGetBetaSocialLinks = () => {
+  return useQuery<BetaSocialLinks, Error>({
+    queryKey: ['game', 'social-links'],
+    queryFn: () => getBetaSocialLinks(),
   });
 };

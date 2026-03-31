@@ -25,7 +25,8 @@ type SubmitError = {
 type ShowPasswordState = boolean;
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmitSuccess }) => {
-  const { signIn } = useContext(AuthContext);
+  const { signIn, betaAccessDenied, clearBetaAccessDenied } =
+    useContext(AuthContext);
   const { t } = useBaseTranslation('sidebar.loginCard.form');
   const [showPassword, setShowPassword] = useState<ShowPasswordState>(false);
   const [error, setError] = useState<SubmitError>({
@@ -47,8 +48,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmitSuccess }) => {
   const onSubmit = (data: LoginForm) => {
     signInMutation.mutate(data, {
       onSuccess: (data: LoginResponse) => {
-        signIn(data.accessToken);
-        onSubmitSuccess && onSubmitSuccess();
+        const signedIn = signIn(data.accessToken);
+        if (signedIn) {
+          onSubmitSuccess && onSubmitSuccess();
+        }
       },
       onError: (error: Error) => {
         const status = (error as AxiosError).response?.status;
@@ -75,7 +78,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmitSuccess }) => {
     if (error.showError) {
       setError({ showError: false, message: '' });
     }
-  }, [loginName, password]);
+
+    if (betaAccessDenied) {
+      clearBetaAccessDenied();
+    }
+  }, [
+    betaAccessDenied,
+    clearBetaAccessDenied,
+    error.showError,
+    loginName,
+    password,
+  ]);
 
   return (
     <>
@@ -121,10 +134,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmitSuccess }) => {
             },
           }}
         />
-        {error.showError && (
+        {(error.showError || betaAccessDenied) && (
           <Alert
             severity={AlertSeverityLevel.ERROR}
-            message={error.message}
+            message={
+              betaAccessDenied
+                ? t('errorMessages.betaAccessDenied')
+                : error.message
+            }
             size="small"
           />
         )}

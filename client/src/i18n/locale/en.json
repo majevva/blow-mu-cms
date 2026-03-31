@@ -19,7 +19,8 @@
           "required": "Required.",
           "minimumLength": "The minimum length is {{minLength}} characters.",
           "maximumLength": "The maximum length is {{maxLength}} characters.",
-          "loginOrPasswordIncorrectly": "Wrong username or password."
+          "loginOrPasswordIncorrectly": "Wrong username or password.",
+          "betaAccessDenied": "This account is not included in the beta tests. Follow BlowMU on Discord and social channels for future access waves."
         }
       }
     },
@@ -68,6 +69,18 @@
     "copyright1": "Blow MU © 2026. All rights reserved.",
     "copyright2": "Mu is a registered trademark of WEBZEN, Inc.",
     "developedBy": "Developed by"
+  },
+  "betaMode": {
+    "eyebrow": "BlowMU beta tests",
+    "title": "Beta tests are currently running.",
+    "description": "The website is currently available only to selected beta participants while we polish the CMS and game-facing experience before the wider opening.",
+    "staffHint": "If you are part of the BlowMU team, sign in below to access the CMS while beta mode is active.",
+    "discordCta": "Join the BlowMU Discord",
+    "instagramCta": "BlowMU Instagram",
+    "facebookCta": "BlowMU Facebook",
+    "youtubeCta": "BlowMU YouTube",
+    "loginCardTitle": "Team access",
+    "loginCardDescription": "Sign-in remains available for superadmins and game masters participating in the test phase."
   },
   "home": {
     "newsTitle": "Latest News",
@@ -399,6 +412,7 @@
       "sessions": "Sessions",
       "servers": "Servers",
       "logs": "Logs",
+      "socials": "Socials",
       "accounts": "Accounts",
       "online": "Online",
       "characters": "Characters",
@@ -664,6 +678,17 @@
     "logFileDescription": "Inspect the BastionMU log inventory directly from the superadmin control center and jump to the raw file when needed.",
     "logFileEmptyMessage": "No log files found",
     "logFileOpenButton": "Open log",
+    "socialLinksTitle": "Beta page social links",
+    "socialLinksDescription": "Set the official BlowMU links shown on the beta-test page. Empty fields are ignored and not rendered publicly.",
+    "socialLinksSaveButton": "Save links",
+    "socialLinksSaving": "Saving...",
+    "socialLinksSaveSuccess": "Social links saved.",
+    "socialLinksFields": {
+      "instagramUrl": "Instagram",
+      "discordUrl": "Discord",
+      "facebookUrl": "Facebook",
+      "youtubeUrl": "YouTube"
+    },
     "logFileTable": {
       "name": "File",
       "updatedAt": "Last updated",

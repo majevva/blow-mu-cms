@@ -1,6 +1,7 @@
 package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
+import io.github.felipeemerson.openmuapi.dto.BetaSocialLinksDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
 import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
@@ -263,5 +264,61 @@ class SuperAdminControllerTest {
         InOrder inOrder = inOrder(superAdminService);
         inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
         inOrder.verify(superAdminService).restartAllManageableServers();
+    }
+
+    @Test
+    void getBetaSocialLinksChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+        BetaSocialLinksDTO links = new BetaSocialLinksDTO(
+                "https://instagram.com/blowmu",
+                "https://discord.gg/blowmu",
+                null,
+                null
+        );
+        when(superAdminService.getBetaSocialLinks()).thenReturn(links);
+
+        var response = controller.getBetaSocialLinks(principal);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(links, response.getBody());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).getBetaSocialLinks();
+    }
+
+    @Test
+    void updateBetaSocialLinksChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+        BetaSocialLinksDTO payload = new BetaSocialLinksDTO(
+                null,
+                "https://discord.gg/blowmu",
+                "https://facebook.com/blowmu",
+                null
+        );
+        when(superAdminService.updateBetaSocialLinks(payload)).thenReturn(payload);
+
+        var response = controller.updateBetaSocialLinks(principal, payload);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(payload, response.getBody());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).updateBetaSocialLinks(payload);
     }
 }

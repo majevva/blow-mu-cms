@@ -233,6 +233,13 @@ export type ServerStatistics = {
   onlines: number;
 };
 
+export type BetaSocialLinks = {
+  instagramUrl: string | null;
+  discordUrl: string | null;
+  facebookUrl: string | null;
+  youtubeUrl: string | null;
+};
+
 export type JWTPayload = {
   sub: string;
   role: AccountState;

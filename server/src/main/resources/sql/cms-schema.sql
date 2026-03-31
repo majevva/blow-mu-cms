@@ -26,4 +26,10 @@ CREATE TABLE IF NOT EXISTS "Banner" (
     "Link" text COLLATE pg_catalog."default",
     "OrderIndex" integer NOT NULL,
     CONSTRAINT "PK_Banner" PRIMARY KEY ("Id")
-)
+);
+
+CREATE TABLE IF NOT EXISTS "SocialMediaLink" (
+    "Platform" character varying(32) COLLATE pg_catalog."default" NOT NULL,
+    "Url" text COLLATE pg_catalog."default",
+    CONSTRAINT "PK_SocialMediaLink" PRIMARY KEY ("Platform")
+);

@@ -19,7 +19,8 @@
           "required": "Obrigatório.",
           "minimumLength": "O tamanho mínimo é {{minLength}} caracteres.",
           "maximumLength": "O tamanho máximo é {{maxLength}} caracteres.",
-          "loginOrPasswordIncorrectly": "Login ou senha errada."
+          "loginOrPasswordIncorrectly": "Login ou senha errada.",
+          "betaAccessDenied": "Esta conta não participa dos beta tests. Acompanhe o BlowMU no Discord e nas redes sociais para saber sobre os próximos acessos."
         }
       }
     },
@@ -68,6 +69,18 @@
     "copyright1": "Blow MU © 2026. Todos os direitos reservados.",
     "copyright2": "Mu é uma marca registrada da WEBZEN, Inc.",
     "developedBy": "Desenvolvido por"
+  },
+  "betaMode": {
+    "eyebrow": "Beta tests do BlowMU",
+    "title": "Os beta tests estão acontecendo agora.",
+    "description": "O site está disponível apenas para participantes selecionados da fase beta enquanto refinamos o CMS e a experiência do jogo antes da abertura ampla.",
+    "staffHint": "Se você faz parte da equipe BlowMU, faça login abaixo para entrar no CMS mesmo com o modo beta ativo.",
+    "discordCta": "Entrar no Discord do BlowMU",
+    "instagramCta": "Instagram do BlowMU",
+    "facebookCta": "Facebook do BlowMU",
+    "youtubeCta": "YouTube do BlowMU",
+    "loginCardTitle": "Acesso da equipe",
+    "loginCardDescription": "O login continua disponível para superadmins e game masters que participam da fase de testes."
   },
   "home": {
     "newsTitle": "Últimas Notícias",
@@ -399,6 +412,7 @@
       "sessions": "Sessões",
       "servers": "Servidores",
       "logs": "Logs",
+      "socials": "Redes",
       "accounts": "Contas",
       "online": "Online",
       "characters": "Personagens",
@@ -664,6 +678,17 @@
     "logFileDescription": "Veja o inventário de logs do BastionMU diretamente da central do superadmin e abra o arquivo bruto quando necessário.",
     "logFileEmptyMessage": "Nenhum log encontrado",
     "logFileOpenButton": "Abrir log",
+    "socialLinksTitle": "Links sociais da página beta",
+    "socialLinksDescription": "Defina os links oficiais do BlowMU exibidos na página de beta tests. Campos vazios são ignorados e não aparecem publicamente.",
+    "socialLinksSaveButton": "Salvar links",
+    "socialLinksSaving": "Salvando...",
+    "socialLinksSaveSuccess": "Links sociais salvos.",
+    "socialLinksFields": {
+      "instagramUrl": "Instagram",
+      "discordUrl": "Discord",
+      "facebookUrl": "Facebook",
+      "youtubeUrl": "YouTube"
+    },
     "logFileTable": {
       "name": "Arquivo",
       "updatedAt": "Última atualização",

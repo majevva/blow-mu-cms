@@ -3,7 +3,11 @@ import { Navigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState, type CharacterAttributes, type CharacterDetails } from '@/api/types';
+import {
+  AccountState,
+  type CharacterAttributes,
+  type CharacterDetails,
+} from '@/api/types';
 import {
   useBroadcastMessage,
   useChangeAccountState,
@@ -25,6 +29,7 @@ import {
   useGetServerStatistics,
 } from '@/api/game-server';
 import {
+  useGetBetaSocialLinks,
   useCreateManagedAccount,
   useDisconnectLoggedInAccount,
   useGetManagedAccount,
@@ -36,6 +41,8 @@ import {
   useStartManageableServer,
   useStopManageableServer,
   useUpdateManagedAccount,
+  useUpdateBetaSocialLinks,
+  type BetaSocialLinksUpdateInput,
   type LoggedInAccount,
   type ManageableServer,
   type ManagedAccountCreateInput,
@@ -61,6 +68,9 @@ import Tabs from '@/components/Tabs/Tabs';
 import ManagedAccountForm, {
   type ManagedAccountFormValues,
 } from './ManagedAccountForm';
+import BetaSocialLinksForm, {
+  type BetaSocialLinksFormValues,
+} from './BetaSocialLinksForm';
 
 const PAGE_SIZE = 10;
 const ONLINE_PLAYERS_REFRESH_INTERVAL = 30_000;
@@ -87,6 +97,13 @@ const EMPTY_ATTRIBUTE_FORM: CharacterAttributes = {
   command: 0,
 };
 
+const EMPTY_BETA_SOCIAL_LINKS_FORM: BetaSocialLinksFormValues = {
+  instagramUrl: '',
+  discordUrl: '',
+  facebookUrl: '',
+  youtubeUrl: '',
+};
+
 const STATE_COLORS: Record<AccountState, string> = {
   [AccountState.NORMAL]: 'text-green-500',
   [AccountState.GAME_MASTER]: 'text-blue-500',
@@ -101,6 +118,7 @@ enum AdminTab {
   SESSIONS,
   SERVERS,
   LOGS,
+  SOCIALS,
   ACCOUNTS,
   ONLINE,
   CHARACTERS,
@@ -169,10 +187,17 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   const [guildLookupInput, setGuildLookupInput] = useState('');
   const [selectedGuildName, setSelectedGuildName] = useState('');
   const [newGuildMasterName, setNewGuildMasterName] = useState('');
+  const [betaSocialLinksForm, setBetaSocialLinksForm] =
+    useState<BetaSocialLinksFormValues>(EMPTY_BETA_SOCIAL_LINKS_FORM);
 
   const { data: serverStatistics } = useGetServerStatistics();
   const { data: accountsPage, isLoading: isAccountsLoading } =
-    useGetAdminAccounts(currentPage - 1, PAGE_SIZE, search || undefined, isAdmin);
+    useGetAdminAccounts(
+      currentPage - 1,
+      PAGE_SIZE,
+      search || undefined,
+      isAdmin,
+    );
   const {
     data: onlinePlayers = [],
     isLoading: isOnlinePlayersLoading,
@@ -200,20 +225,28 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     selectedGuildName,
     isAdmin && activeTab === AdminTab.GUILDS,
   );
-  const { data: loggedInAccounts = [], isLoading: isLoggedInAccountsLoading, isError: isLoggedInAccountsError } =
-    useGetLoggedInAccounts(isSuperAdmin && activeTab === AdminTab.SESSIONS);
-  const { data: manageableServers = [], isLoading: isManageableServersLoading, isError: isManageableServersError } =
-    useGetManageableServers(isSuperAdmin && activeTab === AdminTab.SERVERS);
-  const { data: logFiles = [], isLoading: isLogFilesLoading, isError: isLogFilesError } = useGetLogFiles(
-    isSuperAdmin && activeTab === AdminTab.LOGS,
-  );
   const {
-    data: managedAccountDetails,
-    isLoading: isManagedAccountLoading,
-  } = useGetManagedAccount(
-    selectedManagedAccountLogin ?? undefined,
-    isSuperAdmin && managedAccountMode === 'edit',
-  );
+    data: loggedInAccounts = [],
+    isLoading: isLoggedInAccountsLoading,
+    isError: isLoggedInAccountsError,
+  } = useGetLoggedInAccounts(isSuperAdmin && activeTab === AdminTab.SESSIONS);
+  const {
+    data: manageableServers = [],
+    isLoading: isManageableServersLoading,
+    isError: isManageableServersError,
+  } = useGetManageableServers(isSuperAdmin && activeTab === AdminTab.SERVERS);
+  const {
+    data: logFiles = [],
+    isLoading: isLogFilesLoading,
+    isError: isLogFilesError,
+  } = useGetLogFiles(isSuperAdmin && activeTab === AdminTab.LOGS);
+  const { data: betaSocialLinks, isLoading: isBetaSocialLinksLoading } =
+    useGetBetaSocialLinks(isSuperAdmin && activeTab === AdminTab.SOCIALS);
+  const { data: managedAccountDetails, isLoading: isManagedAccountLoading } =
+    useGetManagedAccount(
+      selectedManagedAccountLogin ?? undefined,
+      isSuperAdmin && managedAccountMode === 'edit',
+    );
 
   const { mutate: updateState, isPending: isStateChangePending } =
     useChangeAccountState();
@@ -236,11 +269,17 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   const { mutate: disbandGuild, isPending: isDisbandGuildPending } =
     useDisbandGuild();
   const { mutate: disconnectLoggedInAccount } = useDisconnectLoggedInAccount();
+  const {
+    mutate: updateBetaSocialLinks,
+    isPending: isUpdatingBetaSocialLinks,
+  } = useUpdateBetaSocialLinks();
   const { mutate: startManageableServer } = useStartManageableServer();
   const { mutate: stopManageableServer } = useStopManageableServer();
   const { mutate: removeManageableServer } = useRemoveManageableServer();
-  const { mutate: restartAllManageableServers, isPending: isRestartingAllServers } =
-    useRestartAllManageableServers();
+  const {
+    mutate: restartAllManageableServers,
+    isPending: isRestartingAllServers,
+  } = useRestartAllManageableServers();
   const { mutate: sendBroadcastMessage, isPending: isBroadcastPending } =
     useBroadcastMessage();
 
@@ -303,14 +342,26 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   }, [managedAccountDetails, managedAccountMode]);
 
   useEffect(() => {
+    if (!betaSocialLinks) {
+      return;
+    }
+
+    setBetaSocialLinksForm({
+      instagramUrl: betaSocialLinks.instagramUrl ?? '',
+      discordUrl: betaSocialLinks.discordUrl ?? '',
+      facebookUrl: betaSocialLinks.facebookUrl ?? '',
+      youtubeUrl: betaSocialLinks.youtubeUrl ?? '',
+    });
+  }, [betaSocialLinks]);
+
+  useEffect(() => {
     if (
       !canManageAccounts &&
-      (
-        activeTab === AdminTab.ACCOUNTS ||
+      (activeTab === AdminTab.ACCOUNTS ||
         activeTab === AdminTab.SESSIONS ||
         activeTab === AdminTab.SERVERS ||
-        activeTab === AdminTab.LOGS
-      )
+        activeTab === AdminTab.LOGS ||
+        activeTab === AdminTab.SOCIALS)
     ) {
       setActiveTab(AdminTab.ONLINE);
     }
@@ -366,6 +417,16 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     value: string | boolean | AccountState,
   ) => {
     setManagedAccountForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleBetaSocialLinksFieldChange = (
+    field: keyof BetaSocialLinksFormValues,
+    value: string,
+  ) => {
+    setBetaSocialLinksForm((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -504,7 +565,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
 
     disconnectLoggedInAccount(account, {
       onSuccess: () => {
-        openToast.success(t('loggedInDisconnectSuccess', { loginName: account.loginName }));
+        openToast.success(
+          t('loggedInDisconnectSuccess', { loginName: account.loginName }),
+        );
       },
       onError: (error: Error) => {
         openToast.error(getFormattedApiError(error));
@@ -519,7 +582,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     setPendingServerAction(`start:${server.id}`);
     startManageableServer(server.id, {
       onSuccess: () => {
-        openToast.success(t('manageableServerStartSuccess', { name: server.description }));
+        openToast.success(
+          t('manageableServerStartSuccess', { name: server.description }),
+        );
       },
       onError: (error: Error) => {
         openToast.error(getFormattedApiError(error));
@@ -532,7 +597,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     setPendingServerAction(`stop:${server.id}`);
     stopManageableServer(server.id, {
       onSuccess: () => {
-        openToast.success(t('manageableServerStopSuccess', { name: server.description }));
+        openToast.success(
+          t('manageableServerStopSuccess', { name: server.description }),
+        );
       },
       onError: (error: Error) => {
         openToast.error(getFormattedApiError(error));
@@ -563,6 +630,28 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     restartAllManageableServers(undefined, {
       onSuccess: () => {
         openToast.success(t('manageableServerRestartAllSuccess'));
+      },
+      onError: (error: Error) => {
+        openToast.error(getFormattedApiError(error));
+      },
+    });
+  };
+
+  const handleBetaSocialLinksSubmit = (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    const payload: BetaSocialLinksUpdateInput = {
+      instagramUrl: betaSocialLinksForm.instagramUrl.trim(),
+      discordUrl: betaSocialLinksForm.discordUrl.trim(),
+      facebookUrl: betaSocialLinksForm.facebookUrl.trim(),
+      youtubeUrl: betaSocialLinksForm.youtubeUrl.trim(),
+    };
+
+    updateBetaSocialLinks(payload, {
+      onSuccess: () => {
+        openToast.success(t('socialLinksSaveSuccess'));
       },
       onError: (error: Error) => {
         openToast.error(getFormattedApiError(error));
@@ -615,7 +704,12 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     const x = Number(teleportX);
     const y = Number(teleportY);
 
-    if (!selectedCharacterName || !mapName || Number.isNaN(x) || Number.isNaN(y)) {
+    if (
+      !selectedCharacterName ||
+      !mapName ||
+      Number.isNaN(x) ||
+      Number.isNaN(y)
+    ) {
       openToast.warning(t('characterTeleportValidation'));
       return;
     }
@@ -625,7 +719,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
       {
         onSuccess: () => {
           openToast.success(
-            t('characterTeleportSuccess', { characterName: selectedCharacterName }),
+            t('characterTeleportSuccess', {
+              characterName: selectedCharacterName,
+            }),
           );
         },
         onError: (error: Error) => {
@@ -749,7 +845,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         setSelectedGuildName('');
         setGuildLookupInput('');
         setNewGuildMasterName('');
-        openToast.success(t('guildDisbandSuccess', { guildName: selectedGuildName }));
+        openToast.success(
+          t('guildDisbandSuccess', { guildName: selectedGuildName }),
+        );
       },
       onError: (error: Error) => {
         openToast.error(getFormattedApiError(error));
@@ -911,9 +1009,15 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           {isLoggedInAccountsLoading ? (
             <LoadingTableBody />
           ) : isLoggedInAccountsError ? (
-            <TableEmptyMessage message={t('runtimeUnavailableMessage')} type="page" />
+            <TableEmptyMessage
+              message={t('runtimeUnavailableMessage')}
+              type="page"
+            />
           ) : filteredLoggedInAccounts.length === 0 ? (
-            <TableEmptyMessage message={t('loggedInEmptyMessage')} type="page" />
+            <TableEmptyMessage
+              message={t('loggedInEmptyMessage')}
+              type="page"
+            />
           ) : (
             filteredLoggedInAccounts.map((account, index) => {
               const isLast = index === filteredLoggedInAccounts.length - 1;
@@ -1005,7 +1109,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
               <TableEmptyMessage message={t('emptyMessage')} type="page" />
             ) : (
               accountsPage?.content.map((account, index) => {
-                const isLast = index === (accountsPage?.content.length ?? 0) - 1;
+                const isLast =
+                  index === (accountsPage?.content.length ?? 0) - 1;
                 const currentState =
                   pendingStates[account.loginName] ?? account.state;
                 const isDirty =
@@ -1038,7 +1143,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                     <Typography
                       component="td"
                       variant="label2-r"
-                      styles={`px-2 py-2 text-center font-semibold ${STATE_COLORS[account.state]}`}
+                      styles={`px-2 py-2 text-center font-semibold ${
+                        STATE_COLORS[account.state]
+                      }`}
                     >
                       {t(`states.${account.state}`)}
                     </Typography>
@@ -1076,7 +1183,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                         </Button>
                         <Button
                           variant="outline"
-                          onClick={() => handleEditManagedAccount(account.loginName)}
+                          onClick={() =>
+                            handleEditManagedAccount(account.loginName)
+                          }
                         >
                           {t('managedAccountEditButton')}
                         </Button>
@@ -1099,9 +1208,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           <ManagedAccountForm
             mode={managedAccountMode}
             isLoading={isManagedAccountLoading}
-            isSubmitting={
-              isCreatingManagedAccount || isUpdatingManagedAccount
-            }
+            isSubmitting={isCreatingManagedAccount || isUpdatingManagedAccount}
             values={managedAccountForm}
             onChange={handleManagedAccountFieldChange}
             onCancel={handleCloseManagedAccountForm}
@@ -1164,7 +1271,10 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           {isManageableServersLoading ? (
             <LoadingTableBody />
           ) : isManageableServersError ? (
-            <TableEmptyMessage message={t('runtimeUnavailableMessage')} type="page" />
+            <TableEmptyMessage
+              message={t('runtimeUnavailableMessage')}
+              type="page"
+            />
           ) : manageableServers.length === 0 ? (
             <TableEmptyMessage
               message={t('manageableServerEmptyMessage')}
@@ -1284,7 +1394,10 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           {isLogFilesLoading ? (
             <LoadingTableBody />
           ) : isLogFilesError ? (
-            <TableEmptyMessage message={t('runtimeUnavailableMessage')} type="page" />
+            <TableEmptyMessage
+              message={t('runtimeUnavailableMessage')}
+              type="page"
+            />
           ) : logFiles.length === 0 ? (
             <TableEmptyMessage message={t('logFileEmptyMessage')} type="page" />
           ) : (
@@ -1349,6 +1462,16 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         </Table>
       </div>
     </div>
+  );
+
+  const renderSocialLinksTab = () => (
+    <BetaSocialLinksForm
+      values={betaSocialLinksForm}
+      isLoading={isBetaSocialLinksLoading}
+      isSubmitting={isUpdatingBetaSocialLinks}
+      onChange={handleBetaSocialLinksFieldChange}
+      onSubmit={handleBetaSocialLinksSubmit}
+    />
   );
 
   const renderOnlineTab = () => (
@@ -1471,7 +1594,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                       <Button
                         variant="outline"
                         disabled={isActionPending}
-                        onClick={() => handleTemporaryBan(character.characterName)}
+                        onClick={() =>
+                          handleTemporaryBan(character.characterName)
+                        }
                       >
                         {isPendingTemporaryBan
                           ? t('temporaryBanPending')
@@ -1508,7 +1633,10 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           </Typography>
         </div>
 
-        <form className="mt-5 flex flex-col gap-4" onSubmit={handleBroadcastSubmit}>
+        <form
+          className="mt-5 flex flex-col gap-4"
+          onSubmit={handleBroadcastSubmit}
+        >
           <label className="flex flex-col gap-2">
             <Typography
               component="span"
@@ -1528,7 +1656,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
               ) : null}
               {gameServers.map((server) => (
                 <option key={server.serverId} value={server.serverId}>
-                  {server.description} ({t('serverLabel', { id: server.serverId })})
+                  {server.description} (
+                  {t('serverLabel', { id: server.serverId })})
                 </option>
               ))}
             </select>
@@ -1622,51 +1751,100 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           </Typography>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <div>
-              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+              <Typography
+                component="span"
+                variant="label2-r"
+                styles="text-neutral-500 dark:text-neutral-400"
+              >
                 {t('characterSummary.class')}
               </Typography>
-              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+              <Typography
+                component="p"
+                variant="body2-r"
+                styles="text-neutral-900 dark:text-neutral-100"
+              >
                 {character.characterClassName}
               </Typography>
             </div>
             <div>
-              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+              <Typography
+                component="span"
+                variant="label2-r"
+                styles="text-neutral-500 dark:text-neutral-400"
+              >
                 {t('characterSummary.level')}
               </Typography>
-              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+              <Typography
+                component="p"
+                variant="body2-r"
+                styles="text-neutral-900 dark:text-neutral-100"
+              >
                 {character.level} / ML {character.masterLevel}
               </Typography>
             </div>
             <div>
-              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+              <Typography
+                component="span"
+                variant="label2-r"
+                styles="text-neutral-500 dark:text-neutral-400"
+              >
                 {t('characterSummary.resets')}
               </Typography>
-              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+              <Typography
+                component="p"
+                variant="body2-r"
+                styles="text-neutral-900 dark:text-neutral-100"
+              >
                 {character.resets}
               </Typography>
             </div>
             <div>
-              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+              <Typography
+                component="span"
+                variant="label2-r"
+                styles="text-neutral-500 dark:text-neutral-400"
+              >
                 {t('characterSummary.location')}
               </Typography>
-              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
-                {character.currentMap?.mapName} ({character.currentMap?.positionX},{' '}
+              <Typography
+                component="p"
+                variant="body2-r"
+                styles="text-neutral-900 dark:text-neutral-100"
+              >
+                {character.currentMap?.mapName} (
+                {character.currentMap?.positionX},{' '}
                 {character.currentMap?.positionY})
               </Typography>
             </div>
             <div>
-              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+              <Typography
+                component="span"
+                variant="label2-r"
+                styles="text-neutral-500 dark:text-neutral-400"
+              >
                 {t('characterSummary.heroState')}
               </Typography>
-              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+              <Typography
+                component="p"
+                variant="body2-r"
+                styles="text-neutral-900 dark:text-neutral-100"
+              >
                 {character.state}
               </Typography>
             </div>
             <div>
-              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+              <Typography
+                component="span"
+                variant="label2-r"
+                styles="text-neutral-500 dark:text-neutral-400"
+              >
                 {t('characterSummary.guild')}
               </Typography>
-              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+              <Typography
+                component="p"
+                variant="body2-r"
+                styles="text-neutral-900 dark:text-neutral-100"
+              >
                 {character.guild?.name ?? t('characterSummary.noGuild')}
               </Typography>
             </div>
@@ -1701,7 +1879,10 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
             >
               {t('characterTeleportDescription')}
             </Typography>
-            <form className="mt-5 grid gap-4 md:grid-cols-3" onSubmit={handleTeleportSubmit}>
+            <form
+              className="mt-5 grid gap-4 md:grid-cols-3"
+              onSubmit={handleTeleportSubmit}
+            >
               <input
                 className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
                 placeholder={t('characterTeleportMapPlaceholder')}
@@ -1720,7 +1901,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                 value={teleportY}
                 onChange={(e) => setTeleportY(e.target.value)}
               />
-              <div className="md:col-span-3 flex justify-end">
+              <div className="flex justify-end md:col-span-3">
                 <Button type="submit" disabled={isTeleportPending}>
                   {isTeleportPending
                     ? t('characterTeleportPending')
@@ -1747,32 +1928,49 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                 points: character.levelUpPoints,
               })}
             </Typography>
-            <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleAttributeSubmit}>
-              {(['strength', 'agility', 'vitality', 'energy'] as const).map((field) => (
-                <label key={field} className="flex flex-col gap-2">
-                  <Typography component="span" variant="label2-r" styles="text-neutral-800 dark:text-neutral-200">
-                    {t(`characterAttributeFields.${field}`)}
-                  </Typography>
-                  <input
-                    className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
-                    value={attributeForm[field]}
-                    onChange={(e) => handleAttributeFormChange(field, e.target.value)}
-                  />
-                </label>
-              ))}
+            <form
+              className="mt-5 grid gap-4 md:grid-cols-2"
+              onSubmit={handleAttributeSubmit}
+            >
+              {(['strength', 'agility', 'vitality', 'energy'] as const).map(
+                (field) => (
+                  <label key={field} className="flex flex-col gap-2">
+                    <Typography
+                      component="span"
+                      variant="label2-r"
+                      styles="text-neutral-800 dark:text-neutral-200"
+                    >
+                      {t(`characterAttributeFields.${field}`)}
+                    </Typography>
+                    <input
+                      className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                      value={attributeForm[field]}
+                      onChange={(e) =>
+                        handleAttributeFormChange(field, e.target.value)
+                      }
+                    />
+                  </label>
+                ),
+              )}
               {isDarkLordClass ? (
                 <label className="flex flex-col gap-2">
-                  <Typography component="span" variant="label2-r" styles="text-neutral-800 dark:text-neutral-200">
+                  <Typography
+                    component="span"
+                    variant="label2-r"
+                    styles="text-neutral-800 dark:text-neutral-200"
+                  >
                     {t('characterAttributeFields.command')}
                   </Typography>
                   <input
                     className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
                     value={attributeForm.command}
-                    onChange={(e) => handleAttributeFormChange('command', e.target.value)}
+                    onChange={(e) =>
+                      handleAttributeFormChange('command', e.target.value)
+                    }
                   />
                 </label>
               ) : null}
-              <div className="md:col-span-2 flex justify-end">
+              <div className="flex justify-end md:col-span-2">
                 <Button type="submit" disabled={isAttributeUpdatePending}>
                   {isAttributeUpdatePending
                     ? t('characterAttributesPending')
@@ -1790,14 +1988,25 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="flex flex-col gap-1">
-          <Typography component="h2" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+          <Typography
+            component="h2"
+            variant="h3-inter"
+            styles="text-neutral-900 dark:text-neutral-100"
+          >
             {t('characterLookupTitle')}
           </Typography>
-          <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+          <Typography
+            component="p"
+            variant="body2-r"
+            styles="text-neutral-600 dark:text-neutral-300"
+          >
             {t('characterLookupDescription')}
           </Typography>
         </div>
-        <form className="flex w-full gap-2 md:max-w-xl" onSubmit={handleCharacterLookup}>
+        <form
+          className="flex w-full gap-2 md:max-w-xl"
+          onSubmit={handleCharacterLookup}
+        >
           <input
             className="h-10 flex-1 rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
             placeholder={t('characterLookupPlaceholder')}
@@ -1809,17 +2018,29 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
       </div>
 
       {isAdminCharacterLoading ? (
-        <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+        <Typography
+          component="p"
+          variant="body2-r"
+          styles="text-neutral-600 dark:text-neutral-300"
+        >
           {t('characterLookupLoading')}
         </Typography>
       ) : adminCharacter ? (
         renderCharacterSummary(adminCharacter)
       ) : (
         <div className="rounded-lg border border-dashed border-neutral-300 bg-white/40 p-5 dark:border-neutral-700 dark:bg-neutral-950/20">
-          <Typography component="h3" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+          <Typography
+            component="h3"
+            variant="h3-inter"
+            styles="text-neutral-900 dark:text-neutral-100"
+          >
             {t('characterLookupEmptyTitle')}
           </Typography>
-          <Typography component="p" variant="body2-r" styles="mt-2 text-neutral-600 dark:text-neutral-300">
+          <Typography
+            component="p"
+            variant="body2-r"
+            styles="mt-2 text-neutral-600 dark:text-neutral-300"
+          >
             {t('characterLookupEmptyDescription')}
           </Typography>
         </div>
@@ -1831,14 +2052,25 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="flex flex-col gap-1">
-          <Typography component="h2" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+          <Typography
+            component="h2"
+            variant="h3-inter"
+            styles="text-neutral-900 dark:text-neutral-100"
+          >
             {t('guildLookupTitle')}
           </Typography>
-          <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+          <Typography
+            component="p"
+            variant="body2-r"
+            styles="text-neutral-600 dark:text-neutral-300"
+          >
             {t('guildLookupDescription')}
           </Typography>
         </div>
-        <form className="flex w-full gap-2 md:max-w-xl" onSubmit={handleGuildLookup}>
+        <form
+          className="flex w-full gap-2 md:max-w-xl"
+          onSubmit={handleGuildLookup}
+        >
           <input
             className="h-10 flex-1 rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
             placeholder={t('guildLookupPlaceholder')}
@@ -1850,45 +2082,84 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
       </div>
 
       {isAdminGuildLoading ? (
-        <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+        <Typography
+          component="p"
+          variant="body2-r"
+          styles="text-neutral-600 dark:text-neutral-300"
+        >
           {t('guildLookupLoading')}
         </Typography>
       ) : adminGuild ? (
         <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
-            <Typography component="h2" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+            <Typography
+              component="h2"
+              variant="h3-inter"
+              styles="text-neutral-900 dark:text-neutral-100"
+            >
               {adminGuild.name}
             </Typography>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div>
-                <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                <Typography
+                  component="span"
+                  variant="label2-r"
+                  styles="text-neutral-500 dark:text-neutral-400"
+                >
                   {t('guildSummary.master')}
                 </Typography>
-                <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                <Typography
+                  component="p"
+                  variant="body2-r"
+                  styles="text-neutral-900 dark:text-neutral-100"
+                >
                   {adminGuild.guildMaster}
                 </Typography>
               </div>
               <div>
-                <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                <Typography
+                  component="span"
+                  variant="label2-r"
+                  styles="text-neutral-500 dark:text-neutral-400"
+                >
                   {t('guildSummary.score')}
                 </Typography>
-                <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                <Typography
+                  component="p"
+                  variant="body2-r"
+                  styles="text-neutral-900 dark:text-neutral-100"
+                >
                   {adminGuild.score}
                 </Typography>
               </div>
               <div className="sm:col-span-2">
-                <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                <Typography
+                  component="span"
+                  variant="label2-r"
+                  styles="text-neutral-500 dark:text-neutral-400"
+                >
                   {t('guildSummary.notice')}
                 </Typography>
-                <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                <Typography
+                  component="p"
+                  variant="body2-r"
+                  styles="text-neutral-900 dark:text-neutral-100"
+                >
                   {adminGuild.notice || t('guildSummary.noNotice')}
                 </Typography>
               </div>
             </div>
 
-            <form className="mt-6 flex flex-col gap-4" onSubmit={handleGuildMasterSubmit}>
+            <form
+              className="mt-6 flex flex-col gap-4"
+              onSubmit={handleGuildMasterSubmit}
+            >
               <label className="flex flex-col gap-2">
-                <Typography component="span" variant="label2-r" styles="text-neutral-800 dark:text-neutral-200">
+                <Typography
+                  component="span"
+                  variant="label2-r"
+                  styles="text-neutral-800 dark:text-neutral-200"
+                >
                   {t('guildMasterLabel')}
                 </Typography>
                 <input
@@ -1917,17 +2188,41 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           </div>
 
           <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
-            <Typography component="h3" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+            <Typography
+              component="h3"
+              variant="h3-inter"
+              styles="text-neutral-900 dark:text-neutral-100"
+            >
               {t('guildMembersTitle', { count: adminGuild.members.length })}
             </Typography>
             <div className="mt-5 overflow-x-auto">
               <Table
                 columns={[
-                  { name: 'characterName', label: t('guildMembersTable.name'), style: 'text-left px-2' },
-                  { name: 'characterClassName', label: t('guildMembersTable.class'), style: 'text-center px-2' },
-                  { name: 'resets', label: t('guildMembersTable.resets'), style: 'text-center px-2' },
-                  { name: 'guildPosition', label: t('guildMembersTable.role'), style: 'text-center px-2' },
-                  { name: 'online', label: t('guildMembersTable.online'), style: 'text-center px-2' },
+                  {
+                    name: 'characterName',
+                    label: t('guildMembersTable.name'),
+                    style: 'text-left px-2',
+                  },
+                  {
+                    name: 'characterClassName',
+                    label: t('guildMembersTable.class'),
+                    style: 'text-center px-2',
+                  },
+                  {
+                    name: 'resets',
+                    label: t('guildMembersTable.resets'),
+                    style: 'text-center px-2',
+                  },
+                  {
+                    name: 'guildPosition',
+                    label: t('guildMembersTable.role'),
+                    style: 'text-center px-2',
+                  },
+                  {
+                    name: 'online',
+                    label: t('guildMembersTable.online'),
+                    style: 'text-center px-2',
+                  },
                 ]}
               >
                 {adminGuild.members.map((member, index) => {
@@ -1942,20 +2237,42 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                           : 'border-neutral-300 dark:border-primary-400/30'
                       }`}
                     >
-                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-neutral-900 dark:text-neutral-100">
+                      <Typography
+                        component="td"
+                        variant="label2-r"
+                        styles="px-2 py-2 text-neutral-900 dark:text-neutral-100"
+                      >
                         {member.characterName}
                       </Typography>
-                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                      <Typography
+                        component="td"
+                        variant="label2-r"
+                        styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                      >
                         {member.characterClassName}
                       </Typography>
-                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                      <Typography
+                        component="td"
+                        variant="label2-r"
+                        styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                      >
                         {member.resets}
                       </Typography>
-                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                      <Typography
+                        component="td"
+                        variant="label2-r"
+                        styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                      >
                         {t(`guildPositions.${member.guildPosition}`)}
                       </Typography>
-                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
-                        {member.online ? t('guildMemberOnline') : t('guildMemberOffline')}
+                      <Typography
+                        component="td"
+                        variant="label2-r"
+                        styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                      >
+                        {member.online
+                          ? t('guildMemberOnline')
+                          : t('guildMemberOffline')}
                       </Typography>
                     </tr>
                   );
@@ -1966,10 +2283,18 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         </div>
       ) : (
         <div className="rounded-lg border border-dashed border-neutral-300 bg-white/40 p-5 dark:border-neutral-700 dark:bg-neutral-950/20">
-          <Typography component="h3" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+          <Typography
+            component="h3"
+            variant="h3-inter"
+            styles="text-neutral-900 dark:text-neutral-100"
+          >
             {t('guildLookupEmptyTitle')}
           </Typography>
-          <Typography component="p" variant="body2-r" styles="mt-2 text-neutral-600 dark:text-neutral-300">
+          <Typography
+            component="p"
+            variant="body2-r"
+            styles="mt-2 text-neutral-600 dark:text-neutral-300"
+          >
             {t('guildLookupEmptyDescription')}
           </Typography>
         </div>
@@ -1995,6 +2320,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
       ? [{ id: AdminTab.SERVERS, label: t('tabs.servers') }]
       : []),
     ...(isSuperAdmin ? [{ id: AdminTab.LOGS, label: t('tabs.logs') }] : []),
+    ...(isSuperAdmin
+      ? [{ id: AdminTab.SOCIALS, label: t('tabs.socials') }]
+      : []),
     ...(canManageAccounts
       ? [{ id: AdminTab.ACCOUNTS, label: t('tabs.accounts') }]
       : []),
@@ -2124,7 +2452,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
                       disabled={!LEGACY_PANEL_URL}
                       onClick={() => {
                         if (LEGACY_PANEL_URL) {
-                          window.location.assign(`${LEGACY_PANEL_URL}${item.suffix}`);
+                          window.location.assign(
+                            `${LEGACY_PANEL_URL}${item.suffix}`,
+                          );
                         }
                       }}
                     >
@@ -2207,6 +2537,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           ? renderServersTab()
           : null}
         {activeTab === AdminTab.LOGS && isSuperAdmin ? renderLogsTab() : null}
+        {activeTab === AdminTab.SOCIALS && isSuperAdmin
+          ? renderSocialLinksTab()
+          : null}
         {activeTab === AdminTab.ONLINE ? renderOnlineTab() : null}
         {activeTab === AdminTab.CHARACTERS ? renderCharacterTab() : null}
         {activeTab === AdminTab.GUILDS ? renderGuildTab() : null}

@@ -30,6 +30,10 @@ export const canManageContent = (role: AccountState) => {
   return role === AccountState.GAME_MASTER || role === AccountState.SUPER_ADMIN;
 };
 
+export const canAccessCmsDuringBeta = (role: AccountState) => {
+  return canAccessGameMasterPanel(role);
+};
+
 export const getAdminLandingPath = (role: AccountState) => {
   if (canAccessSuperAdminPanel(role)) {
     return '/superadmin';

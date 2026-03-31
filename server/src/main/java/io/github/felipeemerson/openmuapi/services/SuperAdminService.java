@@ -1,6 +1,7 @@
 package io.github.felipeemerson.openmuapi.services;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
+import io.github.felipeemerson.openmuapi.dto.BetaSocialLinksDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LogFileEntryDTO;
 import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
@@ -29,17 +30,20 @@ public class SuperAdminService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final GameServerService gameServerService;
+    private final SocialMediaLinkService socialMediaLinkService;
 
     public SuperAdminService(@Autowired AdminService adminService,
                              @Autowired AccountService accountService,
                              @Autowired AccountRepository accountRepository,
                              @Autowired PasswordEncoder passwordEncoder,
-                             @Autowired GameServerService gameServerService) {
+                             @Autowired GameServerService gameServerService,
+                             @Autowired SocialMediaLinkService socialMediaLinkService) {
         this.adminService = adminService;
         this.accountService = accountService;
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.gameServerService = gameServerService;
+        this.socialMediaLinkService = socialMediaLinkService;
     }
 
     public void checkSuperAdminPrivileges(Jwt principal) throws ForbiddenException {
@@ -60,6 +64,14 @@ public class SuperAdminService {
 
     public List<LogFileEntryDTO> getLogFiles() {
         return this.gameServerService.getLogFiles();
+    }
+
+    public BetaSocialLinksDTO getBetaSocialLinks() {
+        return this.socialMediaLinkService.getBetaSocialLinks();
+    }
+
+    public BetaSocialLinksDTO updateBetaSocialLinks(BetaSocialLinksDTO dto) {
+        return this.socialMediaLinkService.updateBetaSocialLinks(dto);
     }
 
     public void startManageableServer(int serverId) {

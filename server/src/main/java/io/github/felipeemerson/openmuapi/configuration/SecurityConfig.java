@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/characters/rank").permitAll()
                         .requestMatchers("/game/servers").permitAll()
                         .requestMatchers("/game/configuration").permitAll()
+                        .requestMatchers("/game/social-links").permitAll()
                         .requestMatchers("/game/status").permitAll()
                         .requestMatchers("/game/statistics").permitAll()
                         .requestMatchers("/game/onlines").permitAll()

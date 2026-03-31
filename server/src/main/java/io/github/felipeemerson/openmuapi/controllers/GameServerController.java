@@ -1,6 +1,7 @@
 package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.CharacterRankDTO;
+import io.github.felipeemerson.openmuapi.dto.BetaSocialLinksDTO;
 import io.github.felipeemerson.openmuapi.dto.GameServerInfoDTO;
 import io.github.felipeemerson.openmuapi.dto.OnlinePlayersDTO;
 import io.github.felipeemerson.openmuapi.dto.ServerStatisticsDTO;
@@ -8,6 +9,7 @@ import io.github.felipeemerson.openmuapi.entities.GameConfiguration;
 import io.github.felipeemerson.openmuapi.exceptions.BadGatewayException;
 import io.github.felipeemerson.openmuapi.exceptions.BadRequestException;
 import io.github.felipeemerson.openmuapi.services.GameServerService;
+import io.github.felipeemerson.openmuapi.services.SocialMediaLinkService;
 import io.github.felipeemerson.openmuapi.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,9 +27,12 @@ import java.util.List;
 public class GameServerController {
 
     private final GameServerService gameServerService;
+    private final SocialMediaLinkService socialMediaLinkService;
 
-    public GameServerController(@Autowired GameServerService gameServerService){
+    public GameServerController(@Autowired GameServerService gameServerService,
+                                @Autowired SocialMediaLinkService socialMediaLinkService){
         this.gameServerService = gameServerService;
+        this.socialMediaLinkService = socialMediaLinkService;
     }
 
     @GetMapping("/game/servers")
@@ -38,6 +43,11 @@ public class GameServerController {
     @GetMapping("/game/configuration")
     public ResponseEntity<GameConfiguration> getConfiguration() {
         return new ResponseEntity<>(gameServerService.getGameConfiguration(), HttpStatus.OK);
+    }
+
+    @GetMapping("/game/social-links")
+    public ResponseEntity<BetaSocialLinksDTO> getSocialLinks() {
+        return new ResponseEntity<>(socialMediaLinkService.getBetaSocialLinks(), HttpStatus.OK);
     }
 
     @GetMapping("/game/status")
