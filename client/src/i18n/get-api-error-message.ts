@@ -20,6 +20,21 @@ const patterns: Pattern[] = [
     params: (match) => ({ characterName: match[1] }),
   },
   {
+    test: /^Map (.+) not found\.$/,
+    key: 'apiErrors.mapNotFound',
+    params: (match) => ({ mapName: match[1] }),
+  },
+  {
+    test: /^Guild (.+) (?:was )?not found\.$/,
+    key: 'apiErrors.guildNotFound',
+    params: (match) => ({ guildName: match[1] }),
+  },
+  {
+    test: /^Character (.+) is not a member of guild (.+)\.$/,
+    key: 'apiErrors.guildMemberNotFound',
+    params: (match) => ({ characterName: match[1], guildName: match[2] }),
+  },
+  {
     test: /^Author name invalid\.$/,
     key: 'apiErrors.authorNameInvalid',
   },

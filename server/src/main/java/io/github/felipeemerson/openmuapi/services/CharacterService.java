@@ -58,21 +58,12 @@ public class CharacterService {
 
     public CharacterDTO getCharacterByName(String loginName, String characterName) throws NotFoundException, ForbiddenException {
         Character character = this.getCharacterAndCheckPrivileges(loginName, characterName);
+        return this.createCharacterDTO(character);
+    }
 
-        Optional<GuildMember> guild = guildMemberRepository.findById(character.getId());
-
-        if (guild.isEmpty()) {
-            character.setGuild(null);
-        } else {
-            character.setGuild(guild.get().getGuild());
-        }
-
-        CharacterDTO characterDTO = new CharacterDTO();
-        mapCharacterToCharacterDTO(character, characterDTO);
-
-        setCharacterAttributes(characterDTO);
-
-        return characterDTO;
+    public CharacterDTO getCharacterByNameAsAdmin(String characterName) throws NotFoundException {
+        Character character = this.getCharacterByNameOrThrow(characterName);
+        return this.createCharacterDTO(character);
     }
 
     public List<CharacterRankDTO> getCharactersByIds(List<UUID> ids) {
@@ -134,7 +125,19 @@ public class CharacterService {
                                                   CharacterAttributesDTO characterAttributesDTO)
                                 throws NotFoundException, ForbiddenException, BadRequestException {
         Character character = this.getCharacterAndCheckPrivileges(loginName, characterName);
+        return this.updateCharacterAttributesInternal(character, characterAttributesDTO);
+    }
 
+    public CharacterDTO updateCharacterAttributesAsAdmin(String characterName,
+                                                         CharacterAttributesDTO characterAttributesDTO)
+            throws NotFoundException, BadRequestException {
+        Character character = this.getCharacterByNameOrThrow(characterName);
+        return this.updateCharacterAttributesInternal(character, characterAttributesDTO);
+    }
+
+    private CharacterDTO updateCharacterAttributesInternal(Character character,
+                                                           CharacterAttributesDTO characterAttributesDTO)
+            throws BadRequestException {
         checkIfCharacterIsOnline(character.getAccount().getLoginName());
 
         boolean isDLOrLE = SystemConstants.DL_CLASSES.contains(character.getCharacterClass().getName());
@@ -187,12 +190,7 @@ public class CharacterService {
 
         character = this.characterRepository.save(character);
 
-        CharacterDTO characterDTO = new CharacterDTO();
-        mapCharacterToCharacterDTO(character, characterDTO);
-
-        setCharacterAttributes(characterDTO, characterStats);
-
-        return characterDTO;
+        return createCharacterDTO(character, characterStats);
     }
 
     private void checkIfCharacterIsOnline(String loginName) throws BadRequestException {
@@ -208,8 +206,74 @@ public class CharacterService {
                                         String characterName)
                     throws NotFoundException, ForbiddenException, BadRequestException {
         Character character = this.getCharacterAndCheckPrivileges(loginName, characterName);
+        return this.resetCharacterInternal(character, true);
+    }
 
-        checkIfCharacterIsOnline(character.getAccount().getLoginName());
+    public CharacterDTO resetCharacterAsAdmin(String characterName) throws NotFoundException {
+        Character character = this.getCharacterByNameOrThrow(characterName);
+        return this.resetCharacterInternal(character, false);
+    }
+
+    private float calculatePointsToAdd(int pointsRequested, float attributePoints) {
+        float addedPoints = pointsRequested + attributePoints;
+
+        if (addedPoints > SystemConstants.MAX_STATS_POINTS) {
+            return 0;
+        }
+
+        return pointsRequested;
+    }
+
+    public Character getCharacterByNameOrThrow(String characterName) throws NotFoundException {
+        return this.characterRepository.findByNameIgnoreCase(characterName)
+                .orElseThrow(() -> new NotFoundException(String.format("Character %s not found.", characterName)));
+    }
+
+    public CharacterDTO createCharacterDTO(Character character) {
+        Optional<GuildMember> guild = guildMemberRepository.findById(character.getId());
+
+        if (guild.isEmpty()) {
+            character.setGuild(null);
+        } else {
+            character.setGuild(guild.get().getGuild());
+        }
+
+        CharacterDTO characterDTO = new CharacterDTO();
+        mapCharacterToCharacterDTO(character, characterDTO);
+        setCharacterAttributes(characterDTO);
+        return characterDTO;
+    }
+
+    private CharacterDTO createCharacterDTO(Character character, Map<UUID, StatAttribute> characterStats) {
+        Optional<GuildMember> guild = guildMemberRepository.findById(character.getId());
+
+        if (guild.isEmpty()) {
+            character.setGuild(null);
+        } else {
+            character.setGuild(guild.get().getGuild());
+        }
+
+        CharacterDTO characterDTO = new CharacterDTO();
+        mapCharacterToCharacterDTO(character, characterDTO);
+        setCharacterAttributes(characterDTO, characterStats);
+        return characterDTO;
+    }
+
+    private Character getCharacterAndCheckPrivileges(String loginName, String characterName) throws NotFoundException, ForbiddenException {
+        Character character = this.getCharacterByNameOrThrow(characterName);
+
+        if (!character.getAccount().getLoginName().equals(loginName)) {
+            throw new ForbiddenException("You don't have permission to access this character's data.");
+        }
+
+        return character;
+    }
+
+    private CharacterDTO resetCharacterInternal(Character character, boolean validatePlayerConstraints)
+            throws BadRequestException {
+        if (validatePlayerConstraints) {
+            checkIfCharacterIsOnline(character.getAccount().getLoginName());
+        }
 
         Map<UUID, StatAttribute> characterStats =
                 this.statAttributeService.getMapAttributeDefinitionIdToCharacterStats(character.getId(),
@@ -218,30 +282,33 @@ public class CharacterService {
         float level = characterStats.get(SystemConstants.LEVEL_DEFINITION_ID).getValue();
         float resets = characterStats.get(SystemConstants.RESETS_DEFINITION_ID).getValue();
 
-        if (level < SystemConstants.RESET_REQUIRED_LEVEL) {
-            throw new BadRequestException(String.format("Required level is %s", 400));
-        }
-
         int resetsPlusOne = (int) (resets + 1);
-        boolean hasResetLimit = SystemConstants.RESET_LIMIT > 0;
 
-        if (hasResetLimit && resetsPlusOne > SystemConstants.RESET_LIMIT) {
-            throw new BadRequestException(String.format("Maximum resets of %s reached", SystemConstants.RESET_LIMIT));
+        if (validatePlayerConstraints) {
+            if (level < SystemConstants.RESET_REQUIRED_LEVEL) {
+                throw new BadRequestException(String.format("Required level is %s", 400));
+            }
+
+            boolean hasResetLimit = SystemConstants.RESET_LIMIT > 0;
+
+            if (hasResetLimit && resetsPlusOne > SystemConstants.RESET_LIMIT) {
+                throw new BadRequestException(String.format("Maximum resets of %s reached", SystemConstants.RESET_LIMIT));
+            }
+
+            int requiredZen = SystemConstants.RESET_REQUIRED_ZEN;
+            ItemStorage itemStorage = this.itemStorageRepository.findById(character.getInventory().getId()).get();
+
+            if (SystemConstants.RESET_MULTIPLY_REQUIRED_ZEN) {
+                requiredZen *= resetsPlusOne;
+            }
+
+            if (itemStorage.getMoney() < requiredZen) {
+                throw new BadRequestException(String.format("You don't have enough money for reset, required zen is %s", requiredZen));
+            }
+
+            itemStorage.setMoney(itemStorage.getMoney() - requiredZen);
+            itemStorageRepository.save(itemStorage);
         }
-
-        int requiredZen = SystemConstants.RESET_REQUIRED_ZEN;
-
-        ItemStorage itemStorage = this.itemStorageRepository.findById(character.getInventory().getId()).get();
-
-        if (SystemConstants.RESET_MULTIPLY_REQUIRED_ZEN) {
-            requiredZen *= resetsPlusOne;
-        }
-
-        if (itemStorage.getMoney() < requiredZen) {
-            throw new BadRequestException(String.format("You don't have enough money for reset, required zen is %s", requiredZen));
-        }
-
-        itemStorage.setMoney(itemStorage.getMoney() - requiredZen);
 
         characterStats.get(SystemConstants.RESETS_DEFINITION_ID).setValue(resetsPlusOne);
         characterStats.get(SystemConstants.LEVEL_DEFINITION_ID).setValue(SystemConstants.LEVEL_AFTER_RESET);
@@ -287,42 +354,10 @@ public class CharacterService {
         }
 
         List<StatAttribute> statAttributes = new ArrayList<>(characterStats.values());
-
-        itemStorageRepository.save(itemStorage);
         statAttributeRepository.saveAll(statAttributes);
         characterRepository.save(character);
 
-        CharacterDTO characterDTO = new CharacterDTO();
-        mapCharacterToCharacterDTO(character, characterDTO);
-        setCharacterAttributes(characterDTO, characterStats);
-
-        return characterDTO;
-    }
-
-    private float calculatePointsToAdd(int pointsRequested, float attributePoints) {
-        float addedPoints = pointsRequested + attributePoints;
-
-        if (addedPoints > SystemConstants.MAX_STATS_POINTS) {
-            return 0;
-        }
-
-        return pointsRequested;
-    }
-
-    private Character getCharacterAndCheckPrivileges(String loginName, String characterName) throws NotFoundException, ForbiddenException {
-        Optional<Character> characterOptional = this.characterRepository.findCharacterByName(characterName);
-
-        if (characterOptional.isEmpty()) {
-            throw new NotFoundException(String.format("Character %s was not found.", characterName));
-        }
-
-        Character character = characterOptional.get();
-
-        if (!character.getAccount().getLoginName().equals(loginName)) {
-            throw new ForbiddenException("You don't have permission to access this character's data.");
-        }
-
-        return character;
+        return createCharacterDTO(character, characterStats);
     }
 
     private static void validatePaginatedAttributes(int page, int size) throws BadRequestException {

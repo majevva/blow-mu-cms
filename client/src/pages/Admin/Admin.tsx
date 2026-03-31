@@ -3,13 +3,20 @@ import { Navigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState } from '@/api/types';
+import { AccountState, type CharacterAttributes, type CharacterDetails } from '@/api/types';
 import {
   useBroadcastMessage,
   useChangeAccountState,
+  useChangeGuildMaster,
+  useDisbandGuild,
+  useForceResetCharacter,
   useGetAdminAccounts,
+  useGetAdminCharacter,
+  useGetAdminGuild,
   useKickCharacter,
+  useTeleportCharacter,
   useTemporarilyBanCharacter,
+  useUpdateCharacterAttributesAsAdmin,
   type AdminAccount,
 } from '@/api/admin';
 import {
@@ -72,6 +79,14 @@ const EMPTY_MANAGED_ACCOUNT_FORM: ManagedAccountFormValues = {
   vaultExtended: false,
 };
 
+const EMPTY_ATTRIBUTE_FORM: CharacterAttributes = {
+  strength: 0,
+  agility: 0,
+  vitality: 0,
+  energy: 0,
+  command: 0,
+};
+
 const STATE_COLORS: Record<AccountState, string> = {
   [AccountState.NORMAL]: 'text-green-500',
   [AccountState.GAME_MASTER]: 'text-blue-500',
@@ -88,6 +103,8 @@ enum AdminTab {
   LOGS,
   ACCOUNTS,
   ONLINE,
+  CHARACTERS,
+  GUILDS,
   TOOLS,
 }
 
@@ -142,6 +159,16 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   >(null);
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [selectedServerId, setSelectedServerId] = useState('');
+  const [characterLookupInput, setCharacterLookupInput] = useState('');
+  const [selectedCharacterName, setSelectedCharacterName] = useState('');
+  const [teleportMapName, setTeleportMapName] = useState('');
+  const [teleportX, setTeleportX] = useState('0');
+  const [teleportY, setTeleportY] = useState('0');
+  const [attributeForm, setAttributeForm] =
+    useState<CharacterAttributes>(EMPTY_ATTRIBUTE_FORM);
+  const [guildLookupInput, setGuildLookupInput] = useState('');
+  const [selectedGuildName, setSelectedGuildName] = useState('');
+  const [newGuildMasterName, setNewGuildMasterName] = useState('');
 
   const { data: serverStatistics } = useGetServerStatistics();
   const { data: accountsPage, isLoading: isAccountsLoading } =
@@ -157,6 +184,22 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   );
   const { data: gameServers = [], isLoading: isGameServersLoading } =
     useGetGameServers(isAdmin && activeTab === AdminTab.TOOLS);
+  const {
+    data: adminCharacter,
+    isLoading: isAdminCharacterLoading,
+    error: adminCharacterError,
+  } = useGetAdminCharacter(
+    selectedCharacterName,
+    isAdmin && activeTab === AdminTab.CHARACTERS,
+  );
+  const {
+    data: adminGuild,
+    isLoading: isAdminGuildLoading,
+    error: adminGuildError,
+  } = useGetAdminGuild(
+    selectedGuildName,
+    isAdmin && activeTab === AdminTab.GUILDS,
+  );
   const { data: loggedInAccounts = [], isLoading: isLoggedInAccountsLoading } =
     useGetLoggedInAccounts(isSuperAdmin && activeTab === AdminTab.SESSIONS);
   const { data: manageableServers = [], isLoading: isManageableServersLoading } =
@@ -180,6 +223,18 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     useUpdateManagedAccount();
   const { mutate: kickCharacter } = useKickCharacter();
   const { mutate: temporarilyBanCharacter } = useTemporarilyBanCharacter();
+  const { mutate: teleportCharacter, isPending: isTeleportPending } =
+    useTeleportCharacter();
+  const { mutate: forceResetCharacter, isPending: isForceResetPending } =
+    useForceResetCharacter();
+  const {
+    mutate: updateCharacterAttributesAsAdmin,
+    isPending: isAttributeUpdatePending,
+  } = useUpdateCharacterAttributesAsAdmin();
+  const { mutate: changeGuildMaster, isPending: isGuildMasterChangePending } =
+    useChangeGuildMaster();
+  const { mutate: disbandGuild, isPending: isDisbandGuildPending } =
+    useDisbandGuild();
   const { mutate: disconnectLoggedInAccount } = useDisconnectLoggedInAccount();
   const { mutate: startManageableServer } = useStartManageableServer();
   const { mutate: stopManageableServer } = useStopManageableServer();
@@ -194,6 +249,41 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
       setSelectedServerId(String(gameServers[0].serverId));
     }
   }, [gameServers, selectedServerId]);
+
+  useEffect(() => {
+    if (!adminCharacter) {
+      return;
+    }
+
+    setTeleportMapName(adminCharacter.currentMap?.mapName ?? '');
+    setTeleportX(String(adminCharacter.currentMap?.positionX ?? 0));
+    setTeleportY(String(adminCharacter.currentMap?.positionY ?? 0));
+    setAttributeForm(EMPTY_ATTRIBUTE_FORM);
+  }, [adminCharacter]);
+
+  useEffect(() => {
+    if (!adminGuild) {
+      return;
+    }
+
+    setNewGuildMasterName(adminGuild.guildMaster ?? '');
+  }, [adminGuild]);
+
+  useEffect(() => {
+    if (!adminCharacterError) {
+      return;
+    }
+
+    openToast.error(getFormattedApiError(adminCharacterError));
+  }, [adminCharacterError, openToast]);
+
+  useEffect(() => {
+    if (!adminGuildError) {
+      return;
+    }
+
+    openToast.error(getFormattedApiError(adminGuildError));
+  }, [adminGuildError, openToast]);
 
   useEffect(() => {
     if (!managedAccountDetails || managedAccountMode !== 'edit') {
@@ -504,6 +594,167 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         },
       },
     );
+  };
+
+  const handleCharacterLookup = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const nextCharacterName = characterLookupInput.trim();
+    if (!nextCharacterName) {
+      openToast.warning(t('characterLookupValidation'));
+      return;
+    }
+
+    setSelectedCharacterName(nextCharacterName);
+  };
+
+  const handleTeleportSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const mapName = teleportMapName.trim();
+    const x = Number(teleportX);
+    const y = Number(teleportY);
+
+    if (!selectedCharacterName || !mapName || Number.isNaN(x) || Number.isNaN(y)) {
+      openToast.warning(t('characterTeleportValidation'));
+      return;
+    }
+
+    teleportCharacter(
+      { characterName: selectedCharacterName, mapName, x, y },
+      {
+        onSuccess: () => {
+          openToast.success(
+            t('characterTeleportSuccess', { characterName: selectedCharacterName }),
+          );
+        },
+        onError: (error: Error) => {
+          openToast.error(getFormattedApiError(error));
+        },
+      },
+    );
+  };
+
+  const handleForceReset = () => {
+    if (!selectedCharacterName) {
+      return;
+    }
+
+    forceResetCharacter(selectedCharacterName, {
+      onSuccess: () => {
+        setAttributeForm(EMPTY_ATTRIBUTE_FORM);
+        openToast.success(
+          t('characterResetSuccess', { characterName: selectedCharacterName }),
+        );
+      },
+      onError: (error: Error) => {
+        openToast.error(getFormattedApiError(error));
+      },
+    });
+  };
+
+  const handleAttributeFormChange = (
+    field: keyof CharacterAttributes,
+    value: string,
+  ) => {
+    const parsed = Number.parseInt(value.replaceAll(/[^0-9]/g, ''), 10) || 0;
+
+    setAttributeForm((prev) => ({
+      ...prev,
+      [field]: parsed,
+    }));
+  };
+
+  const handleAttributeSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!selectedCharacterName) {
+      return;
+    }
+
+    const totalRequestedPoints = Object.values(attributeForm).reduce(
+      (sum, value) => sum + value,
+      0,
+    );
+
+    if (totalRequestedPoints === 0) {
+      openToast.warning(t('characterAttributesValidation'));
+      return;
+    }
+
+    updateCharacterAttributesAsAdmin(
+      { characterName: selectedCharacterName, attributes: attributeForm },
+      {
+        onSuccess: () => {
+          setAttributeForm(EMPTY_ATTRIBUTE_FORM);
+          openToast.success(
+            t('characterAttributesSuccess', {
+              characterName: selectedCharacterName,
+            }),
+          );
+        },
+        onError: (error: Error) => {
+          openToast.error(getFormattedApiError(error));
+        },
+      },
+    );
+  };
+
+  const handleGuildLookup = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const nextGuildName = guildLookupInput.trim();
+    if (!nextGuildName) {
+      openToast.warning(t('guildLookupValidation'));
+      return;
+    }
+
+    setSelectedGuildName(nextGuildName);
+  };
+
+  const handleGuildMasterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const nextMaster = newGuildMasterName.trim();
+    if (!selectedGuildName || !nextMaster) {
+      openToast.warning(t('guildMasterValidation'));
+      return;
+    }
+
+    changeGuildMaster(
+      {
+        guildName: selectedGuildName,
+        newMasterCharacterName: nextMaster,
+      },
+      {
+        onSuccess: () => {
+          openToast.success(
+            t('guildMasterSuccess', { guildName: selectedGuildName }),
+          );
+        },
+        onError: (error: Error) => {
+          openToast.error(getFormattedApiError(error));
+        },
+      },
+    );
+  };
+
+  const handleDisbandGuild = () => {
+    if (!selectedGuildName) {
+      return;
+    }
+
+    disbandGuild(selectedGuildName, {
+      onSuccess: () => {
+        setSelectedGuildName('');
+        setGuildLookupInput('');
+        setNewGuildMasterName('');
+        openToast.success(t('guildDisbandSuccess', { guildName: selectedGuildName }));
+      },
+      onError: (error: Error) => {
+        openToast.error(getFormattedApiError(error));
+      },
+    });
   };
 
   const columns = [
@@ -1348,6 +1599,378 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     </div>
   );
 
+  const renderCharacterSummary = (character: CharacterDetails) => {
+    const isDarkLordClass = ['Dark Lord', 'Lord Emperor'].includes(
+      character.characterClassName,
+    );
+
+    return (
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
+          <Typography
+            component="h2"
+            variant="h3-inter"
+            styles="text-neutral-900 dark:text-neutral-100"
+          >
+            {character.characterName}
+          </Typography>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                {t('characterSummary.class')}
+              </Typography>
+              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                {character.characterClassName}
+              </Typography>
+            </div>
+            <div>
+              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                {t('characterSummary.level')}
+              </Typography>
+              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                {character.level} / ML {character.masterLevel}
+              </Typography>
+            </div>
+            <div>
+              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                {t('characterSummary.resets')}
+              </Typography>
+              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                {character.resets}
+              </Typography>
+            </div>
+            <div>
+              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                {t('characterSummary.location')}
+              </Typography>
+              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                {character.currentMap?.mapName} ({character.currentMap?.positionX},{' '}
+                {character.currentMap?.positionY})
+              </Typography>
+            </div>
+            <div>
+              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                {t('characterSummary.heroState')}
+              </Typography>
+              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                {character.state}
+              </Typography>
+            </div>
+            <div>
+              <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                {t('characterSummary.guild')}
+              </Typography>
+              <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                {character.guild?.name ?? t('characterSummary.noGuild')}
+              </Typography>
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button
+              variant="outline"
+              disabled={isForceResetPending}
+              onClick={handleForceReset}
+            >
+              {isForceResetPending
+                ? t('characterResetPending')
+                : t('characterResetButton')}
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid gap-6">
+          <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
+            <Typography
+              component="h3"
+              variant="h3-inter"
+              styles="text-neutral-900 dark:text-neutral-100"
+            >
+              {t('characterTeleportTitle')}
+            </Typography>
+            <Typography
+              component="p"
+              variant="body2-r"
+              styles="mt-2 text-neutral-600 dark:text-neutral-300"
+            >
+              {t('characterTeleportDescription')}
+            </Typography>
+            <form className="mt-5 grid gap-4 md:grid-cols-3" onSubmit={handleTeleportSubmit}>
+              <input
+                className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                placeholder={t('characterTeleportMapPlaceholder')}
+                value={teleportMapName}
+                onChange={(e) => setTeleportMapName(e.target.value)}
+              />
+              <input
+                className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                placeholder="X"
+                value={teleportX}
+                onChange={(e) => setTeleportX(e.target.value)}
+              />
+              <input
+                className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                placeholder="Y"
+                value={teleportY}
+                onChange={(e) => setTeleportY(e.target.value)}
+              />
+              <div className="md:col-span-3 flex justify-end">
+                <Button type="submit" disabled={isTeleportPending}>
+                  {isTeleportPending
+                    ? t('characterTeleportPending')
+                    : t('characterTeleportButton')}
+                </Button>
+              </div>
+            </form>
+          </div>
+
+          <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
+            <Typography
+              component="h3"
+              variant="h3-inter"
+              styles="text-neutral-900 dark:text-neutral-100"
+            >
+              {t('characterAttributesTitle')}
+            </Typography>
+            <Typography
+              component="p"
+              variant="body2-r"
+              styles="mt-2 text-neutral-600 dark:text-neutral-300"
+            >
+              {t('characterAttributesDescription', {
+                points: character.levelUpPoints,
+              })}
+            </Typography>
+            <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleAttributeSubmit}>
+              {(['strength', 'agility', 'vitality', 'energy'] as const).map((field) => (
+                <label key={field} className="flex flex-col gap-2">
+                  <Typography component="span" variant="label2-r" styles="text-neutral-800 dark:text-neutral-200">
+                    {t(`characterAttributeFields.${field}`)}
+                  </Typography>
+                  <input
+                    className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                    value={attributeForm[field]}
+                    onChange={(e) => handleAttributeFormChange(field, e.target.value)}
+                  />
+                </label>
+              ))}
+              {isDarkLordClass ? (
+                <label className="flex flex-col gap-2">
+                  <Typography component="span" variant="label2-r" styles="text-neutral-800 dark:text-neutral-200">
+                    {t('characterAttributeFields.command')}
+                  </Typography>
+                  <input
+                    className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                    value={attributeForm.command}
+                    onChange={(e) => handleAttributeFormChange('command', e.target.value)}
+                  />
+                </label>
+              ) : null}
+              <div className="md:col-span-2 flex justify-end">
+                <Button type="submit" disabled={isAttributeUpdatePending}>
+                  {isAttributeUpdatePending
+                    ? t('characterAttributesPending')
+                    : t('characterAttributesButton')}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderCharacterTab = () => (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-1">
+          <Typography component="h2" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+            {t('characterLookupTitle')}
+          </Typography>
+          <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+            {t('characterLookupDescription')}
+          </Typography>
+        </div>
+        <form className="flex w-full gap-2 md:max-w-xl" onSubmit={handleCharacterLookup}>
+          <input
+            className="h-10 flex-1 rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+            placeholder={t('characterLookupPlaceholder')}
+            value={characterLookupInput}
+            onChange={(e) => setCharacterLookupInput(e.target.value)}
+          />
+          <Button type="submit">{t('characterLookupButton')}</Button>
+        </form>
+      </div>
+
+      {isAdminCharacterLoading ? (
+        <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+          {t('characterLookupLoading')}
+        </Typography>
+      ) : adminCharacter ? (
+        renderCharacterSummary(adminCharacter)
+      ) : (
+        <div className="rounded-lg border border-dashed border-neutral-300 bg-white/40 p-5 dark:border-neutral-700 dark:bg-neutral-950/20">
+          <Typography component="h3" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+            {t('characterLookupEmptyTitle')}
+          </Typography>
+          <Typography component="p" variant="body2-r" styles="mt-2 text-neutral-600 dark:text-neutral-300">
+            {t('characterLookupEmptyDescription')}
+          </Typography>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderGuildTab = () => (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-1">
+          <Typography component="h2" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+            {t('guildLookupTitle')}
+          </Typography>
+          <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+            {t('guildLookupDescription')}
+          </Typography>
+        </div>
+        <form className="flex w-full gap-2 md:max-w-xl" onSubmit={handleGuildLookup}>
+          <input
+            className="h-10 flex-1 rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+            placeholder={t('guildLookupPlaceholder')}
+            value={guildLookupInput}
+            onChange={(e) => setGuildLookupInput(e.target.value)}
+          />
+          <Button type="submit">{t('guildLookupButton')}</Button>
+        </form>
+      </div>
+
+      {isAdminGuildLoading ? (
+        <Typography component="p" variant="body2-r" styles="text-neutral-600 dark:text-neutral-300">
+          {t('guildLookupLoading')}
+        </Typography>
+      ) : adminGuild ? (
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
+            <Typography component="h2" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+              {adminGuild.name}
+            </Typography>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <div>
+                <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                  {t('guildSummary.master')}
+                </Typography>
+                <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                  {adminGuild.guildMaster}
+                </Typography>
+              </div>
+              <div>
+                <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                  {t('guildSummary.score')}
+                </Typography>
+                <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                  {adminGuild.score}
+                </Typography>
+              </div>
+              <div className="sm:col-span-2">
+                <Typography component="span" variant="label2-r" styles="text-neutral-500 dark:text-neutral-400">
+                  {t('guildSummary.notice')}
+                </Typography>
+                <Typography component="p" variant="body2-r" styles="text-neutral-900 dark:text-neutral-100">
+                  {adminGuild.notice || t('guildSummary.noNotice')}
+                </Typography>
+              </div>
+            </div>
+
+            <form className="mt-6 flex flex-col gap-4" onSubmit={handleGuildMasterSubmit}>
+              <label className="flex flex-col gap-2">
+                <Typography component="span" variant="label2-r" styles="text-neutral-800 dark:text-neutral-200">
+                  {t('guildMasterLabel')}
+                </Typography>
+                <input
+                  className="rounded-[4px] border border-neutral-300 p-2 font-inter text-[14px] text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/60 dark:text-neutral-100"
+                  value={newGuildMasterName}
+                  onChange={(e) => setNewGuildMasterName(e.target.value)}
+                />
+              </label>
+              <div className="flex flex-wrap justify-between gap-3">
+                <Button type="submit" disabled={isGuildMasterChangePending}>
+                  {isGuildMasterChangePending
+                    ? t('guildMasterPending')
+                    : t('guildMasterButton')}
+                </Button>
+                <Button
+                  variant="outline"
+                  disabled={isDisbandGuildPending}
+                  onClick={handleDisbandGuild}
+                >
+                  {isDisbandGuildPending
+                    ? t('guildDisbandPending')
+                    : t('guildDisbandButton')}
+                </Button>
+              </div>
+            </form>
+          </div>
+
+          <div className="rounded-lg border border-neutral-200 bg-white/70 p-5 dark:border-neutral-800/40 dark:bg-neutral-950/30">
+            <Typography component="h3" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+              {t('guildMembersTitle', { count: adminGuild.members.length })}
+            </Typography>
+            <div className="mt-5 overflow-x-auto">
+              <Table
+                columns={[
+                  { name: 'characterName', label: t('guildMembersTable.name'), style: 'text-left px-2' },
+                  { name: 'characterClassName', label: t('guildMembersTable.class'), style: 'text-center px-2' },
+                  { name: 'resets', label: t('guildMembersTable.resets'), style: 'text-center px-2' },
+                  { name: 'guildPosition', label: t('guildMembersTable.role'), style: 'text-center px-2' },
+                  { name: 'online', label: t('guildMembersTable.online'), style: 'text-center px-2' },
+                ]}
+              >
+                {adminGuild.members.map((member, index) => {
+                  const isLast = index === adminGuild.members.length - 1;
+
+                  return (
+                    <tr
+                      key={member.characterId}
+                      className={`border-b ${
+                        isLast
+                          ? 'border-neutral-700 dark:border-neutral-600'
+                          : 'border-neutral-300 dark:border-primary-400/30'
+                      }`}
+                    >
+                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-neutral-900 dark:text-neutral-100">
+                        {member.characterName}
+                      </Typography>
+                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                        {member.characterClassName}
+                      </Typography>
+                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                        {member.resets}
+                      </Typography>
+                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                        {t(`guildPositions.${member.guildPosition}`)}
+                      </Typography>
+                      <Typography component="td" variant="label2-r" styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100">
+                        {member.online ? t('guildMemberOnline') : t('guildMemberOffline')}
+                      </Typography>
+                    </tr>
+                  );
+                })}
+              </Table>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-lg border border-dashed border-neutral-300 bg-white/40 p-5 dark:border-neutral-700 dark:bg-neutral-950/20">
+          <Typography component="h3" variant="h3-inter" styles="text-neutral-900 dark:text-neutral-100">
+            {t('guildLookupEmptyTitle')}
+          </Typography>
+          <Typography component="p" variant="body2-r" styles="mt-2 text-neutral-600 dark:text-neutral-300">
+            {t('guildLookupEmptyDescription')}
+          </Typography>
+        </div>
+      )}
+    </div>
+  );
+
   const superAdminLegacySections = [
     { key: 'servers', suffix: '/servers' },
     { key: 'loggedIn', suffix: '/logged-in' },
@@ -1370,6 +1993,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
       ? [{ id: AdminTab.ACCOUNTS, label: t('tabs.accounts') }]
       : []),
     { id: AdminTab.ONLINE, label: t('tabs.online') },
+    { id: AdminTab.CHARACTERS, label: t('tabs.characters') },
+    { id: AdminTab.GUILDS, label: t('tabs.guilds') },
     { id: AdminTab.TOOLS, label: t('tabs.tools') },
   ];
   const activeTabIndex = Math.max(
@@ -1577,6 +2202,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           : null}
         {activeTab === AdminTab.LOGS && isSuperAdmin ? renderLogsTab() : null}
         {activeTab === AdminTab.ONLINE ? renderOnlineTab() : null}
+        {activeTab === AdminTab.CHARACTERS ? renderCharacterTab() : null}
+        {activeTab === AdminTab.GUILDS ? renderGuildTab() : null}
         {activeTab === AdminTab.TOOLS ? renderToolsTab() : null}
       </div>
     </div>

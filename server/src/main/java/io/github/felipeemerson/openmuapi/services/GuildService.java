@@ -36,12 +36,12 @@ public class GuildService {
         this.gameServerService = gameServerService;
     }
 
-    public Object getGuildByName(String guildName) throws BadRequestException, NotFoundException {
+    public GuildDTO getGuildByName(String guildName) throws BadRequestException, NotFoundException {
         if (guildName == null || guildName.isBlank()) {
             throw new BadRequestException("Guild name is null or empty.");
         }
 
-        Optional<Guild> guildOpt =  this.guildRepository.findByName(guildName);
+        Optional<Guild> guildOpt =  this.guildRepository.findByNameIgnoreCase(guildName);
 
         if (guildOpt.isEmpty()) {
             throw new NotFoundException(String.format("Guild %s was not found.", guildName));

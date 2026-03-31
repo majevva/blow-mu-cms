@@ -1,6 +1,11 @@
 package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.AdminBroadcastDTO;
+import io.github.felipeemerson.openmuapi.dto.AdminTeleportDTO;
+import io.github.felipeemerson.openmuapi.dto.ChangeGuildMasterDTO;
+import io.github.felipeemerson.openmuapi.dto.CharacterAttributesDTO;
+import io.github.felipeemerson.openmuapi.dto.CharacterDTO;
+import io.github.felipeemerson.openmuapi.dto.GuildDTO;
 import io.github.felipeemerson.openmuapi.services.AdminService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,5 +88,100 @@ class AdminControllerTest {
         inOrder.verify(adminService).checkAdminPrivileges(principal);
         inOrder.verify(adminService).broadcastMessage(dto, "gm-user");
         verify(adminService).broadcastMessage(dto, "gm-user");
+    }
+
+    @Test
+    void getCharacterReturnsDtoAndChecksPrivilegesFirst() {
+        AdminController controller = new AdminController(adminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "gm-user", "role", "GAME_MASTER")
+        );
+        CharacterDTO dto = new CharacterDTO();
+        org.mockito.Mockito.when(adminService.getCharacterByName("HeroOne")).thenReturn(dto);
+
+        var response = controller.getCharacter(principal, "HeroOne");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(dto, response.getBody());
+
+        InOrder inOrder = inOrder(adminService);
+        inOrder.verify(adminService).checkAdminPrivileges(principal);
+        inOrder.verify(adminService).getCharacterByName("HeroOne");
+    }
+
+    @Test
+    void teleportCharacterReturnsDtoAndChecksPrivilegesFirst() {
+        AdminController controller = new AdminController(adminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "gm-user", "role", "GAME_MASTER")
+        );
+        AdminTeleportDTO payload = new AdminTeleportDTO("Lorencia", (short) 120, (short) 121);
+        CharacterDTO dto = new CharacterDTO();
+        org.mockito.Mockito.when(adminService.teleportCharacter("HeroOne", payload)).thenReturn(dto);
+
+        var response = controller.teleportCharacter(principal, "HeroOne", payload);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(dto, response.getBody());
+
+        InOrder inOrder = inOrder(adminService);
+        inOrder.verify(adminService).checkAdminPrivileges(principal);
+        inOrder.verify(adminService).teleportCharacter("HeroOne", payload);
+    }
+
+    @Test
+    void updateCharacterAttributesReturnsDtoAndChecksPrivilegesFirst() {
+        AdminController controller = new AdminController(adminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "gm-user", "role", "GAME_MASTER")
+        );
+        CharacterAttributesDTO payload = new CharacterAttributesDTO(10, 5, 0, 0, 0);
+        CharacterDTO dto = new CharacterDTO();
+        org.mockito.Mockito.when(adminService.updateCharacterAttributesAsAdmin("HeroOne", payload)).thenReturn(dto);
+
+        var response = controller.updateCharacterAttributes(principal, "HeroOne", payload);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(dto, response.getBody());
+
+        InOrder inOrder = inOrder(adminService);
+        inOrder.verify(adminService).checkAdminPrivileges(principal);
+        inOrder.verify(adminService).updateCharacterAttributesAsAdmin("HeroOne", payload);
+    }
+
+    @Test
+    void changeGuildMasterReturnsDtoAndChecksPrivilegesFirst() {
+        AdminController controller = new AdminController(adminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "gm-user", "role", "GAME_MASTER")
+        );
+        ChangeGuildMasterDTO payload = new ChangeGuildMasterDTO("HeroTwo");
+        GuildDTO dto = new GuildDTO();
+        org.mockito.Mockito.when(adminService.changeGuildMaster("Legends", payload)).thenReturn(dto);
+
+        var response = controller.changeGuildMaster(principal, "Legends", payload);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(dto, response.getBody());
+
+        InOrder inOrder = inOrder(adminService);
+        inOrder.verify(adminService).checkAdminPrivileges(principal);
+        inOrder.verify(adminService).changeGuildMaster("Legends", payload);
     }
 }

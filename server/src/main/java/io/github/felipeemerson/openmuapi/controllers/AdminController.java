@@ -3,6 +3,12 @@ package io.github.felipeemerson.openmuapi.controllers;
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.AdminBroadcastDTO;
 import io.github.felipeemerson.openmuapi.dto.AccountStateChangeDTO;
+import io.github.felipeemerson.openmuapi.dto.AdminTeleportDTO;
+import io.github.felipeemerson.openmuapi.dto.ChangeGuildMasterDTO;
+import io.github.felipeemerson.openmuapi.dto.CharacterAttributesDTO;
+import io.github.felipeemerson.openmuapi.dto.CharacterDTO;
+import io.github.felipeemerson.openmuapi.dto.GuildDTO;
+import io.github.felipeemerson.openmuapi.exceptions.BadRequestException;
 import io.github.felipeemerson.openmuapi.exceptions.ForbiddenException;
 import io.github.felipeemerson.openmuapi.exceptions.NotFoundException;
 import io.github.felipeemerson.openmuapi.services.AdminService;
@@ -61,6 +67,68 @@ public class AdminController {
         adminService.checkAdminPrivileges(principal);
         adminService.temporarilyBanCharacter(characterName);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/characters/{characterName}")
+    public ResponseEntity<CharacterDTO> getCharacter(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String characterName) throws ForbiddenException, NotFoundException {
+        adminService.checkAdminPrivileges(principal);
+        return ResponseEntity.ok(adminService.getCharacterByName(characterName));
+    }
+
+    @PatchMapping("/characters/{characterName}/teleport")
+    public ResponseEntity<CharacterDTO> teleportCharacter(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String characterName,
+            @RequestBody @Valid AdminTeleportDTO dto) throws ForbiddenException, NotFoundException {
+        adminService.checkAdminPrivileges(principal);
+        return ResponseEntity.ok(adminService.teleportCharacter(characterName, dto));
+    }
+
+    @PatchMapping("/characters/{characterName}/force-reset")
+    public ResponseEntity<CharacterDTO> forceResetCharacter(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String characterName) throws ForbiddenException, NotFoundException {
+        adminService.checkAdminPrivileges(principal);
+        return ResponseEntity.ok(adminService.forceResetCharacter(characterName));
+    }
+
+    @PatchMapping("/characters/{characterName}/attributes")
+    public ResponseEntity<CharacterDTO> updateCharacterAttributes(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String characterName,
+            @RequestBody @Valid CharacterAttributesDTO dto)
+            throws ForbiddenException, NotFoundException, BadRequestException {
+        adminService.checkAdminPrivileges(principal);
+        return ResponseEntity.ok(adminService.updateCharacterAttributesAsAdmin(characterName, dto));
+    }
+
+    @GetMapping("/guilds/{guildName}")
+    public ResponseEntity<GuildDTO> getGuild(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String guildName) throws ForbiddenException, NotFoundException, BadRequestException {
+        adminService.checkAdminPrivileges(principal);
+        return ResponseEntity.ok(adminService.getGuildByName(guildName));
+    }
+
+    @DeleteMapping("/guilds/{guildName}")
+    public ResponseEntity<Void> disbandGuild(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String guildName) throws ForbiddenException, NotFoundException {
+        adminService.checkAdminPrivileges(principal);
+        adminService.disbandGuild(guildName);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/guilds/{guildName}/master")
+    public ResponseEntity<GuildDTO> changeGuildMaster(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String guildName,
+            @RequestBody @Valid ChangeGuildMasterDTO dto)
+            throws ForbiddenException, NotFoundException, BadRequestException {
+        adminService.checkAdminPrivileges(principal);
+        return ResponseEntity.ok(adminService.changeGuildMaster(guildName, dto));
     }
 
     @PostMapping("/broadcast")

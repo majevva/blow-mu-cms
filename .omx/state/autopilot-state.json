@@ -1,0 +1,15 @@
+{
+  "active": true,
+  "current_phase": "planning",
+  "started_at": "2026-03-31T16:50:02Z",
+  "task_description": "Integrate BastionMU admin capabilities into blow-mu-cms with a centralized GM admin cockpit and no duplication of prior work.",
+  "context_snapshot_path": "/home/openclawops/services/blow-mu-cms/.omx/context/admin-panel-bastionmu-centralization-20260331T165002Z.md",
+  "reused_context_snapshot_path": "/home/openclawops/services/blow-mu-cms/.omx/context/admin-migration-kick-character-20260331T160027Z.md",
+  "current_findings": [
+    "Existing repo already contains unfinished kick/online slice in working tree.",
+    "BastionMU repo confirms legacy panel exists and supports same-domain /panel fallback in deployment history.",
+    "Current CMS admin is functional but narrow; centralization currently incomplete."
+  ],
+  "spec_path": "/home/openclawops/services/blow-mu-cms/.omx/plans/autopilot-spec.md",
+  "implementation_plan_path": "/home/openclawops/services/blow-mu-cms/.omx/plans/autopilot-impl.md"
+}

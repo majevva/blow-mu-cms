@@ -15,6 +15,7 @@ import java.util.UUID;
 public interface GuildRepository extends JpaRepository<Guild, UUID> {
 
     Optional<Guild> findByName(String name);
+    Optional<Guild> findByNameIgnoreCase(String name);
 
     @Query("""
            SELECT new io.github.felipeemerson.openmuapi.dto.GuildRankDTO(g.id, g.name, g.logo, g.score,

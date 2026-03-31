@@ -1,0 +1,2 @@
+- [ ] Decide phase-1 live-map strategy: legacy link, embed in CMS shell, or native rebuild first.
+- [ ] Decide whether config editing migrates as generic schema-driven tooling or as narrower task-specific modules first.
