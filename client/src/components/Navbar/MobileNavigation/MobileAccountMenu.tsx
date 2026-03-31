@@ -64,7 +64,8 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
                 {t('myAccount')}
               </Typography>
             </li>
-            {jwtPayload.role === AccountState.GAME_MASTER && (
+            {(jwtPayload.role === AccountState.GAME_MASTER ||
+              jwtPayload.role === AccountState.GAME_MASTER_INVISIBLE) && (
               <>
                 <li>
                   <Typography
@@ -90,6 +91,19 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
                     }}
                   >
                     {t('banners')}
+                  </Typography>
+                </li>
+                <li>
+                  <Typography
+                    component="button"
+                    variant="label2-r"
+                    styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                    onClick={() => {
+                      navigate('/admin');
+                      onClose();
+                    }}
+                  >
+                    {t('adminPanel')}
                   </Typography>
                 </li>
               </>

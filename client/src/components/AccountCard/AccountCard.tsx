@@ -31,7 +31,8 @@ const AccountCard: React.FC<AccountCardProps> = () => {
         >
           {t('menuOptions.myAccount')}
         </Button>
-        {jwtPayload.role === AccountState.GAME_MASTER && (
+        {(jwtPayload.role === AccountState.GAME_MASTER ||
+          jwtPayload.role === AccountState.GAME_MASTER_INVISIBLE) && (
           <>
             <Button
               variant="ghost1"
@@ -46,6 +47,13 @@ const AccountCard: React.FC<AccountCardProps> = () => {
               onClick={() => navigate('/banners')}
             >
               {t('menuOptions.banners')}
+            </Button>
+            <Button
+              variant="ghost1"
+              styles="mx-auto"
+              onClick={() => navigate('/admin')}
+            >
+              {t('menuOptions.adminPanel')}
             </Button>
           </>
         )}

@@ -46,6 +46,7 @@
         "myAccount": "Moje konto",
         "addNews": "Dodaj aktualność",
         "banners": "Banery",
+        "adminPanel": "Panel administracyjny",
         "logout": "Wyloguj się"
       }
     },
@@ -450,6 +451,27 @@
       "required": "To pole jest wymagane.",
       "minimum": "Minimalna wartość to {{min}}.",
       "maximum": "Maksymalna wartość to {{max}}."
+    }
+  },
+  "admin": {
+    "title": "Panel administracyjny",
+    "searchPlaceholder": "Szukaj po loginie...",
+    "emptyMessage": "Brak kont",
+    "saveState": "Zapisz",
+    "table": {
+      "login": "Login",
+      "email": "E-mail",
+      "status": "Status",
+      "registrationDate": "Data rejestracji",
+      "actions": "Akcje"
+    },
+    "states": {
+      "NORMAL": "Normalny",
+      "BANNED": "Zbanowany",
+      "TEMPORARILY_BANNED": "Czasowo zbanowany",
+      "GAME_MASTER": "Game Master",
+      "GAME_MASTER_INVISIBLE": "GM Niewidoczny",
+      "SPECTATOR": "Spectator"
     }
   },
   "apiErrors": {

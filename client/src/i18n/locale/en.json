@@ -29,6 +29,7 @@
         "myAccount": "My account",
         "addNews": "Add news",
         "banners": "Banners",
+        "adminPanel": "Admin Panel",
         "logout": "Logout"
       }
     },
@@ -385,6 +386,27 @@
       "required": "Required.",
       "minimum": "The minimum is {{min}}.",
       "maximum": "The maximum is {{max}}."
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "searchPlaceholder": "Search by login...",
+    "emptyMessage": "No accounts found",
+    "saveState": "Save",
+    "table": {
+      "login": "Login",
+      "email": "Email",
+      "status": "Status",
+      "registrationDate": "Registration Date",
+      "actions": "Actions"
+    },
+    "states": {
+      "NORMAL": "Normal",
+      "BANNED": "Banned",
+      "TEMPORARILY_BANNED": "Temporarily Banned",
+      "GAME_MASTER": "Game Master",
+      "GAME_MASTER_INVISIBLE": "GM Invisible",
+      "SPECTATOR": "Spectator"
     }
   },
   "error": {

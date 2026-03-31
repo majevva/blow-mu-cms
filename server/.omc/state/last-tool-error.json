@@ -1,0 +1,7 @@
+{
+  "tool_name": "mcp__plugin_oh-my-claudecode_t__lsp_diagnostics",
+  "tool_input_preview": "{\"file\":\"/home/openclawops/services/blow-mu-cms/client/src/components/ChatBox/ChatBox.tsx\"}",
+  "error": "Language server 'typescript-language-server' not found.\nInstall with: npm install -g typescript-language-server typescript",
+  "timestamp": "2026-03-31T09:05:51.312Z",
+  "retry_count": 1
+}

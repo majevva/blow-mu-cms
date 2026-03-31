@@ -1,0 +1,31 @@
+# Ralph Session - Chatbox Implementation
+Date: 2026-03-30
+
+## Task
+Add a chatbox to blow-mu-cms so logged-in players can chat. Username = registered account loginName (JWT subject).
+
+## Files Changed
+### Backend
+- server/pom.xml — added spring-boot-starter-websocket dependency
+- server/.../configuration/WebSocketConfig.java — STOMP broker, /ws SockJS endpoint
+- server/.../configuration/WebSocketSecurityConfig.java — JWT auth on STOMP CONNECT
+- server/.../controllers/ChatController.java — /app/chat.send, /app/chat.join, GET /chat/history, 50-msg memory
+- server/.../dto/ChatMessageDTO.java — loginName, content, timestamp, MessageType enum
+- server/.../configuration/SecurityConfig.java — permitAll for /ws/** and /chat/history
+
+### Frontend
+- client/package.json — added @stomp/stompjs, sockjs-client, @types/sockjs-client
+- client/src/components/ChatBox/ChatBox.tsx — new component
+- client/src/components/Sidebar/Sidebar.tsx — added <ChatBox /> after RankingsCard
+
+## Key Learnings
+- SockJS uses HTTP URL (not ws://), so pass API_URL + '/ws' directly
+- @types/sockjs-client only types 'sockjs-client' main entry; use that with esModuleInterop: true
+- @EnableWebSocketMessageBroker belongs only on WebSocketConfig, not WebSocketSecurityConfig
+- Spring Boot 3 + JWT: use JwtService.extractUsername() in STOMP ChannelInterceptor
+
+## Verification
+- TypeScript: tsc --noEmit → 0 errors
+- Java: mvnw compile -q → 0 errors
+- Architect review: APPROVED (all 9 acceptance criteria met)
+- Deslop: removed duplicate @EnableWebSocketMessageBroker annotation + unused Collections import

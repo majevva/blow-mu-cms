@@ -38,6 +38,7 @@ const EditNewsPage = withSuspense(
 const EditBannersPage = withSuspense(
   lazy(() => import('./pages/EditBanners/EditBanners')),
 );
+const AdminPage = withSuspense(lazy(() => import('./pages/Admin/Admin')));
 
 import { loader as characterLoader } from './pages/Character/Character';
 import { loader as newsLoader } from './pages/News/News';
@@ -114,6 +115,14 @@ const router = createBrowserRouter(
         element={
           <ProtectedRoute>
             <EditBannersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminPage />
           </ProtectedRoute>
         }
       />

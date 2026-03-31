@@ -109,6 +109,12 @@
       "type": "file"
     },
     {
+      "path": "client/src/components/Sidebar/Sidebar.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1774929981986,
+      "type": "file"
+    },
+    {
       "path": "client/tailwind.config.js",
       "accessCount": 5,
       "lastAccessed": 1774785868559,
@@ -142,12 +148,6 @@
       "path": "client/src/RootLayout.tsx",
       "accessCount": 4,
       "lastAccessed": 1774785567617,
-      "type": "file"
-    },
-    {
-      "path": "client/src/components/Sidebar/Sidebar.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1774785620066,
       "type": "file"
     },
     {

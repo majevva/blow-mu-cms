@@ -1,6 +1,8 @@
 package io.github.felipeemerson.openmuapi.repositories;
 
 import io.github.felipeemerson.openmuapi.entities.Account;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
     boolean existsByLoginName(String loginName);
 
     boolean existsByEmail(String email);
+
+    Page<Account> findByLoginNameContainingIgnoreCase(String loginName, Pageable pageable);
 
 }

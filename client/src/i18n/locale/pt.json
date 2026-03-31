@@ -29,6 +29,7 @@
         "myAccount": "Minha conta",
         "addNews": "Adicionar notícia",
         "banners": "Banners",
+        "adminPanel": "Painel de Administração",
         "logout": "Sair"
       }
     },
@@ -385,6 +386,27 @@
       "required": "Obrigatório.",
       "minimum": "O mínimo é {{min}}.",
       "maximum": "O máximo é {{max}}."
+    }
+  },
+  "admin": {
+    "title": "Painel de Administração",
+    "searchPlaceholder": "Buscar por login...",
+    "emptyMessage": "Nenhuma conta encontrada",
+    "saveState": "Salvar",
+    "table": {
+      "login": "Login",
+      "email": "E-mail",
+      "status": "Status",
+      "registrationDate": "Data de registro",
+      "actions": "Ações"
+    },
+    "states": {
+      "NORMAL": "Normal",
+      "BANNED": "Banido",
+      "TEMPORARILY_BANNED": "Banido Temporariamente",
+      "GAME_MASTER": "Game Master",
+      "GAME_MASTER_INVISIBLE": "GM Invisível",
+      "SPECTATOR": "Espectador"
     }
   },
   "error": {

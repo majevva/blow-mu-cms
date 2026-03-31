@@ -1,0 +1,14 @@
+{
+  "stories": [
+    {"id":"US-001","title":"WebSocket/STOMP backend endpoint","passes":true},
+    {"id":"US-002","title":"JWT authentication on STOMP CONNECT","passes":true},
+    {"id":"US-003","title":"Chat message broadcast and history","passes":true},
+    {"id":"US-004","title":"ChatBox React component","passes":true},
+    {"id":"US-005","title":"ChatBox integrated into Sidebar and Home page","passes":true},
+    {"id":"US-006","title":"Block unauthenticated SEND — hard auth enforcement","passes":true},
+    {"id":"US-007","title":"Slow mode — per-user rate limiting (3s cooldown)","passes":true},
+    {"id":"US-008","title":"Anti-spam — duplicate message rejection","passes":true},
+    {"id":"US-009","title":"Strict XSS / injection hardening","passes":true},
+    {"id":"US-010","title":"Backend compiles and passes mvn compile cleanly","passes":true}
+  ]
+}
