@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { jwtDecode } from 'jwt-decode';
+import { FaLock } from 'react-icons/fa';
 import { AuthContext, AuthStateEnum } from '@/contexts/AuthContext';
 
 interface ChatMessage {
@@ -142,7 +143,12 @@ const ChatBox: React.FC = () => {
           </button>
         </div>
       ) : (
-        <p className="text-center text-xs text-neutral-400">Log in to chat</p>
+        <div className="flex flex-col items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-100 px-4 py-3 dark:border-neutral-700/40 dark:bg-neutral-800/40">
+          <FaLock className="text-primary-400 dark:text-primary-500" size={18} />
+          <p className="text-center text-xs text-neutral-500 dark:text-neutral-400">
+            Zaloguj się, aby korzystać z czatu
+          </p>
+        </div>
       )}
     </div>
   );

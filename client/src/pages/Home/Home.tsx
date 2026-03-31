@@ -9,6 +9,7 @@ import TitleWithDivider from '@/components/TitleWithDivider/TitleWithDivider';
 import EventCard from './EventCard/EventCard';
 import Typography from '@/components/Typography/Typography';
 import NewsCardList from './NewsCard/NewsCardList';
+import ChatBox from '@/components/ChatBox/ChatBox';
 
 type HomePageProps = Record<string, never>;
 
@@ -39,6 +40,8 @@ const HomePage: React.FC<HomePageProps> = () => {
           </Typography>
         </div>
       </div>
+      <TitleWithDivider>Chat</TitleWithDivider>
+      <ChatBox />
     </>
   );
 };
