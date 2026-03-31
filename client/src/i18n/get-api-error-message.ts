@@ -15,6 +15,11 @@ const patterns: Pattern[] = [
     params: (match) => ({ loginName: match[1] }),
   },
   {
+    test: /^Character (.+) not found\.$/,
+    key: 'apiErrors.characterNotFound',
+    params: (match) => ({ characterName: match[1] }),
+  },
+  {
     test: /^Author name invalid\.$/,
     key: 'apiErrors.authorNameInvalid',
   },

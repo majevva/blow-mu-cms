@@ -17,6 +17,7 @@ import java.util.UUID;
 public interface CharacterRepository extends JpaRepository<Character, UUID> {
 
     Optional<Character> findCharacterByName(String characterName);
+    Optional<Character> findByNameIgnoreCase(String characterName);
 
     @Query("""
         SELECT new io.github.felipeemerson.openmuapi.dto.CharacterRankDTO(c.id, c.name, cc.name,

@@ -94,7 +94,7 @@ public class AccountService {
     public Account getAccountAndCheckPrivileges(String loginName) throws ForbiddenException, NotFoundException {
         Account account = this.getAccountByLoginName(loginName);
 
-        if (!account.getState().equals(AccountState.GAME_MASTER)) {
+        if (!account.getState().canManageContent()) {
             throw new ForbiddenException("Your account doesn't have the required privileges.");
         }
 

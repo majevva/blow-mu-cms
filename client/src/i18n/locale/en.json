@@ -30,6 +30,8 @@
         "addNews": "Add news",
         "banners": "Banners",
         "adminPanel": "Admin Panel",
+        "gmPanel": "GM Panel",
+        "superAdminPanel": "Superadmin Panel",
         "logout": "Logout"
       }
     },
@@ -389,15 +391,155 @@
     }
   },
   "admin": {
-    "title": "Admin Panel",
+    "title": "Game Master Panel",
+    "superAdminTitle": "Superadmin Control Center",
+    "description": "Core game master actions are now available directly in the CMS. Use the tabs below to manage accounts, monitor players online, and send server-wide announcements.",
+    "superAdminDescription": "This area becomes the CMS-native replacement for the BastionMU back office. Native CMS tools stay here, while remaining Blazor-only modules are grouped below during migration.",
+    "tabs": {
+      "sessions": "Sessions",
+      "accounts": "Accounts",
+      "online": "Online",
+      "tools": "Tools"
+    },
+    "stats": {
+      "accounts": "Accounts",
+      "characters": "Characters",
+      "guilds": "Guilds",
+      "onlines": "Online players"
+    },
+    "accountsTitle": "Account Access Control",
+    "accountsDescription": "Promote game masters, suspend access, and review registration data without leaving the CMS.",
+    "managedAccountCreateTitle": "Create Managed Account",
+    "managedAccountCreateDescription": "Provision a new account directly from the CMS with an initial role, password, and security code.",
+    "managedAccountEditTitle": "Edit Managed Account",
+    "managedAccountEditDescription": "Adjust account state and core account fields without leaving the superadmin control center.",
+    "managedAccountPlaceholderTitle": "Account Editor",
+    "managedAccountPlaceholderDescription": "Select an existing account or create a new one to manage the BastionMU account surface natively in the CMS.",
+    "managedAccountCreateButton": "Create account",
+    "managedAccountEditButton": "Edit",
+    "managedAccountSaveButton": "Save account",
+    "managedAccountSaving": "Saving...",
+    "managedAccountCancel": "Cancel",
+    "managedAccountCreateSuccess": "Managed account created.",
+    "managedAccountUpdateSuccess": "Account {{loginName}} updated.",
+    "managedAccountFields": {
+      "loginName": "Login",
+      "email": "Email",
+      "securityCode": "Security code",
+      "state": "State",
+      "password": "Initial password",
+      "nextPassword": "New password",
+      "vaultPassword": "Vault password",
+      "vaultExtended": "Vault extended"
+    },
+    "loggedInTitle": "Logged In Accounts",
+    "loggedInDescription": "This is the first CMS-native runtime-management module for superadmin. Inspect active account sessions and force disconnect them without opening the Blazor panel.",
+    "loggedInSearchPlaceholder": "Search by login or server id...",
+    "loggedInCount": "{{count}} active account sessions",
+    "loggedInRuntimeHint": "Data comes from the BastionMU login/runtime layer",
+    "loggedInEmptyMessage": "No active account sessions",
+    "loggedInDisconnectButton": "Disconnect account",
+    "loggedInDisconnectPending": "Disconnecting...",
+    "loggedInDisconnectSuccess": "Account {{loginName}} disconnected.",
     "searchPlaceholder": "Search by login...",
     "emptyMessage": "No accounts found",
     "saveState": "Save",
+    "onlineTitle": "Online Players",
+    "onlineDescription": "Monitor connected characters, disconnect disruptive players, or issue a temporary ban in one flow.",
+    "onlineCount": "{{count}} online",
+    "onlineEmptyMessage": "No online players",
+    "onlineSearchPlaceholder": "Search by character or class...",
+    "refreshOnline": "Refresh",
+    "refreshing": "Refreshing live data...",
+    "autoRefreshHint": "Auto-refresh every 30 seconds",
+    "kickButton": "Kick",
+    "kickPending": "Kicking...",
+    "kickSuccess": "Player kicked.",
+    "temporaryBanButton": "Temp ban",
+    "temporaryBanPending": "Applying...",
+    "temporaryBanSuccess": "Player temporarily banned and disconnected.",
+    "broadcastTitle": "Server Announcement",
+    "broadcastDescription": "Send a global message to a selected game server without switching to the legacy panel.",
+    "broadcastServerLabel": "Target server",
+    "broadcastServerEmpty": "No servers available",
+    "serverLabel": "Server {{id}}",
+    "broadcastMessageLabel": "Message",
+    "broadcastMessagePlaceholder": "Write the announcement shown to connected players...",
+    "broadcastSending": "Sending...",
+    "broadcastSendButton": "Send announcement",
+    "broadcastValidation": "Choose a server and enter a message.",
+    "broadcastSuccess": "Announcement sent.",
+    "superAdminOverviewTitle": "Legacy Module Transfer",
+    "superAdminOverviewDescription": "These Blazor modules still need full CMS-native replacements. Until each module is migrated, the superadmin panel keeps structured access to the legacy surface.",
+    "superAdminOpenLegacy": "Open legacy module",
+    "superAdminMigrationTitle": "Migration Status",
+    "superAdminMigrationDescription": "The target architecture is split in two: a lightweight GM console for live moderation, and a full superadmin control center for infrastructure, configuration, and back-office workflows.",
+    "superAdminModules": {
+      "servers": {
+        "title": "Server Fleet",
+        "description": "Start, stop, restart, and inspect game/connect server instances."
+      },
+      "loggedIn": {
+        "title": "Connected Accounts",
+        "description": "Inspect logged-in accounts and live disconnect actions from the legacy runtime."
+      },
+      "setup": {
+        "title": "Setup",
+        "description": "Bootstrap and environment-level setup for the BastionMU stack."
+      },
+      "updates": {
+        "title": "Configuration Updates",
+        "description": "Apply configuration deltas and synchronization tasks."
+      },
+      "plugins": {
+        "title": "Plugins",
+        "description": "Review and manage installed plugins and extension points."
+      },
+      "logs": {
+        "title": "Logs",
+        "description": "Inspect runtime logs, failures, and operational traces."
+      },
+      "users": {
+        "title": "Panel Users",
+        "description": "Manage superadmin/operator accounts for the control surface."
+      }
+    },
+    "superAdminStatus": {
+      "native": {
+        "title": "Native in CMS",
+        "description": "Account governance, online actions, broadcast, and CMS-owned content management are already moving into the new panel."
+      },
+      "hybrid": {
+        "title": "Hybrid During Migration",
+        "description": "Superadmin keeps a structured bridge to legacy modules while the CMS absorbs the workflow in slices."
+      },
+      "legacy": {
+        "title": "Still Blazor-only",
+        "description": "Server lifecycle, generic config editing, live maps, logs, and observability remain legacy surfaces until we build proper CMS-side ownership."
+      }
+    },
+    "legacyPanelTitle": "Legacy Panel Status",
+    "legacyPanelDescription": "The remaining infrastructure and configuration tools still live in the BastionMU panel.",
+    "legacyPanelConfigured": "For server infrastructure, configuration grids, logs, or the legacy live-map view, use {{url}} until those areas are migrated.",
+    "legacyPanelUnavailable": "Legacy panel URL is not configured in this environment.",
+    "legacyPanelButton": "Open legacy panel",
     "table": {
       "login": "Login",
       "email": "Email",
       "status": "Status",
       "registrationDate": "Registration Date",
+      "actions": "Actions"
+    },
+    "onlineTable": {
+      "name": "Character",
+      "class": "Class",
+      "level": "Level",
+      "resets": "Resets",
+      "actions": "Actions"
+    },
+    "loggedInTable": {
+      "loginName": "Login",
+      "serverId": "Server",
       "actions": "Actions"
     },
     "states": {
@@ -406,8 +548,12 @@
       "TEMPORARILY_BANNED": "Temporarily Banned",
       "GAME_MASTER": "Game Master",
       "GAME_MASTER_INVISIBLE": "GM Invisible",
-      "SPECTATOR": "Spectator"
+      "SPECTATOR": "Spectator",
+      "SUPER_ADMIN": "Superadmin"
     }
+  },
+  "apiErrors": {
+    "characterNotFound": "Character {{characterName}} was not found."
   },
   "error": {
     "title": "Error",

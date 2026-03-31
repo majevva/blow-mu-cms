@@ -1,11 +1,15 @@
 import React, { useContext, useEffect, createRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState, JWTPayload } from '@/api/types';
 
 import useBaseTranslation from '@/hooks/use-base-translation';
+import {
+  canAccessGameMasterPanel,
+  canManageContent,
+  getAccountRole,
+  getAdminLandingPath,
+} from '@/auth/authorization';
 
 import Typography from '../../Typography/Typography';
 
@@ -22,7 +26,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
   const { t } = useBaseTranslation('sidebar.accountCard.menuOptions');
   const { signOut, auth } = useContext(AuthContext);
   const mobileMenuRef = createRef<HTMLDivElement>();
-  const jwtPayload: JWTPayload = jwtDecode(auth.token as string);
+  const role = getAccountRole(auth.token);
 
   const handleClickOutside = (event: MouseEvent) => {
     const modalElement = document.getElementById('mobile-account-menu');
@@ -64,8 +68,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
                 {t('myAccount')}
               </Typography>
             </li>
-            {(jwtPayload.role === AccountState.GAME_MASTER ||
-              jwtPayload.role === AccountState.GAME_MASTER_INVISIBLE) && (
+            {canManageContent(role) && (
               <>
                 <li>
                   <Typography
@@ -99,14 +102,31 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
                     variant="label2-r"
                     styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                     onClick={() => {
-                      navigate('/admin');
+                      navigate(getAdminLandingPath(role));
                       onClose();
                     }}
                   >
-                    {t('adminPanel')}
+                    {t(
+                      role === 'SUPER_ADMIN' ? 'superAdminPanel' : 'gmPanel',
+                    )}
                   </Typography>
                 </li>
               </>
+            )}
+            {!canManageContent(role) && canAccessGameMasterPanel(role) && (
+              <li>
+                <Typography
+                  component="button"
+                  variant="label2-r"
+                  styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                  onClick={() => {
+                    navigate(getAdminLandingPath(role));
+                    onClose();
+                  }}
+                >
+                  {t(role === 'SUPER_ADMIN' ? 'superAdminPanel' : 'gmPanel')}
+                </Typography>
+              </li>
             )}
             <li>
               <Typography

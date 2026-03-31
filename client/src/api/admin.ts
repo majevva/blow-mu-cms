@@ -40,10 +40,12 @@ export const useGetAdminAccounts = (
   page: number,
   size: number,
   search?: string,
+  enabled = true,
 ) => {
   return useQuery<Page<AdminAccount>, Error>({
     queryKey: ['admin', 'accounts', page, search],
     queryFn: () => getAdminAccounts(page, size, search),
+    enabled,
   });
 };
 
@@ -60,5 +62,53 @@ export const useChangeAccountState = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'accounts'] });
     },
+  });
+};
+
+const kickCharacter = async (characterName: string): Promise<void> => {
+  await api.patch(`/admin/characters/${characterName}/kick`);
+};
+
+const temporarilyBanCharacter = async (characterName: string): Promise<void> => {
+  await api.patch(`/admin/characters/${characterName}/temporary-ban`);
+};
+
+const broadcastMessage = async ({
+  serverId,
+  message,
+}: {
+  serverId: number;
+  message: string;
+}): Promise<void> => {
+  await api.post('/admin/broadcast', { serverId, message });
+};
+
+export const useKickCharacter = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (characterName: string) => kickCharacter(characterName),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['game', 'onlines'] });
+    },
+  });
+};
+
+export const useTemporarilyBanCharacter = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (characterName: string) => temporarilyBanCharacter(characterName),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'accounts'] });
+      queryClient.invalidateQueries({ queryKey: ['game', 'onlines'] });
+    },
+  });
+};
+
+export const useBroadcastMessage = () => {
+  return useMutation({
+    mutationFn: broadcastMessage,
   });
 };

@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState, type JWTPayload } from '@/api/types';
 import { useGetBanners } from '@/api/banners';
+import { canManageContent, getAccountRole } from '@/auth/authorization';
 
 import TitleWithDivider from '@/components/TitleWithDivider/TitleWithDivider';
 import LoadingSpinner from '@/components/LoadingSpinner/LoadingSpinner';
@@ -16,11 +15,7 @@ type EditBannersPageProps = Record<string, never>;
 const EditBannersPage: React.FC<EditBannersPageProps> = () => {
   const { auth } = useContext(AuthContext);
   const { t } = useTranslation();
-  const jwtPayload: JWTPayload | undefined = auth.token
-    ? jwtDecode(auth.token)
-    : undefined;
-  const hasPrivilege =
-    (jwtPayload?.role || AccountState.NORMAL) === AccountState.GAME_MASTER;
+  const hasPrivilege = canManageContent(getAccountRole(auth.token));
 
   if (!hasPrivilege) return <Navigate to="/" />;
 

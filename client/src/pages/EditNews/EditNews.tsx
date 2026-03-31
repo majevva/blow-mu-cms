@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import {
   LoaderFunction,
   LoaderFunctionArgs,
@@ -8,8 +7,8 @@ import {
 } from 'react-router-dom';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState, type JWTPayload } from '@/api/types';
 import { useGetNewsById } from '@/api/news';
+import { canManageContent, getAccountRole } from '@/auth/authorization';
 
 import NewsForm from '@/components/NewsForm/NewsForm';
 import { LoaderData } from '@/types/react-router-dom';
@@ -29,12 +28,7 @@ const EditNewsPage: React.FC<EditNewsPageProps> = () => {
   const { auth } = useContext(AuthContext);
   const { newsId } = useLoaderData() as LoaderData<typeof loader>;
   const { data: newsData, isLoading } = useGetNewsById(newsId);
-
-  const jwtPayload: JWTPayload | undefined = auth.token
-    ? jwtDecode(auth.token)
-    : undefined;
-  const hasPrivilege =
-    (jwtPayload?.role || AccountState.NORMAL) === AccountState.GAME_MASTER;
+  const hasPrivilege = canManageContent(getAccountRole(auth.token));
 
   if (!hasPrivilege) return <Navigate to="/" />;
   return (

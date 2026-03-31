@@ -42,8 +42,11 @@ public class SystemConstants {
     public static final UUID COMMAND_DEFINITION_ID = UUID.fromString("6af2c9df-3ae4-4721-8462-9a8ec7f56fe4"); // base leadership in DB
 
     public static final String ONLINE_PLAYERS_ENDPOINT = "/api/status";
+    public static final String LOGGED_IN_ACCOUNTS_ENDPOINT = "/api/logged-in";
     public static final String SEND_MESSAGE_ENDPOINT = "/api/send";
     public static final String IS_ACCOUNT_ONLINE_ENDPOINT = "/api/is-online";
+    public static final String DISCONNECT_CHARACTER_ENDPOINT = "/admin/player/%s/disconnect";
+    public static final String DISCONNECT_ACCOUNT_ENDPOINT = "/api/account/%s/disconnect?serverId=%s";
 
     public static String ADMIN_PANEL_URL;
 

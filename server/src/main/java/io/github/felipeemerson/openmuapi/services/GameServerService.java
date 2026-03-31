@@ -4,6 +4,7 @@ import com.nimbusds.jose.shaded.gson.Gson;
 import io.github.felipeemerson.openmuapi.configuration.SystemConstants;
 import io.github.felipeemerson.openmuapi.dto.CharacterRankDTO;
 import io.github.felipeemerson.openmuapi.dto.GameServerInfoDTO;
+import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
 import io.github.felipeemerson.openmuapi.dto.OnlinePlayersDTO;
 import io.github.felipeemerson.openmuapi.dto.ServerStatisticsDTO;
 import io.github.felipeemerson.openmuapi.entities.Account;
@@ -23,8 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -121,6 +124,24 @@ public class GameServerService {
         return Boolean.parseBoolean(response.getBody());
     }
 
+    public List<LoggedInAccountDTO> getLoggedInAccounts() throws BadGatewayException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<LoggedInAccountDTO[]> response = restTemplate.exchange(
+                SystemConstants.ADMIN_PANEL_URL + SystemConstants.LOGGED_IN_ACCOUNTS_ENDPOINT,
+                HttpMethod.GET,
+                adminApiClient,
+                LoggedInAccountDTO[].class
+        );
+
+        if (response.getStatusCode().isError() || response.getBody() == null) {
+            throw new BadGatewayException();
+        }
+
+        return Arrays.stream(response.getBody())
+                .sorted((left, right) -> left.getLoginName().compareToIgnoreCase(right.getLoginName()))
+                .toList();
+    }
+
     public List<CharacterRankDTO> getOnlinePlayersDetailed() throws BadGatewayException {
         return this.characterService.getPlayersByName(Arrays.asList(this.getOnlinePlayers().getPlayersList()));
     }
@@ -128,7 +149,7 @@ public class GameServerService {
     public void sendServerMessage(String message, int serverId, String loginName) throws BadGatewayException {
         Account account = this.accountService.getAccountByLoginName(loginName);
 
-        if (!account.getState().equals(AccountState.GAME_MASTER)) {
+        if (!account.getState().canAccessGameMasterPanel()) {
             throw new ForbiddenException("Restrict access");
         }
 
@@ -147,6 +168,47 @@ public class GameServerService {
         );
 
         if (response.getStatusCode().isError()){
+            throw new BadGatewayException();
+        }
+    }
+
+    public void disconnectCharacter(String characterName) throws BadGatewayException {
+        RestTemplate restTemplate = new RestTemplate();
+        String encodedCharacterName = UriUtils.encodePathSegment(characterName, StandardCharsets.UTF_8);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                String.format(
+                        "%s" + SystemConstants.DISCONNECT_CHARACTER_ENDPOINT,
+                        SystemConstants.ADMIN_PANEL_URL,
+                        encodedCharacterName
+                ),
+                HttpMethod.POST,
+                adminApiClient,
+                String.class
+        );
+
+        if (response.getStatusCode().isError()) {
+            throw new BadGatewayException();
+        }
+    }
+
+    public void disconnectAccount(String loginName, int serverId) throws BadGatewayException {
+        RestTemplate restTemplate = new RestTemplate();
+        String encodedLoginName = UriUtils.encodePathSegment(loginName, StandardCharsets.UTF_8);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                String.format(
+                        "%s" + SystemConstants.DISCONNECT_ACCOUNT_ENDPOINT,
+                        SystemConstants.ADMIN_PANEL_URL,
+                        encodedLoginName,
+                        serverId
+                ),
+                HttpMethod.POST,
+                adminApiClient,
+                String.class
+        );
+
+        if (response.getStatusCode().isError()) {
             throw new BadGatewayException();
         }
     }

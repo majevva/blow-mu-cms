@@ -27,6 +27,7 @@ export enum AccountState {
   GAME_MASTER_INVISIBLE = 'GAME_MASTER_INVISIBLE',
   BANNED = 'BANNED',
   TEMPORARILY_BANNED = 'TEMPORARILY_BANNED',
+  SUPER_ADMIN = 'SUPER_ADMIN',
 }
 
 export enum CharacterStatus {

@@ -1,11 +1,15 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState, JWTPayload } from '@/api/types';
 import useBaseTranslation from '@/hooks/use-base-translation';
+import {
+  canAccessGameMasterPanel,
+  canManageContent,
+  getAccountRole,
+  getAdminLandingPath,
+} from '@/auth/authorization';
 
 import TitleWithDivider from '../TitleWithDivider/TitleWithDivider';
 import Button from '../Button/Button';
@@ -17,8 +21,7 @@ const AccountCard: React.FC<AccountCardProps> = () => {
   const queryClient = useQueryClient();
   const { t } = useBaseTranslation('sidebar.accountCard');
   const { signOut, auth } = useContext(AuthContext);
-
-  const jwtPayload: JWTPayload = jwtDecode(auth.token as string);
+  const role = getAccountRole(auth.token);
 
   return (
     <>
@@ -31,8 +34,7 @@ const AccountCard: React.FC<AccountCardProps> = () => {
         >
           {t('menuOptions.myAccount')}
         </Button>
-        {(jwtPayload.role === AccountState.GAME_MASTER ||
-          jwtPayload.role === AccountState.GAME_MASTER_INVISIBLE) && (
+        {canManageContent(role) && (
           <>
             <Button
               variant="ghost1"
@@ -48,12 +50,20 @@ const AccountCard: React.FC<AccountCardProps> = () => {
             >
               {t('menuOptions.banners')}
             </Button>
+          </>
+        )}
+        {canAccessGameMasterPanel(role) && (
+          <>
             <Button
               variant="ghost1"
               styles="mx-auto"
-              onClick={() => navigate('/admin')}
+              onClick={() => navigate(getAdminLandingPath(role))}
             >
-              {t('menuOptions.adminPanel')}
+              {t(
+                role === 'SUPER_ADMIN'
+                  ? 'menuOptions.superAdminPanel'
+                  : 'menuOptions.gmPanel',
+              )}
             </Button>
           </>
         )}

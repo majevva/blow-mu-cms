@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { Navigate } from 'react-router-dom';
 
 import { AuthContext } from '@/contexts/AuthContext';
-import { AccountState, type JWTPayload } from '@/api/types';
+import { canManageContent, getAccountRole } from '@/auth/authorization';
 
 import NewsForm from '@/components/NewsForm/NewsForm';
 
@@ -11,12 +10,7 @@ type CreateNewsFormPage = Record<string, never>;
 
 const CreateNewsForm: React.FC<CreateNewsFormPage> = () => {
   const { auth } = useContext(AuthContext);
-
-  const jwtPayload: JWTPayload | undefined = auth.token
-    ? jwtDecode(auth.token)
-    : undefined;
-  const hasPrivilege =
-    (jwtPayload?.role || AccountState.NORMAL) === AccountState.GAME_MASTER;
+  const hasPrivilege = canManageContent(getAccountRole(auth.token));
 
   if (!hasPrivilege) return <Navigate to="/" />;
 

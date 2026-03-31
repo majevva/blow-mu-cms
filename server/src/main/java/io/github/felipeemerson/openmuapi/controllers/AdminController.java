@@ -1,10 +1,13 @@
 package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
+import io.github.felipeemerson.openmuapi.dto.AdminBroadcastDTO;
 import io.github.felipeemerson.openmuapi.dto.AccountStateChangeDTO;
 import io.github.felipeemerson.openmuapi.exceptions.ForbiddenException;
 import io.github.felipeemerson.openmuapi.exceptions.NotFoundException;
 import io.github.felipeemerson.openmuapi.services.AdminService;
+import io.github.felipeemerson.openmuapi.util.JwtUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -40,5 +43,32 @@ public class AdminController {
             @RequestBody AccountStateChangeDTO stateChangeDTO) throws ForbiddenException, NotFoundException {
         adminService.checkAdminPrivileges(principal);
         return new ResponseEntity<>(adminService.changeAccountState(loginName, stateChangeDTO), HttpStatus.OK);
+    }
+
+    @PatchMapping("/characters/{characterName}/kick")
+    public ResponseEntity<Void> kickCharacter(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String characterName) throws ForbiddenException, NotFoundException {
+        adminService.checkAdminPrivileges(principal);
+        adminService.kickCharacter(characterName);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/characters/{characterName}/temporary-ban")
+    public ResponseEntity<Void> temporarilyBanCharacter(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable String characterName) throws ForbiddenException, NotFoundException {
+        adminService.checkAdminPrivileges(principal);
+        adminService.temporarilyBanCharacter(characterName);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/broadcast")
+    public ResponseEntity<Void> broadcastMessage(
+            @AuthenticationPrincipal Jwt principal,
+            @RequestBody @Valid AdminBroadcastDTO dto) throws ForbiddenException {
+        adminService.checkAdminPrivileges(principal);
+        adminService.broadcastMessage(dto, JwtUtils.getLoginNameFromToken(principal));
+        return ResponseEntity.noContent().build();
     }
 }

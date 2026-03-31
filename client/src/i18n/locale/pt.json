@@ -30,6 +30,8 @@
         "addNews": "Adicionar notícia",
         "banners": "Banners",
         "adminPanel": "Painel de Administração",
+        "gmPanel": "Painel GM",
+        "superAdminPanel": "Painel Superadmin",
         "logout": "Sair"
       }
     },
@@ -389,15 +391,155 @@
     }
   },
   "admin": {
-    "title": "Painel de Administração",
+    "title": "Painel do Game Master",
+    "superAdminTitle": "Central de controle do superadmin",
+    "description": "As ações principais de game master agora estão disponíveis diretamente no CMS. Use as abas abaixo para gerenciar contas, acompanhar jogadores online e enviar anúncios globais.",
+    "superAdminDescription": "Esta área passa a ser o substituto nativo no CMS para o back office do BastionMU. Os módulos já migrados vivem aqui, enquanto as áreas restantes do Blazor ficam organizadas abaixo até a migração completa.",
+    "tabs": {
+      "sessions": "Sessões",
+      "accounts": "Contas",
+      "online": "Online",
+      "tools": "Ferramentas"
+    },
+    "stats": {
+      "accounts": "Contas",
+      "characters": "Personagens",
+      "guilds": "Guilds",
+      "onlines": "Jogadores online"
+    },
+    "accountsTitle": "Controle de acesso das contas",
+    "accountsDescription": "Promova game masters, suspenda acessos e revise dados de cadastro sem sair do CMS.",
+    "managedAccountCreateTitle": "Criar conta gerenciada",
+    "managedAccountCreateDescription": "Crie uma nova conta diretamente no CMS com papel inicial, senha e código de segurança.",
+    "managedAccountEditTitle": "Editar conta gerenciada",
+    "managedAccountEditDescription": "Ajuste o estado da conta e os campos principais sem sair da central do superadmin.",
+    "managedAccountPlaceholderTitle": "Editor de contas",
+    "managedAccountPlaceholderDescription": "Selecione uma conta existente ou crie uma nova para assumir de forma nativa a gestão de contas BastionMU dentro do CMS.",
+    "managedAccountCreateButton": "Criar conta",
+    "managedAccountEditButton": "Editar",
+    "managedAccountSaveButton": "Salvar conta",
+    "managedAccountSaving": "Salvando...",
+    "managedAccountCancel": "Cancelar",
+    "managedAccountCreateSuccess": "Conta gerenciada criada.",
+    "managedAccountUpdateSuccess": "Conta {{loginName}} atualizada.",
+    "managedAccountFields": {
+      "loginName": "Login",
+      "email": "E-mail",
+      "securityCode": "Código de segurança",
+      "state": "Estado",
+      "password": "Senha inicial",
+      "nextPassword": "Nova senha",
+      "vaultPassword": "Senha do baú",
+      "vaultExtended": "Baú expandido"
+    },
+    "loggedInTitle": "Contas Conectadas",
+    "loggedInDescription": "Este é o primeiro módulo nativo de runtime-management no CMS para o superadmin. Inspecione sessões ativas de contas e force a desconexão sem abrir o painel Blazor.",
+    "loggedInSearchPlaceholder": "Buscar por login ou id do servidor...",
+    "loggedInCount": "{{count}} sessões ativas de contas",
+    "loggedInRuntimeHint": "Os dados vêm da camada de login/runtime do BastionMU",
+    "loggedInEmptyMessage": "Nenhuma sessão ativa de conta",
+    "loggedInDisconnectButton": "Desconectar conta",
+    "loggedInDisconnectPending": "Desconectando...",
+    "loggedInDisconnectSuccess": "Conta {{loginName}} desconectada.",
     "searchPlaceholder": "Buscar por login...",
     "emptyMessage": "Nenhuma conta encontrada",
     "saveState": "Salvar",
+    "onlineTitle": "Jogadores Online",
+    "onlineDescription": "Monitore personagens conectados, desconecte jogadores problemáticos ou aplique banimento temporário no mesmo fluxo.",
+    "onlineCount": "{{count}} online",
+    "onlineEmptyMessage": "Nenhum jogador online",
+    "onlineSearchPlaceholder": "Buscar por personagem ou classe...",
+    "refreshOnline": "Atualizar",
+    "refreshing": "Atualizando dados em tempo real...",
+    "autoRefreshHint": "Atualização automática a cada 30 segundos",
+    "kickButton": "Kick",
+    "kickPending": "Desconectando...",
+    "kickSuccess": "Jogador desconectado.",
+    "temporaryBanButton": "Ban temporário",
+    "temporaryBanPending": "Aplicando...",
+    "temporaryBanSuccess": "Jogador banido temporariamente e desconectado.",
+    "broadcastTitle": "Anúncio do servidor",
+    "broadcastDescription": "Envie uma mensagem global para o servidor selecionado sem voltar ao painel legado.",
+    "broadcastServerLabel": "Servidor de destino",
+    "broadcastServerEmpty": "Nenhum servidor disponível",
+    "serverLabel": "Servidor {{id}}",
+    "broadcastMessageLabel": "Mensagem",
+    "broadcastMessagePlaceholder": "Escreva o anúncio exibido para os jogadores conectados...",
+    "broadcastSending": "Enviando...",
+    "broadcastSendButton": "Enviar anúncio",
+    "broadcastValidation": "Selecione um servidor e digite uma mensagem.",
+    "broadcastSuccess": "Anúncio enviado.",
+    "superAdminOverviewTitle": "Transferência de módulos legados",
+    "superAdminOverviewDescription": "Estes módulos do Blazor ainda precisam de substitutos nativos completos no CMS. Até que cada módulo seja migrado, o painel do superadmin mantém acesso estruturado à superfície legada.",
+    "superAdminOpenLegacy": "Abrir módulo legado",
+    "superAdminMigrationTitle": "Status da migração",
+    "superAdminMigrationDescription": "A arquitetura alvo separa dois mundos: um console leve de GM para moderação ao vivo e uma central completa do superadmin para infraestrutura, configuração e fluxos de back office.",
+    "superAdminModules": {
+      "servers": {
+        "title": "Frota de servidores",
+        "description": "Iniciar, parar, reiniciar e inspecionar instâncias de game/connect server."
+      },
+      "loggedIn": {
+        "title": "Contas conectadas",
+        "description": "Inspecionar contas logadas e ações de desconexão usando o runtime legado."
+      },
+      "setup": {
+        "title": "Setup",
+        "description": "Bootstrap e configuração de ambiente para a stack BastionMU."
+      },
+      "updates": {
+        "title": "Atualizações de configuração",
+        "description": "Aplicar deltas de configuração e tarefas de sincronização."
+      },
+      "plugins": {
+        "title": "Plugins",
+        "description": "Revisar e gerenciar plugins instalados e pontos de extensão."
+      },
+      "logs": {
+        "title": "Logs",
+        "description": "Inspecionar logs de runtime, falhas e rastros operacionais."
+      },
+      "users": {
+        "title": "Usuários do painel",
+        "description": "Gerenciar contas de operadores e superadmins da superfície de controle."
+      }
+    },
+    "superAdminStatus": {
+      "native": {
+        "title": "Nativo no CMS",
+        "description": "Governança de contas, ações em jogadores online, broadcast e gestão de conteúdo já estão entrando no novo painel."
+      },
+      "hybrid": {
+        "title": "Híbrido durante a migração",
+        "description": "O superadmin mantém uma ponte estruturada para módulos legados enquanto o CMS absorve cada fluxo em etapas."
+      },
+      "legacy": {
+        "title": "Ainda só no Blazor",
+        "description": "Lifecycle de servidores, edição genérica de configuração, mapas ao vivo, logs e observabilidade continuam legados até existir ownership adequado no CMS."
+      }
+    },
+    "legacyPanelTitle": "Status do painel legado",
+    "legacyPanelDescription": "As ferramentas restantes de infraestrutura e configuração ainda estão no painel BastionMU.",
+    "legacyPanelConfigured": "Para infraestrutura de servidores, grades de configuração, logs ou a visualização legada do mapa ao vivo, use {{url}} até que essas áreas sejam migradas.",
+    "legacyPanelUnavailable": "A URL do painel legado não está configurada neste ambiente.",
+    "legacyPanelButton": "Abrir painel legado",
     "table": {
       "login": "Login",
       "email": "E-mail",
       "status": "Status",
       "registrationDate": "Data de registro",
+      "actions": "Ações"
+    },
+    "onlineTable": {
+      "name": "Personagem",
+      "class": "Classe",
+      "level": "Level",
+      "resets": "Resets",
+      "actions": "Ações"
+    },
+    "loggedInTable": {
+      "loginName": "Login",
+      "serverId": "Servidor",
       "actions": "Ações"
     },
     "states": {
@@ -406,8 +548,12 @@
       "TEMPORARILY_BANNED": "Banido Temporariamente",
       "GAME_MASTER": "Game Master",
       "GAME_MASTER_INVISIBLE": "GM Invisível",
-      "SPECTATOR": "Espectador"
+      "SPECTATOR": "Espectador",
+      "SUPER_ADMIN": "Superadmin"
     }
+  },
+  "apiErrors": {
+    "characterNotFound": "Personagem {{characterName}} não foi encontrado."
   },
   "error": {
     "title": "Erro",
