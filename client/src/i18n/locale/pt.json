@@ -442,6 +442,7 @@
     "loggedInCount": "{{count}} sessões ativas de contas",
     "loggedInRuntimeHint": "Os dados vêm da camada de login/runtime do BastionMU",
     "loggedInEmptyMessage": "Nenhuma sessão ativa de conta",
+    "runtimeUnavailableMessage": "O painel BastionMU está indisponível. Verifique se o servidor do jogo está em execução.",
     "loggedInDisconnectButton": "Desconectar conta",
     "loggedInDisconnectPending": "Desconectando...",
     "loggedInDisconnectSuccess": "Conta {{loginName}} desconectada.",

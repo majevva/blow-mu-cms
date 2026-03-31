@@ -507,6 +507,7 @@
     "loggedInCount": "{{count}} aktywnych sesji kont",
     "loggedInRuntimeHint": "Dane pochodzą z warstwy login/runtime BastionMU",
     "loggedInEmptyMessage": "Brak aktywnych sesji kont",
+    "runtimeUnavailableMessage": "Panel BastionMU jest niedostępny. Sprawdź czy serwer gry jest uruchomiony.",
     "loggedInDisconnectButton": "Rozłącz konto",
     "loggedInDisconnectPending": "Rozłączanie...",
     "loggedInDisconnectSuccess": "Konto {{loginName}} zostało rozłączone.",

@@ -442,6 +442,7 @@
     "loggedInCount": "{{count}} active account sessions",
     "loggedInRuntimeHint": "Data comes from the BastionMU login/runtime layer",
     "loggedInEmptyMessage": "No active account sessions",
+    "runtimeUnavailableMessage": "BastionMU panel is unavailable. Check if the game server is running.",
     "loggedInDisconnectButton": "Disconnect account",
     "loggedInDisconnectPending": "Disconnecting...",
     "loggedInDisconnectSuccess": "Account {{loginName}} disconnected.",

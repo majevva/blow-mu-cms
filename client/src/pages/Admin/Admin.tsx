@@ -200,11 +200,11 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     selectedGuildName,
     isAdmin && activeTab === AdminTab.GUILDS,
   );
-  const { data: loggedInAccounts = [], isLoading: isLoggedInAccountsLoading } =
+  const { data: loggedInAccounts = [], isLoading: isLoggedInAccountsLoading, isError: isLoggedInAccountsError } =
     useGetLoggedInAccounts(isSuperAdmin && activeTab === AdminTab.SESSIONS);
-  const { data: manageableServers = [], isLoading: isManageableServersLoading } =
+  const { data: manageableServers = [], isLoading: isManageableServersLoading, isError: isManageableServersError } =
     useGetManageableServers(isSuperAdmin && activeTab === AdminTab.SERVERS);
-  const { data: logFiles = [], isLoading: isLogFilesLoading } = useGetLogFiles(
+  const { data: logFiles = [], isLoading: isLogFilesLoading, isError: isLogFilesError } = useGetLogFiles(
     isSuperAdmin && activeTab === AdminTab.LOGS,
   );
   const {
@@ -910,6 +910,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         <Table columns={loggedInColumns}>
           {isLoggedInAccountsLoading ? (
             <LoadingTableBody />
+          ) : isLoggedInAccountsError ? (
+            <TableEmptyMessage message={t('runtimeUnavailableMessage')} type="page" />
           ) : filteredLoggedInAccounts.length === 0 ? (
             <TableEmptyMessage message={t('loggedInEmptyMessage')} type="page" />
           ) : (
@@ -1161,6 +1163,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         <Table columns={manageableServerColumns}>
           {isManageableServersLoading ? (
             <LoadingTableBody />
+          ) : isManageableServersError ? (
+            <TableEmptyMessage message={t('runtimeUnavailableMessage')} type="page" />
           ) : manageableServers.length === 0 ? (
             <TableEmptyMessage
               message={t('manageableServerEmptyMessage')}
@@ -1279,6 +1283,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
         <Table columns={logFileColumns}>
           {isLogFilesLoading ? (
             <LoadingTableBody />
+          ) : isLogFilesError ? (
+            <TableEmptyMessage message={t('runtimeUnavailableMessage')} type="page" />
           ) : logFiles.length === 0 ? (
             <TableEmptyMessage message={t('logFileEmptyMessage')} type="page" />
           ) : (
