@@ -245,6 +245,8 @@ public ResponseEntity<CharacterDTO> updateCharacterAttributes(
 
 **Priorytet: Niski**
 
+#### 5a. Rozwiązanie guildu
+
 **Backend — AdminService.java:**
 
 ```java
@@ -267,6 +269,77 @@ public ResponseEntity<Void> disbandGuild(
     adminService.disbandGuild(guildName);
     return ResponseEntity.noContent().build();
 }
+```
+
+#### 5b. Zmiana mistrza guildu
+
+**Backend — DTO:**
+
+```java
+// ChangeGuildMasterDTO.java
+@Data @NoArgsConstructor
+public class ChangeGuildMasterDTO {
+    private String newMasterCharacterName;
+}
+```
+
+**Backend — AdminService.java:**
+
+```java
+public GuildDTO changeGuildMaster(String guildName, ChangeGuildMasterDTO dto) throws NotFoundException {
+    Guild guild = guildRepository.findByNameIgnoreCase(guildName)
+        .orElseThrow(() -> new NotFoundException("Guild not found: " + guildName));
+
+    Character newMaster = characterRepository.findByNameIgnoreCase(dto.getNewMasterCharacterName())
+        .orElseThrow(() -> new NotFoundException("Character not found: " + dto.getNewMasterCharacterName()));
+
+    // Znajdź obecnego mistrza i zdegraduj do zwykłego członka
+    guildMemberRepository.findByGuildAndGuildPosition(guild, GuildPosition.GuildMaster)
+        .ifPresent(oldMaster -> {
+            oldMaster.setGuildPosition(GuildPosition.NormalMember);
+            guildMemberRepository.save(oldMaster);
+        });
+
+    // Awansuj nowego mistrza
+    GuildMember newMasterMember = guildMemberRepository.findByGuildAndCharacter(guild, newMaster)
+        .orElseThrow(() -> new NotFoundException("Character is not a guild member"));
+    newMasterMember.setGuildPosition(GuildPosition.GuildMaster);
+    guildMemberRepository.save(newMasterMember);
+
+    // Zaktualizuj pole MasterName w encji Guild jeśli istnieje
+    // guild.setMaster(newMaster);  // odkomentuj jeśli encja Guild ma pole master
+    guildRepository.save(guild);
+
+    return GuildService.mapToGuildDTO(guild);
+}
+```
+
+**Backend — AdminController.java:**
+
+```java
+@PatchMapping("/guilds/{guildName}/master")
+public ResponseEntity<GuildDTO> changeGuildMaster(
+        @AuthenticationPrincipal Jwt principal,
+        @PathVariable String guildName,
+        @RequestBody ChangeGuildMasterDTO dto) throws ForbiddenException, NotFoundException {
+    adminService.checkAdminPrivileges(principal);
+    return ResponseEntity.ok(adminService.changeGuildMaster(guildName, dto));
+}
+```
+
+**Frontend — admin.ts:**
+
+```typescript
+export const useChangeGuildMaster = () =>
+  useMutation({
+    mutationFn: ({ guildName, newMasterCharacterName }: { guildName: string; newMasterCharacterName: string }) =>
+      api.patch(`/admin/guilds/${guildName}/master`, { newMasterCharacterName }),
+  });
+```
+
+**Uwaga:** Sprawdź w encji `GuildMember` dostępne wartości `GuildPosition` enum (np. `GuildMaster`, `BattleMaster`, `NormalMember`). Nazwy mogą się różnić — sprawdź:
+```bash
+grep -r "GuildPosition" server/src/main/java/ --include="*.java" -l
 ```
 
 ---
@@ -305,6 +378,33 @@ cat server/src/main/java/io/github/felipeemerson/openmuapi/controllers/ChatContr
 
 Jeśli nie ma endpointu do wysyłania wiadomości przez admina, dodaj:
 
+**Backend — DTO:**
+
+```java
+// BroadcastMessageDTO.java
+@Data @NoArgsConstructor
+public class BroadcastMessageDTO {
+    private String message;
+}
+```
+
+**Backend — AdminService.java:**
+
+```java
+// Wstrzyknij ChatService lub bezpośrednio użyj mechanizmu WebSocket
+// Opcja A: jeśli ChatService ma metodę broadcast
+public void broadcastMessage(String message) {
+    chatService.broadcast("[Admin] " + message);
+}
+
+// Opcja B: jeśli nie ma ChatService.broadcast — zapisz do tabeli chat jako system message
+public void broadcastMessage(String message) {
+    // Sprawdź jak ChatController.java wysyła wiadomości i użyj tej samej metody
+    // np. SimpMessagingTemplate lub analogiczna klasa Spring WebSocket
+    messagingTemplate.convertAndSend("/topic/chat", new ChatMessageDTO("Admin", message));
+}
+```
+
 **Backend — AdminController.java:**
 
 ```java
@@ -316,6 +416,16 @@ public ResponseEntity<Void> broadcastMessage(
     adminService.broadcastMessage(dto.getMessage());
     return ResponseEntity.noContent().build();
 }
+```
+
+**Frontend — admin.ts:**
+
+```typescript
+export const useBroadcastMessage = () =>
+  useMutation({
+    mutationFn: (message: string) =>
+      api.post('/admin/broadcast', { message }),
+  });
 ```
 
 ---
