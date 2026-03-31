@@ -19,17 +19,36 @@ const ChatBox: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [connected, setConnected] = useState(false);
+  const [cooldownRemaining, setCooldownRemaining] = useState(0);
   const clientRef = useRef<Client | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const baseUrl = API_URL || '';
   const loginName = auth.token
     ? (jwtDecode(auth.token) as { sub: string }).sub
     : null;
   const isSignedIn = auth.state === AuthStateEnum.SIGNED_IN;
 
+  const startCooldown = (ms: number) => {
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
+    const seconds = Math.ceil(ms / 1000);
+    setCooldownRemaining(seconds);
+    cooldownRef.current = setInterval(() => {
+      setCooldownRemaining((prev) => {
+        if (prev <= 1) {
+          clearInterval(cooldownRef.current!);
+          cooldownRef.current = null;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
   // Fetch message history on mount
   useEffect(() => {
-    const historyUrl = API_URL ? API_URL + '/chat/history' : '/chat/history';
+    const historyUrl = baseUrl + '/chat/history';
     fetch(historyUrl)
       .then((r) => r.json())
       .then((data: ChatMessage[]) => setMessages(data))
@@ -43,7 +62,7 @@ const ChatBox: React.FC = () => {
 
   // Connect/disconnect based on auth state
   useEffect(() => {
-    const sockUrl = API_URL ? API_URL + '/ws' : '/ws';
+    const sockUrl = baseUrl + '/ws';
     const client = new Client({
       webSocketFactory: () => new SockJS(sockUrl),
       connectHeaders: auth.token ? { Authorization: `Bearer ${auth.token}` } : {},
@@ -59,6 +78,13 @@ const ChatBox: React.FC = () => {
         }
       },
       onDisconnect: () => setConnected(false),
+      onStompError: (frame) => {
+        const msg = frame.headers?.message || '';
+        if (msg.includes('SLOW_MODE:')) {
+          const ms = parseInt(msg.split('SLOW_MODE:')[1], 10);
+          if (!isNaN(ms)) startCooldown(ms);
+        }
+      },
     });
 
     client.activate();
@@ -66,6 +92,7 @@ const ChatBox: React.FC = () => {
 
     return () => {
       client.deactivate();
+      if (cooldownRef.current) clearInterval(cooldownRef.current);
     };
   }, [auth.token]);
 
@@ -131,15 +158,16 @@ const ChatBox: React.FC = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             maxLength={200}
-            placeholder={`${loginName}: ...`}
+            disabled={cooldownRemaining > 0}
+            placeholder={cooldownRemaining > 0 ? `Poczekaj ${cooldownRemaining}s...` : `${loginName}: ...`}
             className="flex-1 rounded border border-neutral-300 bg-white px-2 py-1 text-xs text-neutral-800 outline-none focus:border-primary-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:focus:border-primary-500"
           />
           <button
             onClick={sendMessage}
-            disabled={!connected || !inputValue.trim()}
+            disabled={!connected || !inputValue.trim() || cooldownRemaining > 0}
             className="rounded bg-primary-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-primary-500 disabled:opacity-40 dark:bg-primary-700 dark:hover:bg-primary-600"
           >
-            Send
+            {cooldownRemaining > 0 ? `${cooldownRemaining}s` : 'Send'}
           </button>
         </div>
       ) : (
