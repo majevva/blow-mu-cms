@@ -11,7 +11,7 @@ const EventCard: React.FC<EventCardProps> = () => {
   const { t } = useTranslation();
   return (
     <>
-      <div className="grid w-full items-center rounded-lg border border-primary-200 bg-primary-50 px-12 py-14 dark:border-primary-900 dark:bg-primary-800/20">
+      <div className="grid w-full items-center rounded-lg border border-neutral-200 bg-neutral-50 px-12 py-14 dark:border-neutral-800/40 dark:bg-neutral-900/60">
         <List>
           <List.Item label={t('home.eventCard.bloodCastle')} value={t('home.eventCard.soon')} />
           <List.Item label={t('home.eventCard.devilSquare')} value={t('home.eventCard.soon')} />

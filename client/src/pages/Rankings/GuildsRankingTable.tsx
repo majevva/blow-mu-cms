@@ -79,7 +79,7 @@ const GuildsRankingTable: React.FC<GuildsRankingTableProps> = ({
                   className={`border-b ${
                     rankData.content.length != index + 1
                       ? 'border-neutral-300 dark:border-primary-400'
-                      : 'border-primary-950 dark:border-primary-50'
+                      : 'border-neutral-700 dark:border-neutral-600'
                   }`}
                 >
                   {currentPosition <= 3 ? (
@@ -95,7 +95,7 @@ const GuildsRankingTable: React.FC<GuildsRankingTableProps> = ({
                     <Typography
                       component="th"
                       variant="label2-s"
-                      styles="text-primary-950 dark:text-primary-50"
+                      styles="text-neutral-900 dark:text-neutral-100"
                     >
                       {currentPosition}
                     </Typography>
@@ -113,7 +113,7 @@ const GuildsRankingTable: React.FC<GuildsRankingTableProps> = ({
                       component="td"
                       key={colIndex}
                       variant="label2-r"
-                      styles="text-primary-950 dark:text-primary-50 text-center"
+                      styles="text-neutral-900 dark:text-neutral-100 text-center"
                     >
                       {row[column.name]}
                     </Typography>

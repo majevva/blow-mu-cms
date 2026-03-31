@@ -37,13 +37,13 @@ const MobileLoginDialog: React.FC<MobileLoginDialogProps> = ({ onClose }) => {
           ref={dialogRef}
           open
           tabIndex={-1}
-          className="fixed z-20 max-w-72 origin-center transform animate-scale rounded-lg border border-primary-200 bg-primary-50 p-6 outline-none dark:border-primary-900 dark:bg-neutral-900"
+          className="fixed z-20 max-w-72 origin-center transform animate-scale rounded-lg border border-neutral-200 bg-neutral-50 p-6 outline-none dark:border-neutral-800/40 dark:bg-neutral-900"
         >
           <div className="mb-2 flex place-items-center justify-between">
             <Typography
               component="h1"
               variant="h3-inter"
-              styles="text-primary-950 dark:text-primary-50"
+              styles="text-neutral-900 dark:text-neutral-100"
             >
               {t('loginDialogTitle')}
             </Typography>

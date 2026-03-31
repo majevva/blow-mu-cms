@@ -55,14 +55,14 @@ const NewsItem: React.FC<NewsItemProps> = ({
     <>
       <div
         id={id}
-        className="flex w-full flex-col rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:gap-2 md:p-12"
+        className="flex w-full flex-col rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:gap-2 md:p-12"
       >
         <div className="flex gap-2">
           <div className="flex w-full flex-col gap-2">
             <Typography
               component="h2"
               variant="h3-inter"
-              styles="text-primary-950 dark:text-primary-50"
+              styles="text-neutral-900 dark:text-neutral-100"
             >
               {title}
             </Typography>
@@ -91,7 +91,7 @@ const NewsItem: React.FC<NewsItemProps> = ({
               <Typography
                 component="span"
                 variant="body1-m"
-                styles="text-primary-950 dark:text-primary-50"
+                styles="text-neutral-900 dark:text-neutral-100"
               >
                 {t('postedBy') + ': '}
                 <Typography component="strong" variant="label2-s">

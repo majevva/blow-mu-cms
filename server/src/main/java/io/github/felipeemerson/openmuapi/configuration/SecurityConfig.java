@@ -58,6 +58,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/news").permitAll()
                         .requestMatchers(HttpMethod.GET, "/news/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/banners").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/chat/history").permitAll()
                         .anyRequest().authenticated()
                 );
 

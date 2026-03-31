@@ -76,7 +76,7 @@ const NewsPage: React.FC<NewsPageProps> = () => {
       ) : newsList.length === 0 ? (
         <Typography
           variant="h3-inter"
-          styles="text-primary-950 dark:text-primary-50"
+          styles="text-neutral-900 dark:text-neutral-100"
         >
           {t('newsEmptyMessage')}
         </Typography>

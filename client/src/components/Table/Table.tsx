@@ -23,7 +23,7 @@ const Table: React.FC<TableProps> = ({
   return (
     <>
       <table className="">
-        <thead className="border-b border-primary-950 dark:border-primary-50">
+        <thead className="border-b border-neutral-300 dark:border-neutral-700/60">
           <tr>
             {withIndex ? <th></th> : null}
             {columns.map((column, index) => (
@@ -31,7 +31,7 @@ const Table: React.FC<TableProps> = ({
                 component="th"
                 key={index}
                 variant={fontSize === '14px' ? 'label3-s' : 'label2-s'}
-                styles={`${column.style} text-primary-950 dark:text-primary-50`}
+                styles={`${column.style} text-neutral-900 dark:text-neutral-100`}
               >
                 {column.label}
               </Typography>

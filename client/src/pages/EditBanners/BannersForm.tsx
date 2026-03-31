@@ -68,7 +68,7 @@ const BannersForm: React.FC<BannersFormProps> = ({ banners }) => {
         {fields.length === 0 && (
           <Typography
             variant="h3-inter"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('emptyMessage')}
           </Typography>
@@ -82,7 +82,7 @@ const BannersForm: React.FC<BannersFormProps> = ({ banners }) => {
               <div className="flex gap-2">
                 <Typography
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                   component="legend"
                 >
                   {t('subtitle')} {index + 1}

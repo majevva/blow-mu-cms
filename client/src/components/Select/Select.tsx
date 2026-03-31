@@ -43,14 +43,14 @@ const Select: React.FC<SelectProps> = ({
         <Typography
           variant="label-sm"
           component="label"
-          styles="text-primary-950 dark:text-primary-50"
+          styles="text-neutral-900 dark:text-neutral-100"
         >
           {label}
         </Typography>
         <div className="relative inline-block w-fit">
           <button
-            className="h-10 w-32 rounded-[4px] border border-neutral-300 bg-white p-2 text-left font-inter text-[14px] text-primary-950
-                        focus:border-primary-500/50 focus:outline-none focus:ring-1 focus:ring-primary-500/50 dark:bg-white/[0.04] dark:text-primary-50"
+            className="h-10 w-32 rounded-[4px] border border-neutral-300 bg-white p-2 text-left font-inter text-[14px] text-neutral-900
+                        focus:border-primary-500/50 focus:outline-none focus:ring-1 focus:ring-primary-500/50 dark:bg-neutral-800 dark:border-neutral-600 dark:text-neutral-100"
             name={name}
             onClick={handleToggle}
             onBlur={handleCloseWithTime}
@@ -58,7 +58,7 @@ const Select: React.FC<SelectProps> = ({
           >
             {options.find((option) => option.value === value)?.label}
             <IoChevronDown
-              className={`absolute right-2 top-1/2 -translate-y-1/2 transform text-primary-950 transition-transform duration-200 dark:text-primary-50 ${
+              className={`absolute right-2 top-1/2 -translate-y-1/2 transform text-neutral-600 transition-transform duration-200 dark:text-neutral-400 ${
                 isOpen ? 'rotate-180' : 'rotate-0'
               }`}
             />
@@ -70,7 +70,7 @@ const Select: React.FC<SelectProps> = ({
                 <Typography
                   key={option.value}
                   component="li"
-                  styles="cursor-pointer p-2 hover:bg-primary-100 dark:hover:bg-white/[0.07] dark:text-primary-50"
+                  styles="cursor-pointer p-2 text-neutral-800 hover:bg-primary-50 dark:text-neutral-200 dark:hover:bg-primary-900/20"
                   onClick={() => handleSelect(option.value)}
                   variant="body"
                 >

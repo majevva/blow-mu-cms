@@ -74,18 +74,18 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
   return (
     <>
       <TitleWithDivider>{t('title')}</TitleWithDivider>
-      <div className="flex w-full flex-col gap-8 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:p-12">
+      <div className="flex w-full flex-col gap-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:p-12">
         <div className="flex flex-col gap-4">
           <Typography
             component="h2"
             variant="h3-inter"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('subtitle.clientDownload')}
           </Typography>
           <Typography
             variant="body2-r"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('clientSize')} <br /> {t('fileFormat')}
           </Typography>
@@ -101,7 +101,7 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
         <div className="flex flex-col gap-4">
           <Typography
             variant="h3-inter"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('subtitle.additionalDownloads')}
           </Typography>
@@ -136,11 +136,11 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
           <Typography
             component="h2"
             variant="h3-inter"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('subtitle.installationGuide')}
           </Typography>
-          <ol className="ml-[16px] text-primary-950 dark:text-primary-50">
+          <ol className="ml-[16px] text-neutral-900 dark:text-neutral-100">
             {[1, 2, 3, 4, 5].map((_, i) => (
               <Typography key={i} component="li" variant="body2-r" type="1">
                 {t(`installationSteps.${i + 1}`)}
@@ -152,7 +152,7 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
           <Typography
             component="h2"
             variant="h3-inter"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('subtitle.systemRequirements')}
           </Typography>
@@ -163,7 +163,7 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
                 className={`border-b ${
                   requirementTableRows.length != index + 1
                     ? 'border-neutral-300 dark:border-primary-400'
-                    : 'border-primary-950 dark:border-primary-50'
+                    : 'border-neutral-700 dark:border-neutral-600'
                 }`}
               >
                 {requerimentsTableColumns.map((column, colIndex) => (
@@ -171,7 +171,7 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
                     key={colIndex}
                     component="td"
                     variant={colIndex === 0 ? 'label2-s' : 'label2-r'}
-                    styles="text-primary-950 dark:text-primary-50 text-center"
+                    styles="text-neutral-900 dark:text-neutral-100 text-center"
                   >
                     {requirement[column.name]}
                   </Typography>
@@ -184,7 +184,7 @@ const DownloadsPage: React.FC<DownloadsPageProp> = () => {
           <Typography
             component="h2"
             variant="h3-inter"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('subtitle.drivers')}
           </Typography>

@@ -15,18 +15,18 @@ const TableEmptyMessage: React.FC<TableEmptyMessageProps> = ({
 
   return (
     <>
-      <tr className="dark:boder-primary-50 h-[140px] w-full border-b border-primary-950 text-center dark:border-primary-50">
+      <tr className="h-[140px] w-full border-b border-neutral-300 text-center dark:border-neutral-700">
         <td align="center" colSpan={colSpan}>
           <div className="flex items-center justify-center gap-2">
-            <SwordIcon styles="size-6 fill-primary-800 dark:fill-primary-200" />
+            <SwordIcon styles="size-6 fill-primary-600 dark:fill-primary-400" />
             <Typography
               variant="h4"
-              styles="text-primary-800 dark:text-primary-200 font-inter"
+              styles="text-neutral-600 dark:text-neutral-400 font-inter"
               component="span"
             >
               {message}
             </Typography>
-            <BowIcon styles="size-6 fill-primary-800 dark:fill-primary-200" />
+            <BowIcon styles="size-6 fill-primary-600 dark:fill-primary-400" />
           </div>
         </td>
       </tr>

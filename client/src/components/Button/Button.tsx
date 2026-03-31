@@ -30,33 +30,32 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const buttonStyles = {
-    flat: 'enabled:bg-primary-500 enabled:hover:bg-primary-600 enabled:active:bg-primary-700',
-    outline: `border border-primary-500 enabled:hover:border-primary-700 enabled:active:border-primary-800
-      dark:enabled:hover:border-primary-400 dark:enabled:active:border-primary-200
-      dark: border-primary-300`,
-    bezel: `enabled:bg-gradient-to-b enabled:from-primary-500 enabled:to-primary-600 enabled:hover:from-primary-600 enabled:hover:to-primary-600 enabled:active:from-primary-700 enabled:active:to-primary-700`,
-    ghost1: '',
-    ghost2: '',
+    flat: 'enabled:bg-primary-500 enabled:hover:bg-primary-600 enabled:active:bg-primary-700 transition-colors duration-150',
+    outline: `border border-primary-500/60 enabled:hover:border-primary-500 enabled:active:border-primary-600 transition-colors duration-150
+      dark:border-primary-600/40 dark:enabled:hover:border-primary-500 dark:enabled:active:border-primary-400`,
+    bezel: `enabled:bg-gradient-to-b enabled:from-primary-400 enabled:to-primary-600 enabled:hover:from-primary-500 enabled:hover:to-primary-600 enabled:active:from-primary-600 enabled:active:to-primary-700 shadow-glow-sm transition-all duration-150`,
+    ghost1: 'transition-colors duration-150',
+    ghost2: 'transition-colors duration-150',
   };
 
   const disabledStyles = {
-    flat: 'disabled:bg-primary-100 dark:disabled:bg-primary-900 disabled:cursor-not-allowed',
+    flat: 'disabled:bg-neutral-200 dark:disabled:bg-neutral-800 disabled:cursor-not-allowed',
     outline:
-      'disabled:border-primary-200 dark:disabled:border-primary-800 disabled:cursor-not-allowed',
+      'disabled:border-neutral-300 dark:disabled:border-neutral-700 disabled:cursor-not-allowed',
     bezel:
-      'disabled:bg-primary-100 dark:disabled:bg-primary-900 disabled:cursor-not-allowed',
-    ghost1: 'disabled:text-primary-300 disabled:cursor-not-allowed',
+      'disabled:bg-neutral-200 dark:disabled:bg-neutral-800 disabled:cursor-not-allowed disabled:shadow-none',
+    ghost1: 'disabled:text-neutral-400 disabled:cursor-not-allowed',
     ghost2: '',
   };
 
   const textStyles = {
-    flat: 'enabled:text-neutral-100 disabled:text-primary-400',
-    outline: `enabled:text-primary-500 enabled:hover:text-primary-700 enabled:active:text-primary-800 disabled:text-primary-200
-       dark:enabled:text-primary-300 dark:enabled:hover:text-primary-400`,
-    bezel: 'enabled:text-neutral-100 disabled:text-primary-400',
+    flat: 'enabled:text-neutral-950 disabled:text-neutral-400',
+    outline: `enabled:text-primary-600 enabled:hover:text-primary-700 enabled:active:text-primary-800 disabled:text-neutral-400
+       dark:enabled:text-primary-400 dark:enabled:hover:text-primary-300`,
+    bezel: 'enabled:text-neutral-950 disabled:text-neutral-500',
     ghost1:
-      'text-primary-500 hover:text-primary-700 dark:hover:text-primary-400 dark:text-primary-300',
-    ghost2: 'text-primary-400 hover:text-primary-600',
+      'text-primary-600 hover:text-primary-700 dark:hover:text-primary-300 dark:text-primary-400',
+    ghost2: 'text-primary-500 hover:text-primary-600 dark:text-primary-400 dark:hover:text-primary-300',
   };
 
   return (

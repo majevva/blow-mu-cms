@@ -54,7 +54,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ checked, label, ...props }) => {
         </span>
         <Typography
           variant="body2-r"
-          styles="text-primary-950 dark:text-primary-50 ml-2"
+          styles="text-neutral-900 dark:text-neutral-100 ml-2"
         >
           {label}
         </Typography>

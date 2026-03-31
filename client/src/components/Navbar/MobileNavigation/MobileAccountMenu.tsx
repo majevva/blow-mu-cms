@@ -46,7 +46,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
         <div
           id="mobile-account-menu"
           className={`absolute right-0 top-11 z-[1] flex w-36 origin-right transform flex-col gap-2
-                      rounded-l-lg bg-white py-2 text-center transition-all dark:bg-primary-950
+                      rounded-l-lg bg-white py-2 text-center shadow-lg transition-all dark:bg-neutral-900 dark:border dark:border-neutral-800
                       ${show ? 'animate-scale-x' : 'animate-scale-x-out'}`}
           ref={mobileMenuRef}
         >
@@ -55,7 +55,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
               <Typography
                 component="button"
                 variant="label2-r"
-                styles="text-[14px] text-primary-500 hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400"
+                styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                 onClick={() => {
                   navigate('/my-account');
                   onClose();
@@ -70,7 +70,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
                   <Typography
                     component="button"
                     variant="label2-r"
-                    styles="text-[14px] text-primary-500 hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400"
+                    styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                     onClick={() => {
                       navigate('/news/add');
                       onClose();
@@ -83,7 +83,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
                   <Typography
                     component="button"
                     variant="label2-r"
-                    styles="text-[14px] text-primary-500 hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400"
+                    styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                     onClick={() => {
                       navigate('/banners');
                       onClose();
@@ -98,7 +98,7 @@ const MobileAccountMenu: React.FC<MobileAccountMenuProps> = ({
               <Typography
                 component="button"
                 variant="label2-r"
-                styles="text-[14px] text-primary-500 hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400"
+                styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                 onClick={(event: React.MouseEvent) => {
                   event.stopPropagation();
                   signOut();

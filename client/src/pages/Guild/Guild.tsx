@@ -77,7 +77,7 @@ const GuildPage: React.FC<GuildPageProps> = () => {
   return (
     <>
       <TitleWithDivider>{t('title')}</TitleWithDivider>
-      <div className="flex w-full flex-col gap-8 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:p-12">
+      <div className="flex w-full flex-col gap-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:p-12">
         <Button
           variant="ghost1"
           icon={<FaChevronLeft className="size-4" />}
@@ -97,7 +97,7 @@ const GuildPage: React.FC<GuildPageProps> = () => {
               <Typography
                 component="h2"
                 variant="h3-inter"
-                styles="text-primary-950 dark:text-primary-50"
+                styles="text-neutral-900 dark:text-neutral-100"
               >
                 {guildData?.name}
               </Typography>
@@ -107,14 +107,14 @@ const GuildPage: React.FC<GuildPageProps> = () => {
                 <Typography
                   component="h3"
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {t('guildMaster')}
                 </Typography>
                 <Typography
                   component="span"
                   variant="body1-r"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {guildData?.guildMaster}
                 </Typography>
@@ -123,14 +123,14 @@ const GuildPage: React.FC<GuildPageProps> = () => {
                 <Typography
                   component="h3"
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {t('score')}
                 </Typography>
                 <Typography
                   component="span"
                   variant="body1-r"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {guildData?.score}
                 </Typography>
@@ -139,7 +139,7 @@ const GuildPage: React.FC<GuildPageProps> = () => {
             <Typography
               component="h3"
               variant="h3-inter"
-              styles="text-primary-950 dark:text-primary-50"
+              styles="text-neutral-900 dark:text-neutral-100"
             >
               {guildData?.members.length} {t('members')}
             </Typography>
@@ -150,13 +150,13 @@ const GuildPage: React.FC<GuildPageProps> = () => {
                   className={`border-b ${
                     guildData?.members.length != index + 1
                       ? 'border-neutral-300 dark:border-primary-400'
-                      : 'border-primary-950 dark:border-primary-50'
+                      : 'border-neutral-700 dark:border-neutral-600'
                   }`}
                 >
                   <Typography
                     component="th"
                     variant="label2-s"
-                    styles="text-primary-950 dark:text-primary-50"
+                    styles="text-neutral-900 dark:text-neutral-100"
                   >
                     {index + 1}
                   </Typography>
@@ -165,7 +165,7 @@ const GuildPage: React.FC<GuildPageProps> = () => {
                       component="td"
                       key={colIndex}
                       variant="label2-r"
-                      styles="text-primary-950 dark:text-primary-50 text-center"
+                      styles="text-neutral-900 dark:text-neutral-100 text-center"
                     >
                       {row[column.name]}
                     </Typography>
@@ -173,7 +173,7 @@ const GuildPage: React.FC<GuildPageProps> = () => {
                   <Typography
                     component="td"
                     variant="label2-r"
-                    styles="text-primary-950 dark:text-primary-50 text-center"
+                    styles="text-neutral-900 dark:text-neutral-100 text-center"
                   >
                     {mapGuildPositionToLabel[row.guildPosition]}
                   </Typography>
@@ -182,7 +182,7 @@ const GuildPage: React.FC<GuildPageProps> = () => {
                       component="td"
                       key={colIndex}
                       variant="label2-r"
-                      styles="text-primary-950 dark:text-primary-50 text-center"
+                      styles="text-neutral-900 dark:text-neutral-100 text-center"
                     >
                       {row[column.name]}
                     </Typography>

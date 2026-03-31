@@ -18,7 +18,7 @@ const HomePage: React.FC<HomePageProps> = () => {
   return (
     <>
       {isLoading ? (
-        <div className="h-[200px] animate-pulse rounded-lg bg-primary-200 dark:bg-primary-800/20 md:h-[300px]" />
+        <div className="h-[200px] animate-pulse rounded-lg bg-neutral-200 dark:bg-neutral-800/40 md:h-[300px]" />
       ) : (
         (banners as Banner[]).length > 0 && (
           <ImageSlider banners={banners as Banner[]} />
@@ -29,11 +29,11 @@ const HomePage: React.FC<HomePageProps> = () => {
       <TitleWithDivider>{t('home.eventsTitle')}</TitleWithDivider>
       <div className="flex flex-col gap-4 md:flex-row md:gap-8">
         <EventCard />
-        <div className="flex h-96 w-full items-center justify-center rounded-lg border border-primary-200 bg-primary-50 dark:border-primary-900 dark:bg-primary-800/20 desktop:min-h-full">
+        <div className="flex h-96 w-full items-center justify-center rounded-lg border border-neutral-200 bg-neutral-50 dark:border-neutral-800/40 dark:bg-neutral-900/60 desktop:min-h-full">
           <Typography
             variant="h2"
             component="h3"
-            styles="text-primary-950 dark:text-primary-50"
+            styles="text-neutral-900 dark:text-neutral-100"
           >
             {t('home.soonTitleCard')}
           </Typography>

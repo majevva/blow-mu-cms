@@ -11,7 +11,7 @@ const LoginCard: React.FC<LoginCardProps> = () => {
   const { t } = useBaseTranslation('sidebar.loginCard');
   return (
     <>
-      <div className="flex min-w-80 flex-col gap-4 rounded-lg border border-primary-200 px-6 py-4 dark:border-primary-900 dark:bg-primary-800/20">
+      <div className="flex min-w-80 flex-col gap-4 rounded-lg border border-neutral-200 bg-neutral-50 px-6 py-4 dark:border-primary-800/20 dark:bg-neutral-900/70 backdrop-blur-sm">
         <TitleWithDivider twoDividers>{t('title')}</TitleWithDivider>
         <LoginForm />
       </div>

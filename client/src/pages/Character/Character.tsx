@@ -77,7 +77,7 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
   return (
     <>
       <TitleWithDivider>{t('title')}</TitleWithDivider>
-      <div className="flex w-full flex-col gap-8 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:p-12">
+      <div className="flex w-full flex-col gap-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:p-12">
         {!isLoading && character && (
           <>
             <Button
@@ -95,7 +95,7 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
               <Typography
                 component="h2"
                 variant="h3-inter"
-                styles="text-primary-950 dark:text-primary-50"
+                styles="text-neutral-900 dark:text-neutral-100"
               >
                 {characterName}
               </Typography>
@@ -106,7 +106,7 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
                   <Typography
                     component="h3"
                     variant="h3-inter"
-                    styles="text-primary-950 dark:text-primary-50"
+                    styles="text-neutral-900 dark:text-neutral-100"
                   >
                     {t('experience.title')}
                   </Typography>
@@ -125,7 +125,7 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
                   <Typography
                     component="h3"
                     variant="h3-inter"
-                    styles="text-primary-950 dark:text-primary-50"
+                    styles="text-neutral-900 dark:text-neutral-100"
                   >
                     {t('location.title')}
                   </Typography>
@@ -144,13 +144,13 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
                   <Typography
                     component="h3"
                     variant="h3-inter"
-                    styles="text-primary-950 dark:text-primary-50"
+                    styles="text-neutral-900 dark:text-neutral-100"
                   >
                     {t('class')}
                   </Typography>
                   <Typography
                     variant="body1-r"
-                    styles="text-primary-950 dark:text-primary-50"
+                    styles="text-neutral-900 dark:text-neutral-100"
                   >
                     {character?.characterClassName}
                   </Typography>
@@ -159,13 +159,13 @@ const CharacterPage: React.FC<CharacterPageProps> = () => {
                   <Typography
                     component="h3"
                     variant="h3-inter"
-                    styles="text-primary-950 dark:text-primary-50"
+                    styles="text-neutral-900 dark:text-neutral-100"
                   >
                     {t('guild.title')}
                   </Typography>
                   <Typography
                     variant="body1-r"
-                    styles="text-primary-950 dark:text-primary-50 flex gap-2"
+                    styles="text-neutral-900 dark:text-neutral-100 flex gap-2"
                   >
                     {character?.guild ? (
                       <>

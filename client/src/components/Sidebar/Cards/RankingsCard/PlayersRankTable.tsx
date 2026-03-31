@@ -53,7 +53,7 @@ const PlayersRankTable: React.FC<PlayersRankTableProps> = () => {
               className={`border-b ${
                 rankData?.content.length != index + 1
                   ? 'border-neutral-300 dark:border-primary-400'
-                  : 'border-primary-950 dark:border-primary-50'
+                  : 'border-neutral-700 dark:border-neutral-600'
               }`}
             >
               {index < 3 ? (
@@ -67,7 +67,7 @@ const PlayersRankTable: React.FC<PlayersRankTableProps> = () => {
                 <Typography
                   component="th"
                   variant="label3-s"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {index + 1}
                 </Typography>
@@ -77,7 +77,7 @@ const PlayersRankTable: React.FC<PlayersRankTableProps> = () => {
                   component="td"
                   key={colIndex}
                   variant="label3-r"
-                  styles="text-primary-950 dark:text-primary-50 text-center"
+                  styles="text-neutral-900 dark:text-neutral-100 text-center"
                 >
                   {row[column.name]}
                 </Typography>

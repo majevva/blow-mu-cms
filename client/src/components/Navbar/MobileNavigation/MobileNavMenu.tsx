@@ -65,7 +65,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
       {show ? (
         <div
           id="mobile-nav-popup-menu"
-          className={`absolute top-10 z-[1] flex w-44 origin-left transform flex-col gap-2 rounded-r-lg bg-white py-2 text-center transition-all dark:bg-primary-950 ${
+          className={`absolute top-10 z-[1] flex w-44 origin-left transform flex-col gap-2 rounded-r-lg bg-white py-2 text-center shadow-lg transition-all dark:bg-neutral-900 dark:border dark:border-neutral-800 ${
             show ? 'animate-scale-x' : 'animate-scale-x-out'
           }`}
           ref={mobileMenuRef}
@@ -76,7 +76,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
                 key={index}
                 component="li"
                 variant="label2-r"
-                styles="text-[14px] text-primary-500 hover:text-primary-600 dark:text-primary-300 dark:hover:text-primary-400"
+                styles="text-[14px] text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                 onClick={() => {
                   onClose();
                   navigate(navButton.to);
@@ -86,7 +86,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
               </Typography>
             ))}
           </ul>
-          <hr className="mx-2 h-[1px] bg-primary-200 dark:bg-primary-800" />
+          <hr className="mx-2 h-[1px] bg-neutral-200 dark:bg-neutral-700" />
           <div className="flex flex-col gap-1 px-3">
             {languageOptions.map((option) => (
               <button
@@ -94,8 +94,8 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = ({
                 type="button"
                 className={`flex items-center gap-2 rounded px-2 py-1 text-left text-sm ${
                   language === option.code
-                    ? 'bg-primary-100 font-semibold text-primary-700 dark:bg-primary-800 dark:text-primary-100'
-                    : 'text-primary-500 dark:text-primary-300'
+                    ? 'bg-primary-100 font-semibold text-primary-700 dark:bg-primary-800/40 dark:text-primary-300'
+                    : 'text-neutral-600 dark:text-neutral-400'
                 }`}
                 onClick={() => onChangeLanguage(option.code)}
               >

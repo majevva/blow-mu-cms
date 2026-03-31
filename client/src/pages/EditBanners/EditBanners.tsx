@@ -29,7 +29,7 @@ const EditBannersPage: React.FC<EditBannersPageProps> = () => {
   return (
     <>
       <TitleWithDivider>{t('editBanners.title')}</TitleWithDivider>
-      <div className="flex w-full flex-col gap-8 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:p-12">
+      <div className="flex w-full flex-col gap-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:p-12">
         {isLoading ? (
           <div className="flex h-[300px] items-center justify-center">
             <LoadingSpinner />

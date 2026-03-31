@@ -18,7 +18,7 @@ const AboutPage: React.FC<AboutPageProps> = () => {
   return (
     <>
       <TitleWithDivider>{t('title')}</TitleWithDivider>
-      <div className="flex w-full flex-col gap-8 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:p-12">
+      <div className="flex w-full flex-col gap-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:p-12">
         {!isLoading && (
           <>
             <div className="flex flex-col gap-6 md:flex-row">
@@ -26,7 +26,7 @@ const AboutPage: React.FC<AboutPageProps> = () => {
                 <Typography
                   component="h2"
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {t('serverSettings.title')}
                 </Typography>
@@ -58,7 +58,7 @@ const AboutPage: React.FC<AboutPageProps> = () => {
                 <Typography
                   component="h2"
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {t('resetSystem.title')}
                 </Typography>
@@ -86,7 +86,7 @@ const AboutPage: React.FC<AboutPageProps> = () => {
                 <Typography
                   component="h2"
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {t('commands.title')}
                 </Typography>
@@ -121,7 +121,7 @@ const AboutPage: React.FC<AboutPageProps> = () => {
                 <Typography
                   component="h2"
                   variant="h3-inter"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {t('serverStatistics.title')}
                 </Typography>

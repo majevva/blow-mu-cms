@@ -137,13 +137,13 @@ const Attributes: React.FC<AttributesProps> = ({ character }) => {
         <Typography
           component="h3"
           variant="h3-inter"
-          styles="text-primary-950 dark:text-primary-50"
+          styles="text-neutral-900 dark:text-neutral-100"
         >
           {t('title')}
         </Typography>
         <Typography
           variant="body1-r"
-          styles="text-primary-950 dark:text-primary-50"
+          styles="text-neutral-900 dark:text-neutral-100"
         >
           {t('pointsToAdd')}: &nbsp;
           <Typography
@@ -152,7 +152,7 @@ const Attributes: React.FC<AttributesProps> = ({ character }) => {
             styles={`font-semibold ${
               levelUpPoints < 0
                 ? 'text-red-500'
-                : 'text-primary-950 dark:text-primary-50'
+                : 'text-neutral-900 dark:text-neutral-100'
             }`}
           >
             {numberFormat.format(levelUpPoints)}
@@ -198,9 +198,9 @@ const Attributes: React.FC<AttributesProps> = ({ character }) => {
                   name={field}
                   render={({ field: { onBlur, value, name, ref } }) => (
                     <input
-                      className={`h-8 w-[68px] rounded-[4px] border border-neutral-300 p-2 font-inter text-primary-950 focus:border-primary-500 focus:outline-none
-                            focus:ring-1 focus:ring-primary-500 disabled:bg-primary-100 disabled:text-neutral-500
-                            disabled:shadow-none disabled:placeholder:text-neutral-500 dark:bg-neutral-900 dark:text-primary-50 dark:disabled:bg-primary-900
+                      className={`h-8 w-[68px] rounded-[4px] border border-neutral-300 p-2 font-inter text-neutral-900 focus:border-primary-500 focus:outline-none
+                            focus:ring-1 focus:ring-primary-500 disabled:bg-neutral-100 disabled:text-neutral-500
+                            disabled:shadow-none disabled:placeholder:text-neutral-500 dark:bg-neutral-800/60 dark:text-neutral-100 dark:disabled:bg-neutral-800
                         `}
                       value={value}
                       name={name}
@@ -219,9 +219,9 @@ const Attributes: React.FC<AttributesProps> = ({ character }) => {
                   name="command"
                   render={({ field: { onBlur, value, name, ref } }) => (
                     <input
-                      className={`h-8 w-[68px] rounded-[4px] border border-neutral-300 p-2 font-inter text-primary-950 focus:border-primary-500
-                            focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:bg-primary-100 disabled:text-neutral-500
-                            disabled:shadow-none disabled:placeholder:text-neutral-500 dark:bg-neutral-900 dark:text-primary-50 dark:disabled:bg-primary-900
+                      className={`h-8 w-[68px] rounded-[4px] border border-neutral-300 p-2 font-inter text-neutral-900 focus:border-primary-500
+                            focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:bg-neutral-100 disabled:text-neutral-500
+                            disabled:shadow-none disabled:placeholder:text-neutral-500 dark:bg-neutral-800/60 dark:text-neutral-100 dark:disabled:bg-neutral-800
                         `}
                       value={value}
                       name={name}

@@ -24,15 +24,15 @@ const Radio: React.FC<RadioProps> = ({ checked, label, ...props }) => {
         />
         <label
           htmlFor={inputId}
-          className={`flex size-[18px] cursor-pointer items-center justify-center rounded-full border-2 border-primary-900 dark:border-primary-300`}
+          className={`flex size-[18px] cursor-pointer items-center justify-center rounded-full border-2 border-primary-600 dark:border-primary-400`}
         >
           {checked && (
-            <div className="size-2 rounded-full bg-primary-900 dark:bg-primary-300" />
+            <div className="size-2 rounded-full bg-primary-600 dark:bg-primary-400" />
           )}
         </label>
         <Typography
           variant="body2-r"
-          styles="text-primary-950 dark:text-primary-50 ml-2"
+          styles="text-neutral-900 dark:text-neutral-100 ml-2"
         >
           {label}
         </Typography>

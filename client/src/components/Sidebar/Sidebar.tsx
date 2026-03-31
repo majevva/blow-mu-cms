@@ -6,6 +6,7 @@ import LoginCard from './Cards/LoginCard';
 import ServerCard from './Cards/ServerCard/ServerCard';
 import RankingsCard from './Cards/RankingsCard/RankingsCard';
 import AccountCard from '../AccountCard/AccountCard';
+import ChatBox from '../ChatBox/ChatBox';
 
 type SidebarProps = Record<string, never>;
 
@@ -21,6 +22,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         )}
         <ServerCard />
         <RankingsCard />
+        <ChatBox />
       </aside>
     </>
   );

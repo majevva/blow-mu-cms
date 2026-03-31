@@ -27,7 +27,7 @@ const Item: React.FC<ListItemProps> = ({ label, value, styles }) => {
     <>
       <li
         className={twMerge(
-          'flex justify-between text-primary-950 dark:text-primary-50',
+          'flex justify-between text-neutral-900 dark:text-neutral-100',
           styles,
         )}
       >

@@ -63,11 +63,11 @@ const OnlinesPage: React.FC<OnlinesPageProps> = () => {
   return (
     <>
       <TitleWithDivider>{t('title')}</TitleWithDivider>
-      <div className="flex w-full flex-col gap-8 rounded-lg border border-primary-200 bg-primary-50 p-6 dark:border-primary-900 dark:bg-primary-800/20 md:p-12">
+      <div className="flex w-full flex-col gap-8 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-800/40 dark:bg-neutral-900/60 md:p-12">
         <Typography
           variant="h3-inter"
           component="h2"
-          styles="text-primary-950 dark:text-primary-50"
+          styles="text-neutral-900 dark:text-neutral-100"
         >
           {playersData.length} {t('playersOn')}
         </Typography>
@@ -77,7 +77,7 @@ const OnlinesPage: React.FC<OnlinesPageProps> = () => {
             <Typography
               variant="body2-r"
               component="span"
-              styles="text-primary-950 dark:text-primary-50"
+              styles="text-neutral-900 dark:text-neutral-100"
             >
               {t('staff')}
             </Typography>
@@ -96,13 +96,13 @@ const OnlinesPage: React.FC<OnlinesPageProps> = () => {
                     className={`border-b ${
                       playersData.length != index + 1
                         ? 'border-neutral-300 dark:border-primary-400'
-                        : 'border-primary-950 dark:border-primary-50'
+                        : 'border-neutral-700 dark:border-neutral-600'
                     }`}
                   >
                     <Typography
                       component="th"
                       variant="label2-s"
-                      styles="text-primary-950 dark:text-primary-50"
+                      styles="text-neutral-900 dark:text-neutral-100"
                     >
                       {index + 1 + (page - 1) * pageSize}
                     </Typography>
@@ -111,7 +111,7 @@ const OnlinesPage: React.FC<OnlinesPageProps> = () => {
                       styles={
                         row.status == CharacterStatus.GAME_MASTER
                           ? 'text-blue-800 dark:text-blue-200'
-                          : 'text-primary-950 dark:text-primary-50'
+                          : 'text-neutral-900 dark:text-neutral-100'
                       }
                       variant={
                         row.status == CharacterStatus.GAME_MASTER
@@ -126,7 +126,7 @@ const OnlinesPage: React.FC<OnlinesPageProps> = () => {
                         component="td"
                         key={colIndex}
                         variant="label2-r"
-                        styles="text-primary-950 dark:text-primary-50 text-center"
+                        styles="text-neutral-900 dark:text-neutral-100 text-center"
                       >
                         {row[column.name]}
                       </Typography>

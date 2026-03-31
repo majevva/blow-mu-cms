@@ -7,7 +7,7 @@ const NewsCardSkeleton: React.FC<NewsCardSkeletonProps> = () => {
     <>
       <section
         className="flex w-full animate-pulse snap-center flex-col
-            justify-between gap-4 scroll-smooth rounded-lg border border-primary-200 bg-primary-50 p-4 dark:border-primary-900 dark:bg-primary-800/20"
+            justify-between gap-4 scroll-smooth rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800/40 dark:bg-neutral-900/60"
       >
         <div className="flex justify-between">
           <div className="h-[27px] w-36 bg-primary-200" />

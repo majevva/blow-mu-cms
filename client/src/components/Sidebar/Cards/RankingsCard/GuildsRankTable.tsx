@@ -54,7 +54,7 @@ const GuildsRankTable: React.FC<GuildsRankTableProps> = () => {
               className={`border-b ${
                 rankData?.content.length != index + 1
                   ? 'border-neutral-300 dark:border-primary-400'
-                  : 'border-primary-950 dark:border-primary-50'
+                  : 'border-neutral-700 dark:border-neutral-600'
               }`}
             >
               {index < 3 ? (
@@ -68,7 +68,7 @@ const GuildsRankTable: React.FC<GuildsRankTableProps> = () => {
                 <Typography
                   component="th"
                   variant="label3-s"
-                  styles="text-primary-950 dark:text-primary-50"
+                  styles="text-neutral-900 dark:text-neutral-100"
                 >
                   {index + 1}
                 </Typography>
@@ -85,7 +85,7 @@ const GuildsRankTable: React.FC<GuildsRankTableProps> = () => {
               <Typography
                 component="td"
                 variant="label3-r"
-                styles="text-primary-950 dark:text-primary-50 text-center"
+                styles="text-neutral-900 dark:text-neutral-100 text-center"
               >
                 {row.score}
               </Typography>

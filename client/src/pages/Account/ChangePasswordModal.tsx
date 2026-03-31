@@ -36,13 +36,13 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
           ref={dialogRef}
           open
           tabIndex={-1}
-          className="fixed z-20 max-w-72 origin-center transform animate-scale rounded-lg border border-primary-200 bg-primary-50 p-6 outline-none dark:border-primary-900 dark:bg-neutral-900 md:max-w-96"
+          className="fixed z-20 max-w-72 origin-center transform animate-scale rounded-lg border border-neutral-200 bg-neutral-50 p-6 outline-none dark:border-neutral-800/40 dark:bg-neutral-900 md:max-w-96"
         >
           <div className="mb-4 flex place-items-center justify-between">
             <Typography
               component="h1"
               variant="h3-inter"
-              styles="text-primary-950 dark:text-primary-50"
+              styles="text-neutral-900 dark:text-neutral-100"
             >
               {t('title')}
             </Typography>

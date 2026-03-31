@@ -66,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = () => {
 
   return (
     <>
-      <div className="m-auto flex max-w-[1328px] bg-primary-200 dark:bg-primary-800/20 md:bg-inherit">
+      <div className="m-auto flex max-w-[1328px] bg-neutral-100/90 dark:bg-neutral-900/95 backdrop-blur-md md:bg-transparent md:dark:bg-transparent">
         <nav className="m-auto w-full p-2 md:p-0 md:pb-2">
           <ul
             role="navigation"
@@ -77,7 +77,7 @@ const Navbar: React.FC<NavbarProps> = () => {
                 key={index}
                 tabIndex={0}
                 onClick={() => navigate(navButton.to)}
-                className="hidden h-11 cursor-pointer justify-center bg-gradient-to-t from-primary-200 to-primary-600 bg-clip-text p-4 font-cinzel text-[16px] font-bold leading-[125%] text-transparent hover:text-primary-600 dark:to-primary-400 dark:hover:text-primary-400 md:flex lg:text-[18px]"
+                className="hidden h-11 cursor-pointer justify-center bg-gradient-to-t from-primary-400 to-primary-600 bg-clip-text p-4 font-cinzel text-[16px] font-bold leading-[125%] text-transparent hover:opacity-80 dark:from-primary-300 dark:to-primary-500 md:flex lg:text-[18px] transition-opacity duration-150"
               >
                 {navButton.label}
               </li>
@@ -119,7 +119,7 @@ const Navbar: React.FC<NavbarProps> = () => {
           <SelectLanguage />
         </div>
       </div>
-      <div className="m-auto h-[1px] max-w-[1328px] bg-gradient-to-r from-primary-200 via-primary-600 to-primary-200" />
+      <div className="m-auto h-[1px] max-w-[1328px] bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-60 dark:opacity-40" />
       <MobileNavMenu
         navButtons={navButtons}
         show={showMobileNav}
