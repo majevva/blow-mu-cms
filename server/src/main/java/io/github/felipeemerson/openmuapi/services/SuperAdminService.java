@@ -2,6 +2,7 @@ package io.github.felipeemerson.openmuapi.services;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountUpdateDTO;
 import io.github.felipeemerson.openmuapi.entities.Account;
@@ -50,6 +51,26 @@ public class SuperAdminService {
 
     public void disconnectLoggedInAccount(String loginName, int serverId) {
         this.gameServerService.disconnectAccount(loginName, serverId);
+    }
+
+    public List<ManageableServerDTO> getManageableServers() {
+        return this.gameServerService.getManageableServers();
+    }
+
+    public void startManageableServer(int serverId) {
+        this.gameServerService.startManageableServer(serverId);
+    }
+
+    public void stopManageableServer(int serverId) {
+        this.gameServerService.stopManageableServer(serverId);
+    }
+
+    public void removeManageableServer(int serverId, String type) {
+        this.gameServerService.removeManageableServer(serverId, type);
+    }
+
+    public void restartAllManageableServers() {
+        this.gameServerService.restartAllManageableServers();
     }
 
     public AccountDTO getManagedAccount(String loginName) throws NotFoundException {

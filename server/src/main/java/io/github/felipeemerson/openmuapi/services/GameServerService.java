@@ -5,6 +5,7 @@ import io.github.felipeemerson.openmuapi.configuration.SystemConstants;
 import io.github.felipeemerson.openmuapi.dto.CharacterRankDTO;
 import io.github.felipeemerson.openmuapi.dto.GameServerInfoDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.OnlinePlayersDTO;
 import io.github.felipeemerson.openmuapi.dto.ServerStatisticsDTO;
 import io.github.felipeemerson.openmuapi.entities.Account;
@@ -142,6 +143,22 @@ public class GameServerService {
                 .toList();
     }
 
+    public List<ManageableServerDTO> getManageableServers() throws BadGatewayException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<ManageableServerDTO[]> response = restTemplate.exchange(
+                SystemConstants.ADMIN_PANEL_URL + SystemConstants.MANAGEABLE_SERVERS_ENDPOINT,
+                HttpMethod.GET,
+                adminApiClient,
+                ManageableServerDTO[].class
+        );
+
+        if (response.getStatusCode().isError() || response.getBody() == null) {
+            throw new BadGatewayException();
+        }
+
+        return Arrays.stream(response.getBody()).toList();
+    }
+
     public List<CharacterRankDTO> getOnlinePlayersDetailed() throws BadGatewayException {
         return this.characterService.getPlayersByName(Arrays.asList(this.getOnlinePlayers().getPlayersList()));
     }
@@ -203,6 +220,65 @@ public class GameServerService {
                         encodedLoginName,
                         serverId
                 ),
+                HttpMethod.POST,
+                adminApiClient,
+                String.class
+        );
+
+        if (response.getStatusCode().isError()) {
+            throw new BadGatewayException();
+        }
+    }
+
+    public void startManageableServer(int serverId) throws BadGatewayException {
+        this.invokeManageableServerLifecycle(
+                String.format(
+                        "%s" + SystemConstants.MANAGEABLE_SERVER_START_ENDPOINT,
+                        SystemConstants.ADMIN_PANEL_URL,
+                        serverId
+                )
+        );
+    }
+
+    public void stopManageableServer(int serverId) throws BadGatewayException {
+        this.invokeManageableServerLifecycle(
+                String.format(
+                        "%s" + SystemConstants.MANAGEABLE_SERVER_STOP_ENDPOINT,
+                        SystemConstants.ADMIN_PANEL_URL,
+                        serverId
+                )
+        );
+    }
+
+    public void removeManageableServer(int serverId, String type) throws BadGatewayException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                String.format(
+                        "%s" + SystemConstants.MANAGEABLE_SERVER_REMOVE_ENDPOINT,
+                        SystemConstants.ADMIN_PANEL_URL,
+                        serverId,
+                        UriUtils.encodeQueryParam(type, StandardCharsets.UTF_8)
+                ),
+                HttpMethod.DELETE,
+                adminApiClient,
+                String.class
+        );
+
+        if (response.getStatusCode().isError()) {
+            throw new BadGatewayException();
+        }
+    }
+
+    public void restartAllManageableServers() throws BadGatewayException {
+        this.invokeManageableServerLifecycle(
+                SystemConstants.ADMIN_PANEL_URL + SystemConstants.MANAGEABLE_SERVERS_RESTART_ALL_ENDPOINT
+        );
+    }
+
+    private void invokeManageableServerLifecycle(String endpoint) {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                endpoint,
                 HttpMethod.POST,
                 adminApiClient,
                 String.class

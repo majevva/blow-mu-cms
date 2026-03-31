@@ -43,6 +43,11 @@ public class SystemConstants {
 
     public static final String ONLINE_PLAYERS_ENDPOINT = "/api/status";
     public static final String LOGGED_IN_ACCOUNTS_ENDPOINT = "/api/logged-in";
+    public static final String MANAGEABLE_SERVERS_ENDPOINT = "/api/servers";
+    public static final String MANAGEABLE_SERVER_START_ENDPOINT = "/api/servers/%s/start";
+    public static final String MANAGEABLE_SERVER_STOP_ENDPOINT = "/api/servers/%s/stop";
+    public static final String MANAGEABLE_SERVER_REMOVE_ENDPOINT = "/api/servers/%s?type=%s";
+    public static final String MANAGEABLE_SERVERS_RESTART_ALL_ENDPOINT = "/api/servers/restart-all";
     public static final String SEND_MESSAGE_ENDPOINT = "/api/send";
     public static final String IS_ACCOUNT_ONLINE_ENDPOINT = "/api/is-online";
     public static final String DISCONNECT_CHARACTER_ENDPOINT = "/admin/player/%s/disconnect";

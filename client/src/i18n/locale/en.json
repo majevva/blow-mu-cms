@@ -397,6 +397,7 @@
     "superAdminDescription": "This area becomes the CMS-native replacement for the BastionMU back office. Native CMS tools stay here, while remaining Blazor-only modules are grouped below during migration.",
     "tabs": {
       "sessions": "Sessions",
+      "servers": "Servers",
       "accounts": "Accounts",
       "online": "Online",
       "tools": "Tools"
@@ -541,6 +542,41 @@
       "loginName": "Login",
       "serverId": "Server",
       "actions": "Actions"
+    },
+    "manageableServerTitle": "Server Fleet",
+    "manageableServerDescription": "Monitor and control manageable BastionMU server instances directly from the superadmin control center.",
+    "manageableServerEmptyMessage": "No manageable servers found",
+    "manageableServerRestartAllButton": "Restart all game servers",
+    "manageableServerRestartAllPending": "Restarting...",
+    "manageableServerRestartAllSuccess": "Restart all requested.",
+    "manageableServerStartButton": "Start",
+    "manageableServerStartPending": "Starting...",
+    "manageableServerStartSuccess": "Server {{name}} start requested.",
+    "manageableServerStopButton": "Stop",
+    "manageableServerStopPending": "Stopping...",
+    "manageableServerStopSuccess": "Server {{name}} stop requested.",
+    "manageableServerRemoveButton": "Remove",
+    "manageableServerRemovePending": "Removing...",
+    "manageableServerRemoveSuccess": "Server {{name}} remove requested.",
+    "manageableServerTable": {
+      "name": "Server",
+      "type": "Type",
+      "state": "State",
+      "connections": "Connections",
+      "actions": "Actions"
+    },
+    "manageableServerTypes": {
+      "GameServer": "Game server",
+      "ConnectServer": "Connect server",
+      "ChatServer": "Chat server",
+      "Undefined": "Undefined"
+    },
+    "manageableServerStates": {
+      "Stopped": "Stopped",
+      "Starting": "Starting",
+      "Started": "Started",
+      "Stopping": "Stopping",
+      "Timeout": "Timeout"
     },
     "states": {
       "NORMAL": "Normal",

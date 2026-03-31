@@ -22,8 +22,14 @@ import {
   useDisconnectLoggedInAccount,
   useGetManagedAccount,
   useGetLoggedInAccounts,
+  useGetManageableServers,
+  useRemoveManageableServer,
+  useRestartAllManageableServers,
+  useStartManageableServer,
+  useStopManageableServer,
   useUpdateManagedAccount,
   type LoggedInAccount,
+  type ManageableServer,
   type ManagedAccountCreateInput,
   type ManagedAccountUpdateInput,
 } from '@/api/super-admin';
@@ -77,6 +83,7 @@ const STATE_COLORS: Record<AccountState, string> = {
 
 enum AdminTab {
   SESSIONS,
+  SERVERS,
   ACCOUNTS,
   ONLINE,
   TOOLS,
@@ -120,6 +127,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     useState<string | null>(null);
   const [managedAccountForm, setManagedAccountForm] =
     useState<ManagedAccountFormValues>(EMPTY_MANAGED_ACCOUNT_FORM);
+  const [pendingServerAction, setPendingServerAction] = useState<string | null>(
+    null,
+  );
   const [onlineSearch, setOnlineSearch] = useState('');
   const [pendingCharacterAction, setPendingCharacterAction] = useState<
     string | null
@@ -147,6 +157,8 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     useGetGameServers(isAdmin && activeTab === AdminTab.TOOLS);
   const { data: loggedInAccounts = [], isLoading: isLoggedInAccountsLoading } =
     useGetLoggedInAccounts(isSuperAdmin && activeTab === AdminTab.SESSIONS);
+  const { data: manageableServers = [], isLoading: isManageableServersLoading } =
+    useGetManageableServers(isSuperAdmin && activeTab === AdminTab.SERVERS);
   const {
     data: managedAccountDetails,
     isLoading: isManagedAccountLoading,
@@ -164,6 +176,11 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
   const { mutate: kickCharacter } = useKickCharacter();
   const { mutate: temporarilyBanCharacter } = useTemporarilyBanCharacter();
   const { mutate: disconnectLoggedInAccount } = useDisconnectLoggedInAccount();
+  const { mutate: startManageableServer } = useStartManageableServer();
+  const { mutate: stopManageableServer } = useStopManageableServer();
+  const { mutate: removeManageableServer } = useRemoveManageableServer();
+  const { mutate: restartAllManageableServers, isPending: isRestartingAllServers } =
+    useRestartAllManageableServers();
   const { mutate: sendBroadcastMessage, isPending: isBroadcastPending } =
     useBroadcastMessage();
 
@@ -398,6 +415,61 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     });
   };
 
+  const handleStartServer = (server: ManageableServer) => {
+    setPendingServerAction(`start:${server.id}`);
+    startManageableServer(server.id, {
+      onSuccess: () => {
+        openToast.success(t('manageableServerStartSuccess', { name: server.description }));
+      },
+      onError: (error: Error) => {
+        openToast.error(getFormattedApiError(error));
+      },
+      onSettled: () => setPendingServerAction(null),
+    });
+  };
+
+  const handleStopServer = (server: ManageableServer) => {
+    setPendingServerAction(`stop:${server.id}`);
+    stopManageableServer(server.id, {
+      onSuccess: () => {
+        openToast.success(t('manageableServerStopSuccess', { name: server.description }));
+      },
+      onError: (error: Error) => {
+        openToast.error(getFormattedApiError(error));
+      },
+      onSettled: () => setPendingServerAction(null),
+    });
+  };
+
+  const handleRemoveServer = (server: ManageableServer) => {
+    setPendingServerAction(`remove:${server.id}`);
+    removeManageableServer(
+      { serverId: server.id, type: server.type },
+      {
+        onSuccess: () => {
+          openToast.success(
+            t('manageableServerRemoveSuccess', { name: server.description }),
+          );
+        },
+        onError: (error: Error) => {
+          openToast.error(getFormattedApiError(error));
+        },
+        onSettled: () => setPendingServerAction(null),
+      },
+    );
+  };
+
+  const handleRestartAllServers = () => {
+    restartAllManageableServers(undefined, {
+      onSuccess: () => {
+        openToast.success(t('manageableServerRestartAllSuccess'));
+      },
+      onError: (error: Error) => {
+        openToast.error(getFormattedApiError(error));
+      },
+    });
+  };
+
   const handleBroadcastSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -474,6 +546,34 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     {
       name: 'actions',
       label: t('loggedInTable.actions'),
+      style: 'text-center px-2',
+    },
+  ];
+
+  const manageableServerColumns = [
+    {
+      name: 'description',
+      label: t('manageableServerTable.name'),
+      style: 'text-left px-2',
+    },
+    {
+      name: 'type',
+      label: t('manageableServerTable.type'),
+      style: 'text-center px-2',
+    },
+    {
+      name: 'state',
+      label: t('manageableServerTable.state'),
+      style: 'text-center px-2',
+    },
+    {
+      name: 'connections',
+      label: t('manageableServerTable.connections'),
+      style: 'text-center px-2',
+    },
+    {
+      name: 'actions',
+      label: t('manageableServerTable.actions'),
       style: 'text-center px-2',
     },
   ];
@@ -739,6 +839,135 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
             </Typography>
           </div>
         )}
+      </div>
+    </div>
+  );
+
+  const renderServersTab = () => (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-1">
+          <Typography
+            component="h2"
+            variant="h3-inter"
+            styles="text-neutral-900 dark:text-neutral-100"
+          >
+            {t('manageableServerTitle')}
+          </Typography>
+          <Typography
+            component="p"
+            variant="body2-r"
+            styles="text-neutral-600 dark:text-neutral-300"
+          >
+            {t('manageableServerDescription')}
+          </Typography>
+        </div>
+        <Button
+          variant="outline"
+          disabled={isRestartingAllServers}
+          onClick={handleRestartAllServers}
+        >
+          {isRestartingAllServers
+            ? t('manageableServerRestartAllPending')
+            : t('manageableServerRestartAllButton')}
+        </Button>
+      </div>
+
+      <div className="flex flex-col gap-2 overflow-x-auto">
+        <Table columns={manageableServerColumns}>
+          {isManageableServersLoading ? (
+            <LoadingTableBody />
+          ) : manageableServers.length === 0 ? (
+            <TableEmptyMessage
+              message={t('manageableServerEmptyMessage')}
+              type="page"
+            />
+          ) : (
+            manageableServers.map((server, index) => {
+              const isLast = index === manageableServers.length - 1;
+              const isStarting = pendingServerAction === `start:${server.id}`;
+              const isStopping = pendingServerAction === `stop:${server.id}`;
+              const isRemoving = pendingServerAction === `remove:${server.id}`;
+              const isPending = isStarting || isStopping || isRemoving;
+              const canRemove =
+                server.type === 'GameServer' || server.type === 'ConnectServer';
+
+              return (
+                <tr
+                  key={`${server.id}:${server.type}`}
+                  className={`border-b ${
+                    isLast
+                      ? 'border-neutral-700 dark:border-neutral-600'
+                      : 'border-neutral-300 dark:border-primary-400/30'
+                  }`}
+                >
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-neutral-900 dark:text-neutral-100"
+                  >
+                    {server.description}
+                  </Typography>
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                  >
+                    {t(`manageableServerTypes.${server.type}`)}
+                  </Typography>
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                  >
+                    {t(`manageableServerStates.${server.serverState}`)}
+                  </Typography>
+                  <Typography
+                    component="td"
+                    variant="label2-r"
+                    styles="px-2 py-2 text-center text-neutral-900 dark:text-neutral-100"
+                  >
+                    {server.currentConnections} /{' '}
+                    {server.maximumConnections === 2147483647
+                      ? '∞'
+                      : server.maximumConnections}
+                  </Typography>
+                  <td className="px-2 py-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        variant="outline"
+                        disabled={isPending}
+                        onClick={() => handleStartServer(server)}
+                      >
+                        {isStarting
+                          ? t('manageableServerStartPending')
+                          : t('manageableServerStartButton')}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        disabled={isPending}
+                        onClick={() => handleStopServer(server)}
+                      >
+                        {isStopping
+                          ? t('manageableServerStopPending')
+                          : t('manageableServerStopButton')}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        disabled={isPending || !canRemove}
+                        onClick={() => handleRemoveServer(server)}
+                      >
+                        {isRemoving
+                          ? t('manageableServerRemovePending')
+                          : t('manageableServerRemoveButton')}
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </Table>
       </div>
     </div>
   );
@@ -1011,6 +1240,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     ...(isSuperAdmin
       ? [{ id: AdminTab.SESSIONS, label: t('tabs.sessions') }]
       : []),
+    ...(isSuperAdmin
+      ? [{ id: AdminTab.SERVERS, label: t('tabs.servers') }]
+      : []),
     ...(canManageAccounts
       ? [{ id: AdminTab.ACCOUNTS, label: t('tabs.accounts') }]
       : []),
@@ -1216,6 +1448,9 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
           : null}
         {activeTab === AdminTab.SESSIONS && isSuperAdmin
           ? renderSessionsTab()
+          : null}
+        {activeTab === AdminTab.SERVERS && isSuperAdmin
+          ? renderServersTab()
           : null}
         {activeTab === AdminTab.ONLINE ? renderOnlineTab() : null}
         {activeTab === AdminTab.TOOLS ? renderToolsTab() : null}

@@ -8,6 +8,16 @@ export type LoggedInAccount = {
   serverId: number;
 };
 
+export type ManageableServer = {
+  id: number;
+  configurationId: string;
+  description: string;
+  type: string;
+  serverState: string;
+  currentConnections: number;
+  maximumConnections: number;
+};
+
 export type ManagedAccountCreateInput = {
   loginName: string;
   email: string;
@@ -42,6 +52,35 @@ const disconnectLoggedInAccount = async ({
 const getManagedAccount = async (loginName: string): Promise<Account> => {
   const response = await api.get(`/super-admin/accounts/${encodeURIComponent(loginName)}`);
   return response.data;
+};
+
+const getManageableServers = async (): Promise<ManageableServer[]> => {
+  const response = await api.get('/super-admin/runtime/servers');
+  return response.data;
+};
+
+const startManageableServer = async (serverId: number): Promise<void> => {
+  await api.post(`/super-admin/runtime/servers/${serverId}/start`);
+};
+
+const stopManageableServer = async (serverId: number): Promise<void> => {
+  await api.post(`/super-admin/runtime/servers/${serverId}/stop`);
+};
+
+const removeManageableServer = async ({
+  serverId,
+  type,
+}: {
+  serverId: number;
+  type: string;
+}): Promise<void> => {
+  await api.delete(`/super-admin/runtime/servers/${serverId}`, {
+    params: { type },
+  });
+};
+
+const restartAllManageableServers = async (): Promise<void> => {
+  await api.post('/super-admin/runtime/servers/restart-all');
 };
 
 const createManagedAccount = async (
@@ -94,6 +133,14 @@ export const useGetManagedAccount = (loginName?: string, enabled = true) => {
   });
 };
 
+export const useGetManageableServers = (enabled = true) => {
+  return useQuery<ManageableServer[], Error>({
+    queryKey: ['super-admin', 'runtime', 'servers'],
+    queryFn: () => getManageableServers(),
+    enabled,
+  });
+};
+
 export const useCreateManagedAccount = () => {
   const queryClient = useQueryClient();
 
@@ -114,6 +161,58 @@ export const useUpdateManagedAccount = () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'accounts'] });
       queryClient.invalidateQueries({
         queryKey: ['super-admin', 'accounts', variables.loginName],
+      });
+    },
+  });
+};
+
+export const useStartManageableServer = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: startManageableServer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['super-admin', 'runtime', 'servers'],
+      });
+    },
+  });
+};
+
+export const useStopManageableServer = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: stopManageableServer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['super-admin', 'runtime', 'servers'],
+      });
+    },
+  });
+};
+
+export const useRemoveManageableServer = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: removeManageableServer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['super-admin', 'runtime', 'servers'],
+      });
+    },
+  });
+};
+
+export const useRestartAllManageableServers = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: restartAllManageableServers,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['super-admin', 'runtime', 'servers'],
       });
     },
   });

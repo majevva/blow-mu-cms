@@ -397,6 +397,7 @@
     "superAdminDescription": "Esta área passa a ser o substituto nativo no CMS para o back office do BastionMU. Os módulos já migrados vivem aqui, enquanto as áreas restantes do Blazor ficam organizadas abaixo até a migração completa.",
     "tabs": {
       "sessions": "Sessões",
+      "servers": "Servidores",
       "accounts": "Contas",
       "online": "Online",
       "tools": "Ferramentas"
@@ -541,6 +542,41 @@
       "loginName": "Login",
       "serverId": "Servidor",
       "actions": "Ações"
+    },
+    "manageableServerTitle": "Frota de servidores",
+    "manageableServerDescription": "Monitore e controle instâncias gerenciáveis do BastionMU diretamente da central do superadmin.",
+    "manageableServerEmptyMessage": "Nenhum servidor gerenciável encontrado",
+    "manageableServerRestartAllButton": "Reiniciar todos os game servers",
+    "manageableServerRestartAllPending": "Reiniciando...",
+    "manageableServerRestartAllSuccess": "Reinício global solicitado.",
+    "manageableServerStartButton": "Iniciar",
+    "manageableServerStartPending": "Iniciando...",
+    "manageableServerStartSuccess": "Inicialização do servidor {{name}} solicitada.",
+    "manageableServerStopButton": "Parar",
+    "manageableServerStopPending": "Parando...",
+    "manageableServerStopSuccess": "Parada do servidor {{name}} solicitada.",
+    "manageableServerRemoveButton": "Remover",
+    "manageableServerRemovePending": "Removendo...",
+    "manageableServerRemoveSuccess": "Remoção do servidor {{name}} solicitada.",
+    "manageableServerTable": {
+      "name": "Servidor",
+      "type": "Tipo",
+      "state": "Estado",
+      "connections": "Conexões",
+      "actions": "Ações"
+    },
+    "manageableServerTypes": {
+      "GameServer": "Game server",
+      "ConnectServer": "Connect server",
+      "ChatServer": "Chat server",
+      "Undefined": "Indefinido"
+    },
+    "manageableServerStates": {
+      "Stopped": "Parado",
+      "Starting": "Iniciando",
+      "Started": "Iniciado",
+      "Stopping": "Parando",
+      "Timeout": "Timeout"
     },
     "states": {
       "NORMAL": "Normal",

@@ -2,6 +2,7 @@ package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountUpdateDTO;
 import io.github.felipeemerson.openmuapi.enums.AccountState;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.inOrder;
@@ -156,5 +158,110 @@ class SuperAdminControllerTest {
         InOrder inOrder = inOrder(superAdminService);
         inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
         inOrder.verify(superAdminService).updateManagedAccount("admin", dto);
+    }
+
+    @Test
+    void getManageableServersChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+        List<ManageableServerDTO> servers = List.of(
+                new ManageableServerDTO(0, UUID.randomUUID(), "Server 0", "GameServer", "Started", 10, 100)
+        );
+        when(superAdminService.getManageableServers()).thenReturn(servers);
+
+        var response = controller.getManageableServers(principal);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(servers, response.getBody());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).getManageableServers();
+    }
+
+    @Test
+    void startManageableServerChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+
+        var response = controller.startManageableServer(principal, 0);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).startManageableServer(0);
+    }
+
+    @Test
+    void stopManageableServerChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+
+        var response = controller.stopManageableServer(principal, 0);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).stopManageableServer(0);
+    }
+
+    @Test
+    void removeManageableServerChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+
+        var response = controller.removeManageableServer(principal, 0, "GameServer");
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).removeManageableServer(0, "GameServer");
+    }
+
+    @Test
+    void restartAllManageableServersChecksPrivilegesFirst() {
+        SuperAdminController controller = new SuperAdminController(superAdminService);
+        Jwt principal = new Jwt(
+                "token-value",
+                Instant.now(),
+                Instant.now().plusSeconds(60),
+                Map.of("alg", "none"),
+                Map.of("sub", "root-user", "role", "SUPER_ADMIN")
+        );
+
+        var response = controller.restartAllManageableServers(principal);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+        InOrder inOrder = inOrder(superAdminService);
+        inOrder.verify(superAdminService).checkSuperAdminPrivileges(principal);
+        inOrder.verify(superAdminService).restartAllManageableServers();
     }
 }

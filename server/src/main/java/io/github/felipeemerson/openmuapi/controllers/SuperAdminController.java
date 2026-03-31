@@ -2,6 +2,7 @@ package io.github.felipeemerson.openmuapi.controllers;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountUpdateDTO;
 import io.github.felipeemerson.openmuapi.exceptions.BadRequestException;
@@ -32,6 +33,13 @@ public class SuperAdminController {
             @AuthenticationPrincipal Jwt principal) throws ForbiddenException {
         this.superAdminService.checkSuperAdminPrivileges(principal);
         return ResponseEntity.ok(this.superAdminService.getLoggedInAccounts());
+    }
+
+    @GetMapping("/runtime/servers")
+    public ResponseEntity<List<ManageableServerDTO>> getManageableServers(
+            @AuthenticationPrincipal Jwt principal) throws ForbiddenException {
+        this.superAdminService.checkSuperAdminPrivileges(principal);
+        return ResponseEntity.ok(this.superAdminService.getManageableServers());
     }
 
     @GetMapping("/accounts/{loginName}")
@@ -67,6 +75,42 @@ public class SuperAdminController {
             @RequestParam int serverId) throws ForbiddenException {
         this.superAdminService.checkSuperAdminPrivileges(principal);
         this.superAdminService.disconnectLoggedInAccount(loginName, serverId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/runtime/servers/{serverId}/start")
+    public ResponseEntity<Void> startManageableServer(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable int serverId) throws ForbiddenException {
+        this.superAdminService.checkSuperAdminPrivileges(principal);
+        this.superAdminService.startManageableServer(serverId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/runtime/servers/{serverId}/stop")
+    public ResponseEntity<Void> stopManageableServer(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable int serverId) throws ForbiddenException {
+        this.superAdminService.checkSuperAdminPrivileges(principal);
+        this.superAdminService.stopManageableServer(serverId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/runtime/servers/{serverId}")
+    public ResponseEntity<Void> removeManageableServer(
+            @AuthenticationPrincipal Jwt principal,
+            @PathVariable int serverId,
+            @RequestParam String type) throws ForbiddenException {
+        this.superAdminService.checkSuperAdminPrivileges(principal);
+        this.superAdminService.removeManageableServer(serverId, type);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/runtime/servers/restart-all")
+    public ResponseEntity<Void> restartAllManageableServers(
+            @AuthenticationPrincipal Jwt principal) throws ForbiddenException {
+        this.superAdminService.checkSuperAdminPrivileges(principal);
+        this.superAdminService.restartAllManageableServers();
         return ResponseEntity.noContent().build();
     }
 }

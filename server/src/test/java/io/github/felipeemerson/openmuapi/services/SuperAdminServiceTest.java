@@ -2,6 +2,7 @@ package io.github.felipeemerson.openmuapi.services;
 
 import io.github.felipeemerson.openmuapi.dto.AccountDTO;
 import io.github.felipeemerson.openmuapi.dto.LoggedInAccountDTO;
+import io.github.felipeemerson.openmuapi.dto.ManageableServerDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountCreateDTO;
 import io.github.felipeemerson.openmuapi.dto.SuperAdminAccountUpdateDTO;
 import io.github.felipeemerson.openmuapi.entities.Account;
@@ -144,5 +145,45 @@ class SuperAdminServiceTest {
         verify(accountRepository).save(account);
         verify(passwordEncoder).encode("new-secret");
         verify(accountService).getAccountDTOByLoginName("admin");
+    }
+
+    @Test
+    void getManageableServersDelegatesToGameServerService() {
+        List<ManageableServerDTO> expected = List.of(
+                new ManageableServerDTO(0, UUID.randomUUID(), "Server 0", "GameServer", "Started", 10, 100)
+        );
+        when(gameServerService.getManageableServers()).thenReturn(expected);
+
+        var result = superAdminService.getManageableServers();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void startManageableServerDelegatesToGameServerService() {
+        superAdminService.startManageableServer(0);
+
+        verify(gameServerService).startManageableServer(0);
+    }
+
+    @Test
+    void stopManageableServerDelegatesToGameServerService() {
+        superAdminService.stopManageableServer(0);
+
+        verify(gameServerService).stopManageableServer(0);
+    }
+
+    @Test
+    void removeManageableServerDelegatesToGameServerService() {
+        superAdminService.removeManageableServer(0, "GameServer");
+
+        verify(gameServerService).removeManageableServer(0, "GameServer");
+    }
+
+    @Test
+    void restartAllManageableServersDelegatesToGameServerService() {
+        superAdminService.restartAllManageableServers();
+
+        verify(gameServerService).restartAllManageableServers();
     }
 }

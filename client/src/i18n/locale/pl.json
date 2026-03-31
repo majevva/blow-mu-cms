@@ -462,6 +462,7 @@
     "superAdminDescription": "To miejsce staje się natywnym zamiennikiem zaplecza BastionMU w CMS. Moduły już przeniesione działają tutaj, a pozostałe obszary Blazora są niżej uporządkowane do czasu pełnej migracji.",
     "tabs": {
       "sessions": "Sesje",
+      "servers": "Serwery",
       "accounts": "Konta",
       "online": "Online",
       "tools": "Narzędzia"
@@ -606,6 +607,41 @@
       "loginName": "Login",
       "serverId": "Serwer",
       "actions": "Akcje"
+    },
+    "manageableServerTitle": "Flota serwerów",
+    "manageableServerDescription": "Monitoruj i kontroluj zarządzalne instancje BastionMU bezpośrednio z centrum superadmina.",
+    "manageableServerEmptyMessage": "Nie znaleziono zarządzalnych serwerów",
+    "manageableServerRestartAllButton": "Restartuj wszystkie game serwery",
+    "manageableServerRestartAllPending": "Restartowanie...",
+    "manageableServerRestartAllSuccess": "Zlecono restart wszystkich serwerów gry.",
+    "manageableServerStartButton": "Start",
+    "manageableServerStartPending": "Uruchamianie...",
+    "manageableServerStartSuccess": "Zlecono start serwera {{name}}.",
+    "manageableServerStopButton": "Stop",
+    "manageableServerStopPending": "Zatrzymywanie...",
+    "manageableServerStopSuccess": "Zlecono zatrzymanie serwera {{name}}.",
+    "manageableServerRemoveButton": "Usuń",
+    "manageableServerRemovePending": "Usuwanie...",
+    "manageableServerRemoveSuccess": "Zlecono usunięcie serwera {{name}}.",
+    "manageableServerTable": {
+      "name": "Serwer",
+      "type": "Typ",
+      "state": "Stan",
+      "connections": "Połączenia",
+      "actions": "Akcje"
+    },
+    "manageableServerTypes": {
+      "GameServer": "Game server",
+      "ConnectServer": "Connect server",
+      "ChatServer": "Chat server",
+      "Undefined": "Nieznany"
+    },
+    "manageableServerStates": {
+      "Stopped": "Zatrzymany",
+      "Starting": "Uruchamianie",
+      "Started": "Uruchomiony",
+      "Stopping": "Zatrzymywanie",
+      "Timeout": "Timeout"
     },
     "states": {
       "NORMAL": "Normalny",
