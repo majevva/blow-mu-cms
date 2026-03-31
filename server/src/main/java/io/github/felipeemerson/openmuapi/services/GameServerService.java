@@ -27,7 +27,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -47,6 +49,7 @@ public class GameServerService {
     private final AccountService accountService;
     private final CharacterService characterService;
     private HttpEntity<?> adminApiClient;
+    private RestTemplate restTemplate;
 
     @Value("${admin.panel.username}")
     private String adminPanelUsername;
@@ -76,6 +79,11 @@ public class GameServerService {
         headers.add("Authorization", "Basic " + base64Creds);
 
         this.adminApiClient = new HttpEntity<>(headers);
+
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(10000);
+        this.restTemplate = new RestTemplate(factory);
     }
 
     public List<GameServerInfoDTO> getGameServerInfo() {
@@ -97,83 +105,98 @@ public class GameServerService {
     }
 
     public OnlinePlayersDTO getOnlinePlayers() throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                SystemConstants.ADMIN_PANEL_URL + SystemConstants.ONLINE_PLAYERS_ENDPOINT,
-                HttpMethod.GET,
-                adminApiClient,
-                String.class);
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    SystemConstants.ADMIN_PANEL_URL + SystemConstants.ONLINE_PLAYERS_ENDPOINT,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    String.class);
 
-        if (response.getStatusCode().isError()) {
+            if (response.getStatusCode().isError()) {
+                throw new BadGatewayException();
+            }
+
+            return new Gson().fromJson(response.getBody(), OnlinePlayersDTO.class);
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
-
-        return new Gson().fromJson(response.getBody(), OnlinePlayersDTO.class);
     }
 
     public boolean isAccountOnline(String loginName) throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format("%s%s/%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.IS_ACCOUNT_ONLINE_ENDPOINT, loginName),
-                HttpMethod.GET,
-                adminApiClient,
-                String.class);
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    String.format("%s%s/%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.IS_ACCOUNT_ONLINE_ENDPOINT, loginName),
+                    HttpMethod.GET,
+                    adminApiClient,
+                    String.class);
 
-        if (response.getStatusCode().isError()) {
+            if (response.getStatusCode().isError()) {
+                throw new BadGatewayException();
+            }
+
+            return Boolean.parseBoolean(response.getBody());
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
-
-        return Boolean.parseBoolean(response.getBody());
     }
 
     public List<LoggedInAccountDTO> getLoggedInAccounts() throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<LoggedInAccountDTO[]> response = restTemplate.exchange(
-                SystemConstants.ADMIN_PANEL_URL + SystemConstants.LOGGED_IN_ACCOUNTS_ENDPOINT,
-                HttpMethod.GET,
-                adminApiClient,
-                LoggedInAccountDTO[].class
-        );
+        try {
+            ResponseEntity<LoggedInAccountDTO[]> response = this.restTemplate.exchange(
+                    SystemConstants.ADMIN_PANEL_URL + SystemConstants.LOGGED_IN_ACCOUNTS_ENDPOINT,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    LoggedInAccountDTO[].class
+            );
 
-        if (response.getStatusCode().isError() || response.getBody() == null) {
+            if (response.getStatusCode().isError() || response.getBody() == null) {
+                throw new BadGatewayException();
+            }
+
+            return Arrays.stream(response.getBody())
+                    .sorted((left, right) -> left.getLoginName().compareToIgnoreCase(right.getLoginName()))
+                    .toList();
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
-
-        return Arrays.stream(response.getBody())
-                .sorted((left, right) -> left.getLoginName().compareToIgnoreCase(right.getLoginName()))
-                .toList();
     }
 
     public List<ManageableServerDTO> getManageableServers() throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<ManageableServerDTO[]> response = restTemplate.exchange(
-                SystemConstants.ADMIN_PANEL_URL + SystemConstants.MANAGEABLE_SERVERS_ENDPOINT,
-                HttpMethod.GET,
-                adminApiClient,
-                ManageableServerDTO[].class
-        );
+        try {
+            ResponseEntity<ManageableServerDTO[]> response = this.restTemplate.exchange(
+                    SystemConstants.ADMIN_PANEL_URL + SystemConstants.MANAGEABLE_SERVERS_ENDPOINT,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    ManageableServerDTO[].class
+            );
 
-        if (response.getStatusCode().isError() || response.getBody() == null) {
+            if (response.getStatusCode().isError() || response.getBody() == null) {
+                throw new BadGatewayException();
+            }
+
+            return Arrays.stream(response.getBody()).toList();
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
-
-        return Arrays.stream(response.getBody()).toList();
     }
 
     public List<LogFileEntryDTO> getLogFiles() throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<LogFileEntryDTO[]> response = restTemplate.exchange(
-                SystemConstants.ADMIN_PANEL_URL + SystemConstants.LOG_FILES_ENDPOINT,
-                HttpMethod.GET,
-                adminApiClient,
-                LogFileEntryDTO[].class
-        );
+        try {
+            ResponseEntity<LogFileEntryDTO[]> response = this.restTemplate.exchange(
+                    SystemConstants.ADMIN_PANEL_URL + SystemConstants.LOG_FILES_ENDPOINT,
+                    HttpMethod.GET,
+                    adminApiClient,
+                    LogFileEntryDTO[].class
+            );
 
-        if (response.getStatusCode().isError() || response.getBody() == null) {
+            if (response.getStatusCode().isError() || response.getBody() == null) {
+                throw new BadGatewayException();
+            }
+
+            return Arrays.stream(response.getBody()).toList();
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
-
-        return Arrays.stream(response.getBody()).toList();
     }
 
     public List<CharacterRankDTO> getOnlinePlayersDetailed() throws BadGatewayException {
@@ -193,56 +216,65 @@ public class GameServerService {
             throw new BadRequestException("Server id invalid.");
         }
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format("%s%s/%s?msg=%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.SEND_MESSAGE_ENDPOINT, serverId, message),
-                HttpMethod.GET,
-                adminApiClient,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    String.format("%s%s/%s?msg=%s", SystemConstants.ADMIN_PANEL_URL, SystemConstants.SEND_MESSAGE_ENDPOINT, serverId, message),
+                    HttpMethod.GET,
+                    adminApiClient,
+                    String.class
+            );
 
-        if (response.getStatusCode().isError()){
+            if (response.getStatusCode().isError()){
+                throw new BadGatewayException();
+            }
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
     }
 
     public void disconnectCharacter(String characterName) throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
         String encodedCharacterName = UriUtils.encodePathSegment(characterName, StandardCharsets.UTF_8);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format(
-                        "%s" + SystemConstants.DISCONNECT_CHARACTER_ENDPOINT,
-                        SystemConstants.ADMIN_PANEL_URL,
-                        encodedCharacterName
-                ),
-                HttpMethod.POST,
-                adminApiClient,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    String.format(
+                            "%s" + SystemConstants.DISCONNECT_CHARACTER_ENDPOINT,
+                            SystemConstants.ADMIN_PANEL_URL,
+                            encodedCharacterName
+                    ),
+                    HttpMethod.POST,
+                    adminApiClient,
+                    String.class
+            );
 
-        if (response.getStatusCode().isError()) {
+            if (response.getStatusCode().isError()) {
+                throw new BadGatewayException();
+            }
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
     }
 
     public void disconnectAccount(String loginName, int serverId) throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
         String encodedLoginName = UriUtils.encodePathSegment(loginName, StandardCharsets.UTF_8);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format(
-                        "%s" + SystemConstants.DISCONNECT_ACCOUNT_ENDPOINT,
-                        SystemConstants.ADMIN_PANEL_URL,
-                        encodedLoginName,
-                        serverId
-                ),
-                HttpMethod.POST,
-                adminApiClient,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    String.format(
+                            "%s" + SystemConstants.DISCONNECT_ACCOUNT_ENDPOINT,
+                            SystemConstants.ADMIN_PANEL_URL,
+                            encodedLoginName,
+                            serverId
+                    ),
+                    HttpMethod.POST,
+                    adminApiClient,
+                    String.class
+            );
 
-        if (response.getStatusCode().isError()) {
+            if (response.getStatusCode().isError()) {
+                throw new BadGatewayException();
+            }
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
     }
@@ -268,20 +300,23 @@ public class GameServerService {
     }
 
     public void removeManageableServer(int serverId, String type) throws BadGatewayException {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                String.format(
-                        "%s" + SystemConstants.MANAGEABLE_SERVER_REMOVE_ENDPOINT,
-                        SystemConstants.ADMIN_PANEL_URL,
-                        serverId,
-                        UriUtils.encodeQueryParam(type, StandardCharsets.UTF_8)
-                ),
-                HttpMethod.DELETE,
-                adminApiClient,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    String.format(
+                            "%s" + SystemConstants.MANAGEABLE_SERVER_REMOVE_ENDPOINT,
+                            SystemConstants.ADMIN_PANEL_URL,
+                            serverId,
+                            UriUtils.encodeQueryParam(type, StandardCharsets.UTF_8)
+                    ),
+                    HttpMethod.DELETE,
+                    adminApiClient,
+                    String.class
+            );
 
-        if (response.getStatusCode().isError()) {
+            if (response.getStatusCode().isError()) {
+                throw new BadGatewayException();
+            }
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
     }
@@ -293,15 +328,18 @@ public class GameServerService {
     }
 
     private void invokeManageableServerLifecycle(String endpoint) {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(
-                endpoint,
-                HttpMethod.POST,
-                adminApiClient,
-                String.class
-        );
+        try {
+            ResponseEntity<String> response = this.restTemplate.exchange(
+                    endpoint,
+                    HttpMethod.POST,
+                    adminApiClient,
+                    String.class
+            );
 
-        if (response.getStatusCode().isError()) {
+            if (response.getStatusCode().isError()) {
+                throw new BadGatewayException();
+            }
+        } catch (ResourceAccessException e) {
             throw new BadGatewayException();
         }
     }
