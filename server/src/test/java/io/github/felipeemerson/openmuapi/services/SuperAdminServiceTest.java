@@ -194,6 +194,7 @@ class SuperAdminServiceTest {
     @Test
     void getBetaSocialLinksDelegatesToSocialMediaLinkService() {
         BetaSocialLinksDTO expected = new BetaSocialLinksDTO(
+                true,
                 "https://instagram.com/blowmu",
                 "https://discord.gg/blowmu",
                 null,
@@ -209,6 +210,7 @@ class SuperAdminServiceTest {
     @Test
     void updateBetaSocialLinksDelegatesToSocialMediaLinkService() {
         BetaSocialLinksDTO payload = new BetaSocialLinksDTO(
+                false,
                 "https://instagram.com/blowmu",
                 "",
                 "https://facebook.com/blowmu",

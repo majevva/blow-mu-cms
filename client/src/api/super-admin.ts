@@ -44,6 +44,7 @@ export type ManagedAccountUpdateInput = {
 };
 
 export type BetaSocialLinksUpdateInput = {
+  enabled: boolean;
   instagramUrl: string;
   discordUrl: string;
   facebookUrl: string;

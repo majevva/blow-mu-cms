@@ -33,3 +33,6 @@ CREATE TABLE IF NOT EXISTS "SocialMediaLink" (
     "Url" text COLLATE pg_catalog."default",
     CONSTRAINT "PK_SocialMediaLink" PRIMARY KEY ("Platform")
 );
+
+ALTER TABLE config."GameConfiguration"
+    ADD COLUMN IF NOT EXISTS "BetaModeEnabled" boolean NOT NULL DEFAULT false;

@@ -79,4 +79,7 @@ public class GameConfiguration {
 
     @Column(name = "ItemDropDuration")
     private String itemDropDuration;
+
+    @Column(name = "\"BetaModeEnabled\"")
+    private boolean betaModeEnabled;
 }

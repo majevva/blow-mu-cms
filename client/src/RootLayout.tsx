@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 
 import { getAccountRole, canAccessCmsDuringBeta } from './auth/authorization';
-import { isBetaModeEnabled } from './config/beta-mode';
 import { AuthProvider } from './contexts/AuthContext';
 import { AuthContext, AuthStateEnum } from './contexts/AuthContext';
 
@@ -23,12 +22,12 @@ const queryClient = new QueryClient();
 
 // eslint-disable-next-line react/prop-types
 const RootLayoutContent: React.FC<RootLayoutProps> = ({ children }) => {
-  const { auth } = useContext(AuthContext);
+  const { auth, betaModeEnabled } = useContext(AuthContext);
   const canAccessCms =
     auth.state === AuthStateEnum.SIGNED_IN &&
     canAccessCmsDuringBeta(getAccountRole(auth.token));
 
-  if (isBetaModeEnabled() && !canAccessCms) {
+  if (betaModeEnabled && !canAccessCms) {
     return <BetaModePage />;
   }
 

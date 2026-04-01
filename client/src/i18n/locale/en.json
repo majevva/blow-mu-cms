@@ -679,7 +679,7 @@
     "logFileEmptyMessage": "No log files found",
     "logFileOpenButton": "Open log",
     "socialLinksTitle": "Beta page social links",
-    "socialLinksDescription": "Set the official BlowMU links shown on the beta-test page. Empty fields are ignored and not rendered publicly.",
+    "socialLinksDescription": "Enable or disable beta mode and set the official BlowMU links shown on the beta-test page. Empty fields are ignored and not rendered publicly.",
     "socialLinksSaveButton": "Save links",
     "socialLinksSaving": "Saving...",
     "socialLinksSaveSuccess": "Social links saved.",
@@ -687,7 +687,8 @@
       "instagramUrl": "Instagram",
       "discordUrl": "Discord",
       "facebookUrl": "Facebook",
-      "youtubeUrl": "YouTube"
+      "youtubeUrl": "YouTube",
+      "enabled": "Beta mode enabled"
     },
     "logFileTable": {
       "name": "File",

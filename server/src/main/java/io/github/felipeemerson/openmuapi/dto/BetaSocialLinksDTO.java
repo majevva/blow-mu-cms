@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BetaSocialLinksDTO {
 
+    private boolean enabled;
+
     private String instagramUrl;
 
     private String discordUrl;

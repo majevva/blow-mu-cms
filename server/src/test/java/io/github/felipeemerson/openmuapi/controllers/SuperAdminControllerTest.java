@@ -277,6 +277,7 @@ class SuperAdminControllerTest {
                 Map.of("sub", "root-user", "role", "SUPER_ADMIN")
         );
         BetaSocialLinksDTO links = new BetaSocialLinksDTO(
+                true,
                 "https://instagram.com/blowmu",
                 "https://discord.gg/blowmu",
                 null,
@@ -305,6 +306,7 @@ class SuperAdminControllerTest {
                 Map.of("sub", "root-user", "role", "SUPER_ADMIN")
         );
         BetaSocialLinksDTO payload = new BetaSocialLinksDTO(
+                false,
                 null,
                 "https://discord.gg/blowmu",
                 "https://facebook.com/blowmu",

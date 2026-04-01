@@ -744,7 +744,7 @@
     "logFileEmptyMessage": "Nie znaleziono logów",
     "logFileOpenButton": "Otwórz log",
     "socialLinksTitle": "Linki social media dla strony beta",
-    "socialLinksDescription": "Ustaw oficjalne linki BlowMU widoczne na stronie beta testów. Puste pola są ignorowane i nie pojawiają się publicznie.",
+    "socialLinksDescription": "Włączaj lub wyłączaj tryb beta oraz ustaw oficjalne linki BlowMU widoczne na stronie beta testów. Puste pola są ignorowane i nie pojawiają się publicznie.",
     "socialLinksSaveButton": "Zapisz linki",
     "socialLinksSaving": "Zapisywanie...",
     "socialLinksSaveSuccess": "Linki social media zostały zapisane.",
@@ -752,7 +752,8 @@
       "instagramUrl": "Instagram",
       "discordUrl": "Discord",
       "facebookUrl": "Facebook",
-      "youtubeUrl": "YouTube"
+      "youtubeUrl": "YouTube",
+      "enabled": "Tryb beta aktywny"
     },
     "logFileTable": {
       "name": "Plik",

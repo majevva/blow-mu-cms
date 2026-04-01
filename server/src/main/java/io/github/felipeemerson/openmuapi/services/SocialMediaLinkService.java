@@ -1,8 +1,10 @@
 package io.github.felipeemerson.openmuapi.services;
 
 import io.github.felipeemerson.openmuapi.dto.BetaSocialLinksDTO;
+import io.github.felipeemerson.openmuapi.entities.GameConfiguration;
 import io.github.felipeemerson.openmuapi.entities.SocialMediaLink;
 import io.github.felipeemerson.openmuapi.enums.SocialMediaPlatform;
+import io.github.felipeemerson.openmuapi.repositories.GameConfigurationRepository;
 import io.github.felipeemerson.openmuapi.repositories.SocialMediaLinkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,17 +17,22 @@ import java.util.Map;
 public class SocialMediaLinkService {
 
     private final SocialMediaLinkRepository socialMediaLinkRepository;
+    private final GameConfigurationRepository gameConfigurationRepository;
 
-    public SocialMediaLinkService(@Autowired SocialMediaLinkRepository socialMediaLinkRepository) {
+    public SocialMediaLinkService(@Autowired SocialMediaLinkRepository socialMediaLinkRepository,
+                                  @Autowired GameConfigurationRepository gameConfigurationRepository) {
         this.socialMediaLinkRepository = socialMediaLinkRepository;
+        this.gameConfigurationRepository = gameConfigurationRepository;
     }
 
     public BetaSocialLinksDTO getBetaSocialLinks() {
         Map<SocialMediaPlatform, String> links = new EnumMap<>(SocialMediaPlatform.class);
+        GameConfiguration configuration = this.gameConfigurationRepository.findFirstBy();
 
         this.socialMediaLinkRepository.findAll().forEach(link -> links.put(link.getPlatform(), normalizeUrl(link.getUrl())));
 
         return new BetaSocialLinksDTO(
+                configuration != null && configuration.isBetaModeEnabled(),
                 links.get(SocialMediaPlatform.INSTAGRAM),
                 links.get(SocialMediaPlatform.DISCORD),
                 links.get(SocialMediaPlatform.FACEBOOK),
@@ -34,6 +41,12 @@ public class SocialMediaLinkService {
     }
 
     public BetaSocialLinksDTO updateBetaSocialLinks(BetaSocialLinksDTO dto) {
+        GameConfiguration configuration = this.gameConfigurationRepository.findFirstBy();
+        if (configuration != null) {
+            configuration.setBetaModeEnabled(dto.isEnabled());
+            this.gameConfigurationRepository.save(configuration);
+        }
+
         List<SocialMediaLink> links = List.of(
                 new SocialMediaLink(SocialMediaPlatform.INSTAGRAM, normalizeUrl(dto.getInstagramUrl())),
                 new SocialMediaLink(SocialMediaPlatform.DISCORD, normalizeUrl(dto.getDiscordUrl())),

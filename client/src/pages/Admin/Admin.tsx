@@ -98,6 +98,7 @@ const EMPTY_ATTRIBUTE_FORM: CharacterAttributes = {
 };
 
 const EMPTY_BETA_SOCIAL_LINKS_FORM: BetaSocialLinksFormValues = {
+  enabled: false,
   instagramUrl: '',
   discordUrl: '',
   facebookUrl: '',
@@ -347,6 +348,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     }
 
     setBetaSocialLinksForm({
+      enabled: betaSocialLinks.enabled,
       instagramUrl: betaSocialLinks.instagramUrl ?? '',
       discordUrl: betaSocialLinks.discordUrl ?? '',
       facebookUrl: betaSocialLinks.facebookUrl ?? '',
@@ -424,7 +426,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
 
   const handleBetaSocialLinksFieldChange = (
     field: keyof BetaSocialLinksFormValues,
-    value: string,
+    value: string | boolean,
   ) => {
     setBetaSocialLinksForm((prev) => ({
       ...prev,
@@ -643,6 +645,7 @@ const Admin: React.FC<AdminProps> = ({ scope = 'gm' }) => {
     event.preventDefault();
 
     const payload: BetaSocialLinksUpdateInput = {
+      enabled: betaSocialLinksForm.enabled,
       instagramUrl: betaSocialLinksForm.instagramUrl.trim(),
       discordUrl: betaSocialLinksForm.discordUrl.trim(),
       facebookUrl: betaSocialLinksForm.facebookUrl.trim(),

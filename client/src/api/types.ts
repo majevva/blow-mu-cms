@@ -234,6 +234,7 @@ export type ServerStatistics = {
 };
 
 export type BetaSocialLinks = {
+  enabled: boolean;
   instagramUrl: string | null;
   discordUrl: string | null;
   facebookUrl: string | null;
