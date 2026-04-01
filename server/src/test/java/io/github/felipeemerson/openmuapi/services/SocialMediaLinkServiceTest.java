@@ -14,9 +14,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +40,7 @@ class SocialMediaLinkServiceTest {
     @Test
     void getBetaSocialLinksMapsStoredPlatformsIntoDto() {
         GameConfiguration configuration = new GameConfiguration();
+        configuration.setId(UUID.randomUUID());
         configuration.setBetaModeEnabled(false);
         when(gameConfigurationRepository.findFirstBy()).thenReturn(configuration);
         when(socialMediaLinkRepository.findAll()).thenReturn(List.of(
@@ -54,6 +60,7 @@ class SocialMediaLinkServiceTest {
     @Test
     void updateBetaSocialLinksNormalizesBlankUrlsToNullAndReturnsFreshState() {
         GameConfiguration configuration = new GameConfiguration();
+        configuration.setId(UUID.randomUUID());
         configuration.setBetaModeEnabled(false);
         BetaSocialLinksDTO payload = new BetaSocialLinksDTO(
                 true,
@@ -64,6 +71,10 @@ class SocialMediaLinkServiceTest {
         );
 
         when(gameConfigurationRepository.findFirstBy()).thenReturn(configuration);
+        doAnswer(invocation -> {
+            configuration.setBetaModeEnabled(invocation.getArgument(1));
+            return 1;
+        }).when(gameConfigurationRepository).updateBetaModeEnabled(any(UUID.class), anyBoolean());
         when(socialMediaLinkRepository.findAll()).thenReturn(List.of(
                 new SocialMediaLink(SocialMediaPlatform.INSTAGRAM, "https://instagram.com/blowmu"),
                 new SocialMediaLink(SocialMediaPlatform.DISCORD, null),
@@ -75,10 +86,14 @@ class SocialMediaLinkServiceTest {
 
         ArgumentCaptor<List<SocialMediaLink>> captor = ArgumentCaptor.forClass(List.class);
         verify(socialMediaLinkRepository).saveAll(captor.capture());
+        verify(gameConfigurationRepository).updateBetaModeEnabled(
+                configuration.getId(),
+                true
+        );
+        verify(gameConfigurationRepository, never()).save(configuration);
 
         List<SocialMediaLink> savedLinks = captor.getValue();
         assertEquals(4, savedLinks.size());
-        assertEquals(true, configuration.isBetaModeEnabled());
         assertEquals("https://instagram.com/blowmu", savedLinks.get(0).getUrl());
         assertNull(savedLinks.get(1).getUrl());
         assertNull(savedLinks.get(2).getUrl());

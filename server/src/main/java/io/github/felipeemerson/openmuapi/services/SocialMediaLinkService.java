@@ -43,8 +43,7 @@ public class SocialMediaLinkService {
     public BetaSocialLinksDTO updateBetaSocialLinks(BetaSocialLinksDTO dto) {
         GameConfiguration configuration = this.gameConfigurationRepository.findFirstBy();
         if (configuration != null) {
-            configuration.setBetaModeEnabled(dto.isEnabled());
-            this.gameConfigurationRepository.save(configuration);
+            this.gameConfigurationRepository.updateBetaModeEnabled(configuration.getId(), dto.isEnabled());
         }
 
         List<SocialMediaLink> links = List.of(
